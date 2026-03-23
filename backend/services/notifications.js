@@ -3,12 +3,17 @@
 // ============================================================
 const nodemailer = require('nodemailer');
 
-const transporter = nodemailer.createTransporter({
-  host:   process.env.EMAIL_HOST  || 'smtp.gmail.com',
-  port:   parseInt(process.env.EMAIL_PORT || '587'),
-  secure: process.env.EMAIL_SECURE === 'true',
-  auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASSWORD },
-});
+let transporter = null;
+try {
+  transporter = nodemailer.createTransport({
+    host:   process.env.SMTP_HOST  || 'smtp.gmail.com',
+    port:   parseInt(process.env.SMTP_PORT || '587'),
+    secure: process.env.SMTP_SECURE === 'true',
+    auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
+  });
+} catch (err) {
+  console.warn('⚠️  Email service not configured:', err.message);
+}
 
 const sendOTPSms = async (phone, otp) => {
   if (process.env.NODE_ENV === 'development') {
@@ -46,60 +51,76 @@ const sendOrderStatusSMS = async (phone, orderNumber, status) => {
 };
 
 const sendWelcomeEmail = async (email, name) => {
-  await transporter.sendMail({
-    from:    process.env.EMAIL_FROM,
-    to:      email,
-    subject: `Welcome to Redwan Mobile Shop, ${name}! 🎉`,
-    html: `
-      <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#fff;">
-        <div style="background:#E8132A;padding:30px;text-align:center;">
-          <h1 style="color:#fff;font-size:28px;margin:0;letter-spacing:2px;">REDWAN MOBILE SHOP</h1>
+  if (!transporter) {
+    console.warn('Email service not configured, skipping welcome email');
+    return;
+  }
+  try {
+    await transporter.sendMail({
+      from:    process.env.SMTP_USER || process.env.EMAIL_FROM,
+      to:      email,
+      subject: `Welcome to Redwan Mobile Shop, ${name}! 🎉`,
+      html: `
+        <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#fff;">
+          <div style="background:#E8132A;padding:30px;text-align:center;">
+            <h1 style="color:#fff;font-size:28px;margin:0;letter-spacing:2px;">REDWAN MOBILE SHOP</h1>
+          </div>
+          <div style="padding:40px 30px;">
+            <h2 style="color:#111;">Welcome, ${name}! 🎉</h2>
+            <p style="color:#555;line-height:1.7;">
+              Your account has been created successfully. You can now:
+            </p>
+            <ul style="color:#555;line-height:2;">
+              <li>Browse 500+ genuine smartphones and accessories</li>
+              <li>Track your orders in real-time</li>
+              <li>Save your favorite products to wishlist</li>
+              <li>Get exclusive deals and flash sale alerts</li>
+            </ul>
+            <a href="${process.env.FRONTEND_URL}" style="display:inline-block;background:#E8132A;color:#fff;padding:14px 32px;border-radius:8px;text-decoration:none;font-weight:bold;margin-top:16px;">Start Shopping →</a>
+          </div>
+          <div style="background:#f5f5f5;padding:20px 30px;text-align:center;color:#888;font-size:12px;">
+            Redwan Mobile Shop · Narsingdi, Dhaka, Bangladesh<br/>
+            📞 +880 1700-000000 · ✉️ hello@redwanmobile.com
+          </div>
         </div>
-        <div style="padding:40px 30px;">
-          <h2 style="color:#111;">Welcome, ${name}! 🎉</h2>
-          <p style="color:#555;line-height:1.7;">
-            Your account has been created successfully. You can now:
-          </p>
-          <ul style="color:#555;line-height:2;">
-            <li>Browse 500+ genuine smartphones and accessories</li>
-            <li>Track your orders in real-time</li>
-            <li>Save your favorite products to wishlist</li>
-            <li>Get exclusive deals and flash sale alerts</li>
-          </ul>
-          <a href="${process.env.FRONTEND_URL}" style="display:inline-block;background:#E8132A;color:#fff;padding:14px 32px;border-radius:8px;text-decoration:none;font-weight:bold;margin-top:16px;">Start Shopping →</a>
-        </div>
-        <div style="background:#f5f5f5;padding:20px 30px;text-align:center;color:#888;font-size:12px;">
-          Redwan Mobile Shop · Narsingdi, Dhaka, Bangladesh<br/>
-          📞 +880 1700-000000 · ✉️ hello@redwanmobile.com
-        </div>
-      </div>
-    `,
-  });
+      `,
+    });
+  } catch (err) {
+    console.error('Failed to send welcome email:', err.message);
+  }
 };
 
 const sendOrderConfirmationEmail = async (email, order) => {
-  await transporter.sendMail({
-    from:    process.env.EMAIL_FROM,
-    to:      email,
-    subject: `Order Confirmed: ${order.order_number} — Redwan Mobile Shop`,
-    html: `
-      <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;">
-        <div style="background:#E8132A;padding:24px;text-align:center;">
-          <h1 style="color:#fff;font-size:24px;margin:0;">ORDER CONFIRMED ✓</h1>
-        </div>
-        <div style="padding:32px 24px;background:#fff;">
-          <h2 style="color:#111;">Thank you for your order!</h2>
-          <div style="background:#f9f9f9;border-radius:8px;padding:20px;margin:20px 0;">
-            <p style="margin:4px 0;"><strong>Order ID:</strong> ${order.order_number}</p>
-            <p style="margin:4px 0;"><strong>Total:</strong> ৳${order.total_amount}</p>
-            <p style="margin:4px 0;"><strong>Payment:</strong> ${order.payment_method?.toUpperCase()}</p>
-            <p style="margin:4px 0;"><strong>Estimated Delivery:</strong> ${order.estimated_delivery || '3-5 business days'}</p>
+  if (!transporter) {
+    console.warn('Email service not configured, skipping order confirmation email');
+    return;
+  }
+  try {
+    await transporter.sendMail({
+      from:    process.env.SMTP_USER || process.env.EMAIL_FROM,
+      to:      email,
+      subject: `Order Confirmed: ${order.order_number} — Redwan Mobile Shop`,
+      html: `
+        <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;">
+          <div style="background:#E8132A;padding:24px;text-align:center;">
+            <h1 style="color:#fff;font-size:24px;margin:0;">ORDER CONFIRMED ✓</h1>
           </div>
-          <a href="${process.env.FRONTEND_URL}/orders/${order.id}" style="display:inline-block;background:#E8132A;color:#fff;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:bold;">Track Your Order →</a>
+          <div style="padding:32px 24px;background:#fff;">
+            <h2 style="color:#111;">Thank you for your order!</h2>
+            <div style="background:#f9f9f9;border-radius:8px;padding:20px;margin:20px 0;">
+              <p style="margin:4px 0;"><strong>Order ID:</strong> ${order.order_number}</p>
+              <p style="margin:4px 0;"><strong>Total:</strong> ৳${order.total_amount}</p>
+              <p style="margin:4px 0;"><strong>Payment:</strong> ${order.payment_method?.toUpperCase()}</p>
+              <p style="margin:4px 0;"><strong>Estimated Delivery:</strong> ${order.estimated_delivery || '3-5 business days'}</p>
+            </div>
+            <a href="${process.env.FRONTEND_URL}/orders/${order.id}" style="display:inline-block;background:#E8132A;color:#fff;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:bold;">Track Your Order →</a>
+          </div>
         </div>
-      </div>
-    `,
-  });
+      `,
+    });
+  } catch (err) {
+    console.error('Failed to send order confirmation email:', err.message);
+  }
 };
 
 module.exports = { sendOTPSms, sendOrderStatusSMS, sendWelcomeEmail, sendOrderConfirmationEmail };
