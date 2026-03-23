@@ -25,6 +25,9 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));
 
+// ── Serve frontend static files ───────────────────────────────
+app.use(express.static(path.join(__dirname, '../frontend')));
+
 // ── Rate limiting ─────────────────────────────────────────────
 const generalLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 200 });
 const authLimiter    = rateLimit({ windowMs: 15 * 60 * 1000, max: 20,
@@ -54,6 +57,14 @@ app.use('/api/upload',     require('./routes/upload'));
 // ── Health check ──────────────────────────────────────────────
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date(), version: '1.0.0' });
+});
+
+// ── Serve frontend SPA routes ──────────────────────────────────
+app.get('*', (req, res) => {
+  // Don't serve HTML for API routes, only for non-API paths
+  if (!req.path.startsWith('/api')) {
+    res.sendFile(path.join(__dirname, '../frontend/index.html'));
+  }
 });
 
 // ── 404 handler ───────────────────────────────────────────────
