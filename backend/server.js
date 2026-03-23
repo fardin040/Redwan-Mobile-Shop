@@ -11,8 +11,36 @@ const rateLimit    = require('express-rate-limit');
 const morgan       = require('morgan');
 const compression  = require('compression');
 const path         = require('path');
+const { pool }     = require('./database/db');
+const { SCHEMA }   = require('./database/schema');
 
 const app = express();
+
+// ── Auto-run database migrations on startup ────────────────
+(async () => {
+  try {
+    const client = await pool.connect();
+    console.log('🔄 Checking database schema...');
+    
+    // Check if users table exists
+    const result = await client.query(
+      `SELECT EXISTS(SELECT 1 FROM information_schema.tables WHERE table_name='users')`
+    );
+    
+    if (!result.rows[0].exists) {
+      console.log('⏳ Creating database schema...');
+      await client.query(SCHEMA);
+      console.log('✅ Database schema created successfully');
+    } else {
+      console.log('✅ Database schema already exists');
+    }
+    
+    client.release();
+  } catch (err) {
+    console.warn('⚠️  Database setup warning:', err.message);
+    // Don't exit - allow app to run with limited functionality
+  }
+})();
 
 // ── Middleware ───────────────────────────────────────────────
 app.use(helmet());
