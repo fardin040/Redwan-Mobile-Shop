@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Admin: Orders & Customers — Redwan Mobile Shop</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{--red:#E8132A;--red-dark:#b50f21;--black:#09090b;--dark:#111214;--card:#17191d;--card2:#1e2026;--border:rgba(255,255,255,0.07);--text:#f0f0f0;--muted:#777;--white:#fff;--gold:#f5c842;--green:#22c55e;--blue:#3b82f6;--orange:#f97316;--sidebar:220px;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Outfit',sans-serif;background:var(--black);color:var(--text);display:flex;}
+::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:var(--dark);}::-webkit-scrollbar-thumb{background:var(--red);border-radius:2px;}
+.sidebar{width:var(--sidebar);background:var(--dark);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;overflow-y:auto;}
+.sidebar-logo{padding:22px 18px;border-bottom:1px solid var(--border);}
+.sidebar-logo h1{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;}
+.sidebar-logo h1 span{color:var(--red);}
+.sidebar-logo p{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:2px;}
+.nav-sec{padding:18px 10px 6px;}
+.nav-sec-label{font-size:10px;color:var(--muted);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:0 8px;margin-bottom:5px;}
+.nav-item{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:7px;cursor:pointer;font-size:13px;font-weight:500;color:var(--muted);margin-bottom:2px;text-decoration:none;transition:all 0.2s;}
+.nav-item:hover{background:rgba(255,255,255,0.04);color:var(--text);}
+.nav-item.active{background:rgba(232,19,42,0.12);color:var(--red);}
+.nav-item .ico{font-size:15px;width:18px;text-align:center;flex-shrink:0;}
+.nav-badge{margin-left:auto;background:var(--red);color:white;font-size:10px;font-weight:700;padding:1px 6px;border-radius:100px;}
+.sidebar-footer{margin-top:auto;padding:14px 10px;border-top:1px solid var(--border);}
+.admin-row{display:flex;align-items:center;gap:9px;}
+.admin-av{width:32px;height:32px;border-radius:8px;background:var(--red);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0;}
+.admin-name{font-size:12px;font-weight:600;}
+.admin-role{font-size:10px;color:var(--muted);}
+.main{margin-left:var(--sidebar);flex:1;display:flex;flex-direction:column;min-height:100vh;}
+.topbar{height:58px;background:var(--dark);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:50;}
+.page-title-bar{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1.5px;}
+.page-title-bar span{color:var(--red);}
+.topbar-right{display:flex;align-items:center;gap:10px;}
+.tb-btn{background:var(--card);border:1px solid var(--border);border-radius:7px;padding:7px 14px;font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;color:var(--text);}
+.tb-btn:hover{border-color:var(--red);color:var(--red);}
+.tb-btn.primary{background:var(--red);color:white;border-color:var(--red);}
+.tb-btn.primary:hover{background:var(--red-dark);}
+.content{padding:26px 28px;flex:1;}
+.admin-tabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:24px;}
+.admin-tab{padding:12px 20px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all 0.2s;}
+.admin-tab.active{color:var(--red);border-bottom-color:var(--red);}
+.admin-tab:hover{color:var(--text);}
+.admin-page{display:none;}
+.admin-page.active{display:block;}
+/* STATS ROW */
+.stats-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:22px;}
+.mini-stat{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;}
+.mini-stat-label{font-size:10px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;}
+.mini-stat-val{font-family:'Bebas Neue',sans-serif;font-size:26px;line-height:1;}
+/* TOOLBAR */
+.toolbar{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap;align-items:center;}
+.search-inp{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:9px 14px;font-family:'Outfit',sans-serif;font-size:13px;color:var(--text);outline:none;transition:border-color 0.2s;min-width:240px;}
+.search-inp:focus{border-color:var(--red);}
+.search-inp::placeholder{color:var(--muted);}
+.sel{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:9px 12px;font-family:'Outfit',sans-serif;font-size:13px;color:var(--muted);outline:none;cursor:pointer;}
+/* STATUS FILTERS */
+.status-filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px;}
+.sf{padding:6px 14px;border-radius:100px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border);color:var(--muted);background:var(--card);transition:all 0.2s;}
+.sf.active,.sf:hover{border-color:var(--red);color:var(--red);background:rgba(232,19,42,0.08);}
+/* DATA TABLE */
+.data-table{width:100%;border-collapse:collapse;font-size:13px;}
+.data-table th{text-align:left;padding:10px 12px;color:var(--muted);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid var(--border);}
+.data-table td{padding:11px 12px;border-bottom:1px solid rgba(255,255,255,0.04);vertical-align:middle;}
+.data-table tr:last-child td{border-bottom:none;}
+.data-table tr:hover td{background:rgba(255,255,255,0.02);}
+.oid{font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--red);}
+.cust-cell{display:flex;align-items:center;gap:8px;}
+.mini-av{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;}
+.sp{padding:3px 10px;border-radius:100px;font-size:11px;font-weight:700;}
+.sp-pending{background:rgba(245,200,66,0.12);color:var(--gold);border:1px solid rgba(245,200,66,0.25);}
+.sp-processing{background:rgba(59,130,246,0.12);color:var(--blue);border:1px solid rgba(59,130,246,0.25);}
+.sp-shipped{background:rgba(249,115,22,0.12);color:var(--orange);border:1px solid rgba(249,115,22,0.25);}
+.sp-delivered{background:rgba(34,197,94,0.12);color:var(--green);border:1px solid rgba(34,197,94,0.25);}
+.sp-cancelled{background:rgba(232,19,42,0.1);color:var(--red);border:1px solid rgba(232,19,42,0.2);}
+.sp-refunded{background:rgba(245,200,66,0.12);color:var(--gold);border:1px solid rgba(245,200,66,0.25);}
+.act-btns{display:flex;gap:5px;flex-wrap:wrap;}
+.act-btn{background:var(--card2);border:1px solid var(--border);border-radius:5px;padding:4px 9px;font-size:11px;font-weight:600;cursor:pointer;transition:all 0.2s;color:var(--muted);white-space:nowrap;}
+.act-btn:hover{border-color:var(--red);color:var(--red);}
+/* STATUS DROPDOWN */
+.status-sel{background:var(--card2);border:1px solid var(--border);border-radius:6px;padding:4px 8px;font-family:'Outfit',sans-serif;font-size:11px;color:var(--text);outline:none;cursor:pointer;}
+/* ORDER DETAIL DRAWER */
+.drawer-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:200;}
+.drawer-overlay.show{display:block;}
+.drawer{position:fixed;right:0;top:0;bottom:0;width:460px;background:var(--dark);border-left:1px solid var(--border);z-index:201;transform:translateX(100%);transition:transform 0.35s cubic-bezier(0.4,0,0.2,1);overflow-y:auto;padding:0;}
+.drawer.open{transform:translateX(0);}
+.drawer-header{padding:22px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--dark);z-index:1;}
+.drawer-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;}
+.drawer-title span{color:var(--red);}
+.drawer-close{background:var(--card2);border:1px solid var(--border);border-radius:7px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;color:var(--muted);}
+.drawer-close:hover{border-color:var(--red);color:var(--red);}
+.drawer-body{padding:24px;}
+.d-section{margin-bottom:22px;}
+.d-section-title{font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;}
+.d-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:13px;}
+.d-row:last-child{border-bottom:none;}
+.d-row .key{color:var(--muted);}
+.d-row .val{font-weight:600;text-align:right;}
+.d-item{display:flex;gap:12px;align-items:center;padding:10px;background:var(--card);border:1px solid var(--border);border-radius:10px;margin-bottom:8px;}
+.d-item-img{width:44px;height:44px;background:var(--card2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.d-item-name{font-size:13px;font-weight:600;}
+.d-item-meta{font-size:11px;color:var(--muted);}
+.d-item-price{margin-left:auto;font-family:'Bebas Neue',sans-serif;font-size:18px;}
+.timeline-mini{display:flex;flex-direction:column;gap:0;}
+.tl-item{display:flex;gap:12px;padding:10px 0;position:relative;}
+.tl-dot{width:10px;height:10px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;margin-top:3px;}
+.tl-item.done .tl-dot{background:var(--green);border-color:var(--green);}
+.tl-item.active .tl-dot{background:var(--red);border-color:var(--red);}
+.tl-title{font-size:13px;font-weight:600;}
+.tl-item.done .tl-title{color:var(--green);}
+.tl-item.active .tl-title{color:var(--red);}
+.tl-time{font-size:11px;color:var(--muted);margin-top:2px;}
+/* CUSTOMER PAGE */
+.cust-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:22px;}
+.cust-stat{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;}
+.cust-stat-label{font-size:10px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;}
+.cust-stat-val{font-family:'Bebas Neue',sans-serif;font-size:26px;line-height:1;}
+.cust-av{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0;}
+.tier-pill{padding:2px 8px;border-radius:100px;font-size:10px;font-weight:700;}
+.tier-vip{background:rgba(245,200,66,0.15);color:var(--gold);border:1px solid rgba(245,200,66,0.3);}
+.tier-regular{background:rgba(59,130,246,0.1);color:var(--blue);border:1px solid rgba(59,130,246,0.2);}
+.tier-new{background:rgba(34,197,94,0.1);color:var(--green);border:1px solid rgba(34,197,94,0.2);}
+.block-btn{background:rgba(232,19,42,0.08);border:1px solid rgba(232,19,42,0.2);color:var(--red);border-radius:5px;padding:4px 9px;font-size:11px;font-weight:700;cursor:pointer;transition:all 0.2s;}
+.block-btn:hover{background:var(--red);color:white;}
+/* CUSTOMER PROFILE DRAWER */
+.cp-header{background:linear-gradient(135deg,rgba(232,19,42,0.08),transparent);padding:24px;border-bottom:1px solid var(--border);text-align:center;}
+.cp-avatar{width:64px;height:64px;border-radius:50%;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:28px;color:white;}
+.cp-name{font-weight:700;font-size:18px;margin-bottom:4px;}
+.cp-email{font-size:13px;color:var(--muted);}
+@media(max-width:768px){.sidebar{display:none;}.main{margin-left:0;}.stats-row{grid-template-columns:repeat(3,1fr);}.cust-stats{grid-template-columns:1fr 1fr;}.drawer{width:100%;}.content{padding:16px;}}
+</style>
+</head>
+<body>
+<aside class="sidebar">
+  <div class="sidebar-logo"><h1>REDWAN<span>.</span>ADMIN</h1><p>Control Panel v2.0</p></div>
+  <div class="nav-sec"><div class="nav-sec-label">Overview</div>
+    <a class="nav-item" href="admin-dashboard.html"><span class="ico">📊</span> Dashboard</a>
+  </div>
+  <div class="nav-sec"><div class="nav-sec-label">Catalog</div>
+    <a class="nav-item" href="admin-products.html"><span class="ico">📱</span> Products</a>
+  </div>
+  <div class="nav-sec"><div class="nav-sec-label">Sales</div>
+    <a class="nav-item active" href="#"><span class="ico">🛒</span> Orders <span class="nav-badge">12</span></a>
+    <a class="nav-item" href="#"><span class="ico">↩️</span> Returns <span class="nav-badge" style="background:var(--gold);color:#111;">3</span></a>
+    <a class="nav-item" href="#"><span class="ico">💳</span> Payments</a>
+    <a class="nav-item" href="#"><span class="ico">🚚</span> Shipping</a>
+  </div>
+  <div class="nav-sec"><div class="nav-sec-label">Marketing</div>
+    <a class="nav-item" href="#"><span class="ico">🎁</span> Promotions</a>
+    <a class="nav-item" href="#"><span class="ico">📢</span> Banners</a>
+    <a class="nav-item" href="#"><span class="ico">✉️</span> Newsletter</a>
+  </div>
+  <div class="nav-sec"><div class="nav-sec-label">Customers</div>
+    <a class="nav-item" href="#"><span class="ico">👥</span> Customers</a>
+    <a class="nav-item" href="#"><span class="ico">⭐</span> Reviews <span class="nav-badge" style="background:var(--blue);">5</span></a>
+  </div>
+  <div class="nav-sec"><div class="nav-sec-label">System</div>
+    <a class="nav-item" href="#"><span class="ico">⚙️</span> Settings</a>
+    <a class="nav-item" href="redwan-mobile-shop.html"><span class="ico">🌐</span> View Store</a>
+  </div>
+  <div class="sidebar-footer"><div class="admin-row"><div class="admin-av">R</div><div><div class="admin-name">Redwan Ahmed</div><div class="admin-role">Super Admin</div></div></div></div>
+</aside>
+
+<div class="main">
+  <div class="topbar">
+    <div class="page-title-bar" id="topTitle">ORDERS <span>MANAGEMENT</span></div>
+    <div class="topbar-right">
+      <button class="tb-btn" onclick="alert('Export orders CSV ready!')">⬇️ Export CSV</button>
+      <button class="tb-btn" onclick="alert('Print all invoices')">🖨️ Print Invoices</button>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="admin-tabs">
+      <div class="admin-tab active" onclick="switchTab(this,'orders')">🛒 Orders (247)</div>
+      <div class="admin-tab" onclick="switchTab(this,'customers')">👥 Customers (12,481)</div>
+    </div>
+
+    <!-- ===== ORDERS TAB ===== -->
+    <div class="admin-page active" id="tab-orders">
+      <div class="stats-row">
+        <div class="mini-stat"><div class="mini-stat-label">Total Orders</div><div class="mini-stat-val" style="color:var(--text);">247</div></div>
+        <div class="mini-stat"><div class="mini-stat-label">Pending</div><div class="mini-stat-val" style="color:var(--gold);">12</div></div>
+        <div class="mini-stat"><div class="mini-stat-label">Processing</div><div class="mini-stat-val" style="color:var(--blue);">18</div></div>
+        <div class="mini-stat"><div class="mini-stat-label">Shipped</div><div class="mini-stat-val" style="color:var(--orange);">24</div></div>
+        <div class="mini-stat"><div class="mini-stat-label">Delivered</div><div class="mini-stat-val" style="color:var(--green);">193</div></div>
+      </div>
+
+      <div class="toolbar">
+        <input class="search-inp" type="text" placeholder="Search by order ID, customer name, phone..."/>
+        <select class="sel"><option>All Payments</option><option>bKash</option><option>Nagad</option><option>Card</option><option>COD</option></select>
+        <input type="date" class="sel" style="color:var(--muted);" title="From date"/>
+        <input type="date" class="sel" style="color:var(--muted);" title="To date"/>
+        <button class="tb-btn primary" style="margin-left:auto;">🔍 Filter</button>
+      </div>
+
+      <div class="status-filters">
+        <div class="sf active" onclick="filterOrders(this,'all')">All <span style="opacity:0.6;">(247)</span></div>
+        <div class="sf" onclick="filterOrders(this,'pending')">Pending <span style="opacity:0.6;">(12)</span></div>
+        <div class="sf" onclick="filterOrders(this,'processing')">Processing <span style="opacity:0.6;">(18)</span></div>
+        <div class="sf" onclick="filterOrders(this,'shipped')">Shipped <span style="opacity:0.6;">(24)</span></div>
+        <div class="sf" onclick="filterOrders(this,'delivered')">Delivered <span style="opacity:0.6;">(193)</span></div>
+        <div class="sf" onclick="filterOrders(this,'cancelled')">Cancelled <span style="opacity:0.6;">(0)</span></div>
+        <div class="sf" onclick="filterOrders(this,'refunded')">Refunded <span style="opacity:0.6;">(0)</span></div>
+      </div>
+
+      <div style="overflow-x:auto;">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th><input type="checkbox" style="accent-color:var(--red);"/></th>
+              <th>Order ID</th>
+              <th>Customer</th>
+              <th>Items</th>
+              <th>Amount</th>
+              <th>Payment</th>
+              <th>Status</th>
+              <th>Date</th>
+              <th>Update Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="ordersTable">
+            <tr data-status="processing">
+              <td><input type="checkbox" style="accent-color:var(--red);"/></td>
+              <td><div class="oid">#RM-0247</div></td>
+              <td><div class="cust-cell"><div class="mini-av" style="background:#e8132a;">R</div><div><div style="font-size:12px;font-weight:600;">Rafiqul Islam</div><div style="font-size:10px;color:var(--muted);">Dhaka</div></div></div></td>
+              <td style="font-size:12px;">S25 Ultra + 2 more</td>
+              <td><div style="font-family:'Bebas Neue',sans-serif;font-size:15px;">৳1,78,497</div></td>
+              <td style="font-size:11px;color:var(--green);">bKash ✓</td>
+              <td><span class="sp sp-processing">Processing</span></td>
+              <td style="font-size:11px;color:var(--muted);">Mar 23</td>
+              <td>
+                <select class="status-sel" onchange="updateStatus(this)">
+                  <option>Processing</option>
+                  <option>Confirmed</option>
+                  <option>Shipped</option>
+                  <option>Delivered</option>
+                  <option>Cancelled</option>
+                </select>
+              </td>
+              <td><div class="act-btns">
+                <button class="act-btn" onclick="openOrder('#RM-0247','Rafiqul Islam')">👁️ View</button>
+                <button class="act-btn">📄 Invoice</button>
+              </div></td>
+            </tr>
+            <tr data-status="shipped">
+              <td><input type="checkbox" style="accent-color:var(--red);"/></td>
+              <td><div class="oid">#RM-0246</div></td>
+              <td><div class="cust-cell"><div class="mini-av" style="background:#3b82f6;">S</div><div><div style="font-size:12px;font-weight:600;">Sumaiya Akter</div><div style="font-size:10px;color:var(--muted);">Chittagong</div></div></div></td>
+              <td style="font-size:12px;">iPhone 16 Pro Max</td>
+              <td><div style="font-family:'Bebas Neue',sans-serif;font-size:15px;">৳1,74,999</div></td>
+              <td style="font-size:11px;color:var(--green);">Card ✓</td>
+              <td><span class="sp sp-shipped">Shipped</span></td>
+              <td style="font-size:11px;color:var(--muted);">Mar 22</td>
+              <td>
+                <select class="status-sel" onchange="updateStatus(this)">
+                  <option>Processing</option><option>Confirmed</option><option selected>Shipped</option><option>Delivered</option><option>Cancelled</option>
+                </select>
+              </td>
+              <td><div class="act-btns"><button class="act-btn" onclick="openOrder('#RM-0246','Sumaiya Akter')">👁️ View</button><button class="act-btn">📄 Invoice</button></div></td>
+            </tr>
+            <tr data-status="pending">
+              <td><input type="checkbox" style="accent-color:var(--red);"/></td>
+              <td><div class="oid">#RM-0245</div></td>
+              <td><div class="cust-cell"><div class="mini-av" style="background:#f59e0b;">M</div><div><div style="font-size:12px;font-weight:600;">Mahbub Hossain</div><div style="font-size:10px;color:var(--muted);">Sylhet</div></div></div></td>
+              <td style="font-size:12px;">Redmi Note 13 Pro+</td>
+              <td><div style="font-family:'Bebas Neue',sans-serif;font-size:15px;">৳34,999</div></td>
+              <td style="font-size:11px;color:var(--gold);">COD</td>
+              <td><span class="sp sp-pending">Pending</span></td>
+              <td style="font-size:11px;color:var(--muted);">Mar 22</td>
+              <td>
+                <select class="status-sel" onchange="updateStatus(this)">
+                  <option selected>Pending</option><option>Confirmed</option><option>Shipped</option><option>Delivered</option><option>Cancelled</option>
+                </select>
+              </td>
+              <td><div class="act-btns"><button class="act-btn" onclick="openOrder('#RM-0245','Mahbub Hossain')">👁️ View</button><button class="act-btn">📄 Invoice</button></div></td>
+            </tr>
+            <tr data-status="delivered">
+              <td><input type="checkbox" style="accent-color:var(--red);"/></td>
+              <td><div class="oid">#RM-0244</div></td>
+              <td><div class="cust-cell"><div class="mini-av" style="background:#22c55e;">K</div><div><div style="font-size:12px;font-weight:600;">Karim Uddin</div><div style="font-size:10px;color:var(--muted);">Rajshahi</div></div></div></td>
+              <td style="font-size:12px;">Galaxy Buds3 Pro</td>
+              <td><div style="font-family:'Bebas Neue',sans-serif;font-size:15px;">৳14,999</div></td>
+              <td style="font-size:11px;color:var(--green);">Nagad ✓</td>
+              <td><span class="sp sp-delivered">Delivered</span></td>
+              <td style="font-size:11px;color:var(--muted);">Mar 20</td>
+              <td>
+                <select class="status-sel" onchange="updateStatus(this)">
+                  <option>Processing</option><option>Confirmed</option><option>Shipped</option><option selected>Delivered</option><option>Cancelled</option>
+                </select>
+              </td>
+              <td><div class="act-btns"><button class="act-btn" onclick="openOrder('#RM-0244','Karim Uddin')">👁️ View</button><button class="act-btn">📄 Invoice</button></div></td>
+            </tr>
+            <tr data-status="pending">
+              <td><input type="checkbox" style="accent-color:var(--red);"/></td>
+              <td><div class="oid">#RM-0243</div></td>
+              <td><div class="cust-cell"><div class="mini-av" style="background:#8b5cf6;">N</div><div><div style="font-size:12px;font-weight:600;">Nasrin Begum</div><div style="font-size:10px;color:var(--muted);">Khulna</div></div></div></td>
+              <td style="font-size:12px;">OPPO Reno 12 Pro 5G</td>
+              <td><div style="font-family:'Bebas Neue',sans-serif;font-size:15px;">৳44,999</div></td>
+              <td style="font-size:11px;color:var(--red);">Failed ✗</td>
+              <td><span class="sp sp-cancelled">Cancelled</span></td>
+              <td style="font-size:11px;color:var(--muted);">Mar 19</td>
+              <td>
+                <select class="status-sel" onchange="updateStatus(this)">
+                  <option>Processing</option><option>Confirmed</option><option>Shipped</option><option>Delivered</option><option>Cancelled</option>
+                </select>
+              </td>
+              <td><div class="act-btns"><button class="act-btn" onclick="openOrder('#RM-0243','Nasrin Begum')">👁️ View</button><button class="act-btn" style="color:var(--gold);">💰 Refund</button></div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:16px;border-top:1px solid var(--border);">
+        <div style="font-size:12px;color:var(--muted);">Showing 5 of 247 orders</div>
+        <div style="display:flex;gap:6px;">
+          <button class="act-btn">← Prev</button>
+          <button class="act-btn" style="color:var(--red);border-color:rgba(232,19,42,0.4);">1</button>
+          <button class="act-btn">2</button><button class="act-btn">3</button><button class="act-btn">…</button><button class="act-btn">50</button>
+          <button class="act-btn">Next →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== CUSTOMERS TAB ===== -->
+    <div class="admin-page" id="tab-customers">
+      <div class="cust-stats">
+        <div class="cust-stat"><div class="cust-stat-label">Total Customers</div><div class="cust-stat-val" style="color:var(--text);">12,481</div></div>
+        <div class="cust-stat"><div class="cust-stat-label">New This Month</div><div class="cust-stat-val" style="color:var(--green);">94</div></div>
+        <div class="cust-stat"><div class="cust-stat-label">VIP Customers</div><div class="cust-stat-val" style="color:var(--gold);">284</div></div>
+        <div class="cust-stat"><div class="cust-stat-label">Blocked</div><div class="cust-stat-val" style="color:var(--red);">12</div></div>
+      </div>
+      <div class="toolbar">
+        <input class="search-inp" type="text" placeholder="Search by name, phone, email..."/>
+        <select class="sel"><option>All Customers</option><option>VIP</option><option>Regular</option><option>New</option><option>Blocked</option></select>
+        <select class="sel"><option>All Districts</option><option>Dhaka</option><option>Chittagong</option><option>Sylhet</option><option>Rajshahi</option></select>
+        <button class="tb-btn" style="margin-left:auto;" onclick="alert('Customer list CSV ready!')">⬇️ Export CSV</button>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Customer</th>
+              <th>Phone</th>
+              <th>Location</th>
+              <th>Total Orders</th>
+              <th>Total Spent</th>
+              <th>Last Order</th>
+              <th>Tier</th>
+              <th>Joined</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><div class="cust-cell"><div class="cust-av" style="background:#e8132a;">R</div><div><div style="font-size:12px;font-weight:600;">Rafiqul Islam</div><div style="font-size:10px;color:var(--muted);">rafiqul@email.com</div></div></div></td>
+              <td style="font-size:12px;">+880 1700-001234</td>
+              <td style="font-size:12px;color:var(--muted);">Dhaka</td>
+              <td style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--green);">7</td>
+              <td style="font-family:'Bebas Neue',sans-serif;font-size:15px;">৳3,84,993</td>
+              <td style="font-size:11px;color:var(--muted);">Mar 23, 2026</td>
+              <td><span class="tier-pill tier-vip">⭐ VIP</span></td>
+              <td style="font-size:11px;color:var(--muted);">Jan 2024</td>
+              <td><div class="act-btns"><button class="act-btn" onclick="openCustomer('Rafiqul Islam','R','#e8132a')">👁️ View</button><button class="act-btn">📧 Email</button><button class="block-btn">Block</button></div></td>
+            </tr>
+            <tr>
+              <td><div class="cust-cell"><div class="cust-av" style="background:#3b82f6;">S</div><div><div style="font-size:12px;font-weight:600;">Sumaiya Akter</div><div style="font-size:10px;color:var(--muted);">sumaiya@email.com</div></div></div></td>
+              <td style="font-size:12px;">+880 1811-005678</td>
+              <td style="font-size:12px;color:var(--muted);">Chittagong</td>
+              <td style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--green);">4</td>
+              <td style="font-family:'Bebas Neue',sans-serif;font-size:15px;">৳2,19,996</td>
+              <td style="font-size:11px;color:var(--muted);">Mar 22, 2026</td>
+              <td><span class="tier-pill tier-vip">⭐ VIP</span></td>
+              <td style="font-size:11px;color:var(--muted);">Mar 2024</td>
+              <td><div class="act-btns"><button class="act-btn" onclick="openCustomer('Sumaiya Akter','S','#3b82f6')">👁️ View</button><button class="act-btn">📧 Email</button><button class="block-btn">Block</button></div></td>
+            </tr>
+            <tr>
+              <td><div class="cust-cell"><div class="cust-av" style="background:#f59e0b;">M</div><div><div style="font-size:12px;font-weight:600;">Mahbub Hossain</div><div style="font-size:10px;color:var(--muted);">mahbub@email.com</div></div></div></td>
+              <td style="font-size:12px;">+880 1912-009012</td>
+              <td style="font-size:12px;color:var(--muted);">Sylhet</td>
+              <td style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--blue);">2</td>
+              <td style="font-family:'Bebas Neue',sans-serif;font-size:15px;">৳68,998</td>
+              <td style="font-size:11px;color:var(--muted);">Mar 22, 2026</td>
+              <td><span class="tier-pill tier-regular">Regular</span></td>
+              <td style="font-size:11px;color:var(--muted);">Sep 2025</td>
+              <td><div class="act-btns"><button class="act-btn" onclick="openCustomer('Mahbub Hossain','M','#f59e0b')">👁️ View</button><button class="act-btn">📧 Email</button><button class="block-btn">Block</button></div></td>
+            </tr>
+            <tr>
+              <td><div class="cust-cell"><div class="cust-av" style="background:#22c55e;">K</div><div><div style="font-size:12px;font-weight:600;">Karim Uddin</div><div style="font-size:10px;color:var(--muted);">karim@email.com</div></div></div></td>
+              <td style="font-size:12px;">+880 1700-003456</td>
+              <td style="font-size:12px;color:var(--muted);">Rajshahi</td>
+              <td style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--blue);">3</td>
+              <td style="font-family:'Bebas Neue',sans-serif;font-size:15px;">৳89,997</td>
+              <td style="font-size:11px;color:var(--muted);">Mar 20, 2026</td>
+              <td><span class="tier-pill tier-regular">Regular</span></td>
+              <td style="font-size:11px;color:var(--muted);">Jun 2025</td>
+              <td><div class="act-btns"><button class="act-btn" onclick="openCustomer('Karim Uddin','K','#22c55e')">👁️ View</button><button class="act-btn">📧 Email</button><button class="block-btn">Block</button></div></td>
+            </tr>
+            <tr>
+              <td><div class="cust-cell"><div class="cust-av" style="background:#ec4899;">T</div><div><div style="font-size:12px;font-weight:600;">Tahmina Begum</div><div style="font-size:10px;color:var(--muted);">tahmina@email.com</div></div></div></td>
+              <td style="font-size:12px;">+880 1833-007890</td>
+              <td style="font-size:12px;color:var(--muted);">Dhaka</td>
+              <td style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--muted);">1</td>
+              <td style="font-family:'Bebas Neue',sans-serif;font-size:15px;">৳34,999</td>
+              <td style="font-size:11px;color:var(--muted);">Mar 19, 2026</td>
+              <td><span class="tier-pill tier-new">New</span></td>
+              <td style="font-size:11px;color:var(--muted);">Mar 2026</td>
+              <td><div class="act-btns"><button class="act-btn" onclick="openCustomer('Tahmina Begum','T','#ec4899')">👁️ View</button><button class="act-btn">📧 Email</button><button class="block-btn">Block</button></div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:16px;border-top:1px solid var(--border);">
+        <div style="font-size:12px;color:var(--muted);">Showing 5 of 12,481 customers</div>
+        <div style="display:flex;gap:6px;">
+          <button class="act-btn">← Prev</button>
+          <button class="act-btn" style="color:var(--red);border-color:rgba(232,19,42,0.4);">1</button>
+          <button class="act-btn">2</button><button class="act-btn">3</button><button class="act-btn">…</button>
+          <button class="act-btn">Next →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ORDER DETAIL DRAWER -->
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+<div class="drawer" id="orderDrawer">
+  <div class="drawer-header">
+    <div class="drawer-title">ORDER <span id="drawerOrderId">#RM-0247</span></div>
+    <button class="drawer-close" onclick="closeDrawer()">✕</button>
+  </div>
+  <div class="drawer-body">
+    <div class="d-section">
+      <div class="d-section-title">Customer Info</div>
+      <div class="d-row"><span class="key">Name</span><span class="val" id="dCustName">Rafiqul Islam</span></div>
+      <div class="d-row"><span class="key">Phone</span><span class="val">+880 1700-001234</span></div>
+      <div class="d-row"><span class="key">Email</span><span class="val">rafiqul@email.com</span></div>
+      <div class="d-row"><span class="key">Address</span><span class="val">House 12, Road 4, Gulshan, Dhaka</span></div>
+    </div>
+    <div class="d-section">
+      <div class="d-section-title">Order Items</div>
+      <div class="d-item"><div class="d-item-img">📱</div><div><div class="d-item-name">Samsung Galaxy S25 Ultra</div><div class="d-item-meta">Titanium Black · 256GB · Qty: 1</div></div><div class="d-item-price">৳1,19,999</div></div>
+      <div class="d-item"><div class="d-item-img">📱</div><div><div class="d-item-name">Redmi Note 13 Pro+</div><div class="d-item-meta">Black · 256GB · Qty: 1</div></div><div class="d-item-price">৳34,999</div></div>
+      <div class="d-item"><div class="d-item-img">🎧</div><div><div class="d-item-name">Samsung Galaxy Buds3 Pro</div><div class="d-item-meta">Black · Qty: 1</div></div><div class="d-item-price">৳14,999</div></div>
+    </div>
+    <div class="d-section">
+      <div class="d-section-title">Payment Summary</div>
+      <div class="d-row"><span class="key">Subtotal</span><span class="val">৳1,69,997</span></div>
+      <div class="d-row"><span class="key">Delivery</span><span class="val" style="color:var(--green);">FREE</span></div>
+      <div class="d-row"><span class="key">VAT (5%)</span><span class="val">৳8,500</span></div>
+      <div class="d-row" style="border-top:2px solid var(--border);padding-top:10px;"><span class="key" style="font-weight:700;">Total</span><span class="val" style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--red);">৳1,78,497</span></div>
+      <div class="d-row"><span class="key">Payment</span><span class="val" style="color:var(--green);">bKash · Paid ✓</span></div>
+    </div>
+    <div class="d-section">
+      <div class="d-section-title">Order Timeline</div>
+      <div class="timeline-mini">
+        <div class="tl-item done"><div class="tl-dot"></div><div><div class="tl-title">Order Placed</div><div class="tl-time">Mar 23, 2026 · 10:32 AM</div></div></div>
+        <div class="tl-item done"><div class="tl-dot"></div><div><div class="tl-title">Payment Confirmed</div><div class="tl-time">Mar 23, 2026 · 10:33 AM</div></div></div>
+        <div class="tl-item active"><div class="tl-dot"></div><div><div class="tl-title">Processing</div><div class="tl-time">Mar 23, 2026 · 10:48 AM — Active</div></div></div>
+        <div class="tl-item"><div class="tl-dot"></div><div><div class="tl-title">Shipped</div><div class="tl-time">Pending</div></div></div>
+        <div class="tl-item"><div class="tl-dot"></div><div><div class="tl-title">Delivered</div><div class="tl-time">Pending</div></div></div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px;padding-top:16px;border-top:1px solid var(--border);">
+      <button style="background:var(--red);color:white;border:none;border-radius:8px;padding:11px;font-family:'Outfit',sans-serif;font-weight:700;font-size:13px;cursor:pointer;" onclick="alert('Order marked as shipped! SMS sent to customer.')">🚚 Mark as Shipped</button>
+      <div style="display:flex;gap:8px;">
+        <button style="flex:1;background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:10px;font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;cursor:pointer;color:var(--text);" onclick="alert('Invoice PDF opened')">📄 Invoice</button>
+        <button style="flex:1;background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:10px;font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;cursor:pointer;color:var(--text);" onclick="alert('SMS sent to Rafiqul Islam')">📱 SMS Customer</button>
+        <button style="flex:1;background:rgba(232,19,42,0.08);border:1px solid rgba(232,19,42,0.2);border-radius:8px;padding:10px;font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;cursor:pointer;color:var(--red);" onclick="if(confirm('Cancel this order?'))closeDrawer()">✕ Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CUSTOMER PROFILE DRAWER -->
+<div class="drawer" id="custDrawer" style="z-index:202;">
+  <div class="drawer-header">
+    <div class="drawer-title">CUSTOMER <span>PROFILE</span></div>
+    <button class="drawer-close" onclick="closeCustDrawer()">✕</button>
+  </div>
+  <div class="cp-header">
+    <div class="cp-avatar" id="cpAvatar" style="background:#e8132a;">R</div>
+    <div class="cp-name" id="cpName">Rafiqul Islam</div>
+    <div class="cp-email">rafiqul@email.com · +880 1700-001234</div>
+    <div style="margin-top:10px;display:flex;justify-content:center;gap:10px;">
+      <span class="tier-pill tier-vip">⭐ VIP Customer</span>
+    </div>
+  </div>
+  <div class="drawer-body">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:20px;">
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center;"><div style="font-size:10px;color:var(--muted);margin-bottom:4px;">ORDERS</div><div style="font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--green);">7</div></div>
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center;"><div style="font-size:10px;color:var(--muted);margin-bottom:4px;">TOTAL SPENT</div><div style="font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--red);">৳3.84L</div></div>
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center;"><div style="font-size:10px;color:var(--muted);margin-bottom:4px;">REVIEWS</div><div style="font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--gold);">3</div></div>
+    </div>
+    <div class="d-section">
+      <div class="d-section-title">Account Details</div>
+      <div class="d-row"><span class="key">Joined</span><span class="val">January 15, 2024</span></div>
+      <div class="d-row"><span class="key">Location</span><span class="val">Dhaka, Bangladesh</span></div>
+      <div class="d-row"><span class="key">Last Login</span><span class="val">March 23, 2026</span></div>
+      <div class="d-row"><span class="key">Last Order</span><span class="val">#RM-0247 · Mar 23</span></div>
+    </div>
+    <div class="d-section">
+      <div class="d-section-title">Recent Orders</div>
+      <div class="d-row"><span class="key">#RM-0247</span><span class="val" style="color:var(--blue);">Processing · ৳1,78,497</span></div>
+      <div class="d-row"><span class="key">#RM-0231</span><span class="val" style="color:var(--green);">Delivered · ৳1,74,999</span></div>
+      <div class="d-row"><span class="key">#RM-0198</span><span class="val" style="color:var(--green);">Delivered · ৳34,999</span></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px;padding-top:16px;border-top:1px solid var(--border);">
+      <button style="background:var(--blue);color:white;border:none;border-radius:8px;padding:10px;font-family:'Outfit',sans-serif;font-weight:700;font-size:13px;cursor:pointer;" onclick="alert('Email composed for this customer')">📧 Send Email</button>
+      <div style="display:flex;gap:8px;">
+        <button style="flex:1;background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:9px;font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;cursor:pointer;color:var(--text);">📱 Send SMS</button>
+        <button style="flex:1;background:rgba(245,200,66,0.1);border:1px solid rgba(245,200,66,0.2);border-radius:8px;padding:9px;font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;cursor:pointer;color:var(--gold);">⭐ Upgrade VIP</button>
+        <button style="flex:1;background:rgba(232,19,42,0.08);border:1px solid rgba(232,19,42,0.2);border-radius:8px;padding:9px;font-family:'Outfit',sans-serif;font-size:12px;font-weight:700;cursor:pointer;color:var(--red);" onclick="if(confirm('Block this customer?'))closeCustDrawer()">🚫 Block</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function switchTab(el,tab){
+  document.querySelectorAll('.admin-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.admin-page').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tab-'+tab).classList.add('active');
+  document.getElementById('topTitle').innerHTML=tab==='orders'?'ORDERS <span>MANAGEMENT</span>':'CUSTOMERS <span>MANAGEMENT</span>';
+}
+function filterOrders(el,status){
+  document.querySelectorAll('.sf').forEach(f=>f.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('#ordersTable tr').forEach(row=>{
+    row.style.display=(status==='all'||row.dataset.status===status)?'':'none';
+  });
+}
+function updateStatus(sel){
+  const row=sel.closest('tr');
+  const pill=row.querySelector('.sp');
+  const statusMap={
+    'Processing':'sp-processing','Confirmed':'sp-processing','Shipped':'sp-shipped','Delivered':'sp-delivered','Cancelled':'sp-cancelled'
+  };
+  const textMap={
+    'Processing':'Processing','Confirmed':'Confirmed','Shipped':'Shipped','Delivered':'Delivered','Cancelled':'Cancelled'
+  };
+  pill.className='sp '+(statusMap[sel.value]||'sp-processing');
+  pill.textContent=textMap[sel.value]||sel.value;
+}
+function openOrder(id,name){
+  document.getElementById('drawerOrderId').textContent=id;
+  document.getElementById('dCustName').textContent=name;
+  document.getElementById('drawerOverlay').classList.add('show');
+  document.getElementById('orderDrawer').classList.add('open');
+}
+function closeDrawer(){
+  document.getElementById('drawerOverlay').classList.remove('show');
+  document.getElementById('orderDrawer').classList.remove('open');
+  document.getElementById('custDrawer').classList.remove('open');
+}
+function openCustomer(name,initial,color){
+  document.getElementById('cpAvatar').textContent=initial;
+  document.getElementById('cpAvatar').style.background=color;
+  document.getElementById('cpName').textContent=name;
+  document.getElementById('drawerOverlay').classList.add('show');
+  document.getElementById('custDrawer').classList.add('open');
+}
+function closeCustDrawer(){
+  document.getElementById('drawerOverlay').classList.remove('show');
+  document.getElementById('custDrawer').classList.remove('open');
+}
+</script>
+</body>
+</html>

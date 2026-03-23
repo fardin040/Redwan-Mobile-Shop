@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Samsung Galaxy S25 Ultra — Redwan Mobile Shop</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --red: #E8132A; --red-dark: #b50f21; --red-glow: rgba(232,19,42,0.15);
+    --black: #0a0a0a; --dark: #111214; --card: #181a1e; --card2: #1e2026;
+    --border: rgba(255,255,255,0.07); --text: #f0f0f0; --muted: #888;
+    --white: #ffffff; --gold: #f5c842; --green: #22c55e;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Outfit', sans-serif; background: var(--black); color: var(--text); overflow-x: hidden; }
+  ::-webkit-scrollbar { width: 5px; } ::-webkit-scrollbar-track { background: var(--dark); } ::-webkit-scrollbar-thumb { background: var(--red); border-radius: 3px; }
+
+  /* NAV */
+  nav { position: sticky; top: 0; z-index: 100; background: rgba(10,10,10,0.96); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding: 0 48px; height: 64px; display: flex; align-items: center; justify-content: space-between; }
+  .nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 2px; color: var(--white); text-decoration: none; }
+  .nav-logo span { color: var(--red); }
+  .nav-links { display: flex; gap: 28px; list-style: none; }
+  .nav-links a { color: var(--muted); text-decoration: none; font-size: 14px; font-weight: 500; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--white); }
+  .nav-right { display: flex; gap: 12px; align-items: center; }
+  .icon-btn { background: var(--card); border: 1px solid var(--border); border-radius: 8px; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; color: var(--text); position: relative; }
+  .icon-btn:hover { border-color: var(--red); color: var(--red); }
+  .badge { position: absolute; top: -6px; right: -6px; background: var(--red); color: white; font-size: 10px; font-weight: 700; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+
+  /* BREADCRUMB */
+  .breadcrumb { padding: 18px 48px; display: flex; gap: 8px; align-items: center; font-size: 13px; color: var(--muted); border-bottom: 1px solid var(--border); background: var(--card); }
+  .breadcrumb a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+  .breadcrumb a:hover { color: var(--red); }
+  .breadcrumb .sep { color: rgba(255,255,255,0.2); }
+  .breadcrumb .current { color: var(--text); }
+
+  /* PRODUCT LAYOUT */
+  .product-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 0; min-height: calc(100vh - 130px); }
+
+  /* GALLERY */
+  .gallery-panel { padding: 48px; background: var(--dark); border-right: 1px solid var(--border); position: sticky; top: 64px; height: calc(100vh - 64px); display: flex; flex-direction: column; gap: 20px; overflow: hidden; }
+  .main-img { flex: 1; background: var(--card); border: 1px solid var(--border); border-radius: 20px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; cursor: zoom-in; }
+  .main-img::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 60% 40%, var(--red-glow), transparent 70%); pointer-events: none; }
+  .main-phone { font-size: 140px; filter: drop-shadow(0 20px 60px rgba(232,19,42,0.25)); transition: transform 0.4s; }
+  .main-img:hover .main-phone { transform: scale(1.05) rotate(-2deg); }
+  .color-label { position: absolute; bottom: 16px; left: 16px; background: rgba(0,0,0,0.7); border: 1px solid var(--border); border-radius: 8px; padding: 6px 12px; font-size: 12px; font-weight: 600; }
+  .zoom-hint { position: absolute; top: 16px; right: 16px; background: rgba(0,0,0,0.5); border: 1px solid var(--border); border-radius: 6px; padding: 4px 10px; font-size: 11px; color: var(--muted); }
+  .thumbs { display: flex; gap: 10px; }
+  .thumb { width: 72px; height: 72px; background: var(--card); border: 2px solid var(--border); border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 28px; transition: all 0.2s; flex-shrink: 0; }
+  .thumb:hover, .thumb.active { border-color: var(--red); background: rgba(232,19,42,0.08); }
+  .share-row { display: flex; gap: 10px; align-items: center; }
+  .share-label { font-size: 12px; color: var(--muted); }
+  .share-btn { width: 32px; height: 32px; border-radius: 8px; background: var(--card2); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 12px; transition: all 0.2s; }
+  .share-btn:hover { border-color: var(--red); }
+
+  /* PRODUCT INFO */
+  .info-panel { padding: 48px; overflow-y: auto; }
+  .product-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+  .tag { padding: 4px 12px; border-radius: 100px; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; }
+  .tag-official { background: rgba(29,140,248,0.15); color: #1d8cf8; border: 1px solid rgba(29,140,248,0.3); }
+  .tag-stock { background: rgba(34,197,94,0.15); color: var(--green); border: 1px solid rgba(34,197,94,0.3); }
+  .tag-warranty { background: rgba(232,19,42,0.1); color: var(--red); border: 1px solid rgba(232,19,42,0.25); }
+  .product-brand { font-size: 12px; color: var(--red); font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
+  .product-name { font-family: 'Bebas Neue', sans-serif; font-size: 48px; letter-spacing: 1.5px; line-height: 1; margin-bottom: 6px; }
+  .product-model { font-size: 14px; color: var(--muted); margin-bottom: 20px; }
+  .rating-row { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; padding-bottom: 28px; border-bottom: 1px solid var(--border); }
+  .stars { color: var(--gold); font-size: 16px; letter-spacing: 2px; }
+  .rating-num { font-weight: 700; font-size: 16px; }
+  .rating-count { font-size: 13px; color: var(--muted); }
+  .review-link { font-size: 13px; color: var(--red); text-decoration: none; margin-left: auto; }
+
+  /* PRICE */
+  .price-block { margin-bottom: 28px; }
+  .price-main { font-family: 'Bebas Neue', sans-serif; font-size: 52px; letter-spacing: 1px; color: var(--white); line-height: 1; }
+  .price-main span { color: var(--red); }
+  .price-old { font-size: 18px; color: var(--muted); text-decoration: line-through; margin-left: 12px; }
+  .price-save { font-size: 14px; color: var(--gold); font-weight: 700; margin-left: 8px; }
+  .emi-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.25); border-radius: 8px; padding: 8px 14px; font-size: 13px; color: var(--green); margin-top: 10px; font-weight: 600; }
+
+  /* VARIANTS */
+  .variant-section { margin-bottom: 24px; }
+  .variant-label { font-size: 13px; color: var(--muted); font-weight: 600; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .variant-label span { color: var(--text); font-weight: 700; }
+  .color-options { display: flex; gap: 10px; flex-wrap: wrap; }
+  .color-opt { width: 36px; height: 36px; border-radius: 50%; cursor: pointer; border: 3px solid transparent; transition: all 0.2s; position: relative; }
+  .color-opt.active, .color-opt:hover { border-color: var(--red); transform: scale(1.15); }
+  .color-opt .color-tooltip { position: absolute; bottom: -24px; left: 50%; transform: translateX(-50%); font-size: 10px; color: var(--muted); white-space: nowrap; opacity: 0; transition: opacity 0.2s; }
+  .color-opt:hover .color-tooltip { opacity: 1; }
+  .storage-options { display: flex; gap: 10px; flex-wrap: wrap; }
+  .storage-opt { padding: 8px 18px; background: var(--card2); border: 1px solid var(--border); border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+  .storage-opt:hover, .storage-opt.active { border-color: var(--red); color: var(--red); background: rgba(232,19,42,0.08); }
+
+  /* BUY ACTIONS */
+  .buy-actions { display: flex; gap: 12px; margin: 28px 0; flex-wrap: wrap; }
+  .btn-buy { flex: 1; background: var(--red); color: white; border: none; border-radius: 12px; padding: 16px 24px; font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 15px; cursor: pointer; transition: all 0.25s; display: flex; align-items: center; justify-content: center; gap: 8px; min-width: 160px; }
+  .btn-buy:hover { background: var(--red-dark); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(232,19,42,0.35); }
+  .btn-cart-add { flex: 1; background: transparent; color: var(--text); border: 1px solid var(--border); border-radius: 12px; padding: 16px 24px; font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 15px; cursor: pointer; transition: all 0.25s; display: flex; align-items: center; justify-content: center; gap: 8px; min-width: 160px; }
+  .btn-cart-add:hover { border-color: var(--red); color: var(--red); transform: translateY(-2px); }
+  .btn-wish { width: 52px; height: 52px; background: var(--card2); border: 1px solid var(--border); border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 20px; transition: all 0.2s; flex-shrink: 0; }
+  .btn-wish:hover { border-color: var(--red); }
+
+  /* DELIVERY */
+  .delivery-box { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 20px; margin-bottom: 28px; }
+  .delivery-row { display: flex; align-items: flex-start; gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+  .delivery-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .delivery-icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+  .delivery-title { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+  .delivery-desc { font-size: 12px; color: var(--muted); }
+
+  /* SPECS TABS */
+  .tabs { border-bottom: 1px solid var(--border); display: flex; gap: 0; margin-bottom: 28px; }
+  .tab-btn { padding: 14px 24px; font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 600; background: none; border: none; color: var(--muted); cursor: pointer; transition: all 0.2s; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.active { color: var(--red); border-bottom-color: var(--red); }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
+
+  /* SPECS TABLE */
+  .specs-group { margin-bottom: 28px; }
+  .specs-group-title { font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 1px; color: var(--red); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .specs-table { width: 100%; border-collapse: collapse; }
+  .specs-table tr { border-bottom: 1px solid var(--border); }
+  .specs-table tr:last-child { border-bottom: none; }
+  .specs-table td { padding: 12px 0; font-size: 14px; }
+  .specs-table td:first-child { color: var(--muted); width: 40%; padding-right: 16px; }
+  .specs-table td:last-child { color: var(--text); font-weight: 500; }
+  .spec-highlight { color: var(--red) !important; font-weight: 700 !important; }
+
+  /* REVIEWS TAB */
+  .review-summary { display: grid; grid-template-columns: auto 1fr; gap: 32px; align-items: center; margin-bottom: 32px; padding: 28px; background: var(--card); border: 1px solid var(--border); border-radius: 16px; }
+  .big-rating { text-align: center; }
+  .big-num { font-family: 'Bebas Neue', sans-serif; font-size: 72px; color: var(--white); line-height: 1; }
+  .big-stars { color: var(--gold); font-size: 20px; margin-bottom: 4px; }
+  .big-count { font-size: 13px; color: var(--muted); }
+  .rating-bars { display: flex; flex-direction: column; gap: 8px; }
+  .bar-row { display: flex; align-items: center; gap: 10px; }
+  .bar-label { font-size: 12px; color: var(--muted); width: 30px; text-align: right; }
+  .bar-track { flex: 1; height: 6px; background: var(--card2); border-radius: 3px; overflow: hidden; }
+  .bar-fill { height: 100%; background: var(--gold); border-radius: 3px; transition: width 1s ease; }
+  .bar-count { font-size: 12px; color: var(--muted); width: 24px; }
+  .review-item { padding: 24px; background: var(--card); border: 1px solid var(--border); border-radius: 14px; margin-bottom: 14px; }
+  .review-header { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .reviewer-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--red); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 15px; flex-shrink: 0; }
+  .reviewer-info .name { font-weight: 700; font-size: 14px; }
+  .reviewer-info .date { font-size: 12px; color: var(--muted); }
+  .review-stars { color: var(--gold); font-size: 13px; margin-left: auto; }
+  .verified { background: rgba(34,197,94,0.1); color: var(--green); border: 1px solid rgba(34,197,94,0.2); border-radius: 4px; padding: 2px 8px; font-size: 10px; font-weight: 700; }
+  .review-body { font-size: 14px; color: var(--muted); line-height: 1.7; }
+
+  /* RELATED */
+  .related-section { padding: 60px 48px; background: var(--card); border-top: 1px solid var(--border); }
+  .related-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+  .rel-card { background: var(--card2); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; cursor: pointer; transition: all 0.25s; }
+  .rel-card:hover { border-color: rgba(232,19,42,0.4); transform: translateY(-3px); }
+  .rel-img { height: 140px; display: flex; align-items: center; justify-content: center; font-size: 56px; background: var(--dark); }
+  .rel-body { padding: 14px; }
+  .rel-brand { font-size: 10px; color: var(--red); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+  .rel-name { font-size: 13px; font-weight: 600; margin: 3px 0 8px; }
+  .rel-price { font-family: 'Bebas Neue', sans-serif; font-size: 20px; }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+  .main-phone { animation: float 4s ease-in-out infinite; }
+  @media (max-width: 960px) {
+    .product-layout { grid-template-columns: 1fr; }
+    .gallery-panel { position: static; height: auto; }
+    nav { padding: 0 20px; } .nav-links { display: none; }
+    .breadcrumb { padding: 14px 20px; }
+    .info-panel { padding: 24px 20px; }
+    .gallery-panel { padding: 24px 20px; }
+    .related-section { padding: 40px 20px; }
+    .product-name { font-size: 36px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="redwan-mobile-shop.html" class="nav-logo">REDWAN<span>.</span>MOBILE</a>
+  <ul class="nav-links">
+    <li><a href="redwan-mobile-shop.html">Home</a></li>
+    <li><a href="#">Phones</a></li>
+    <li><a href="#">Accessories</a></li>
+    <li><a href="#">Brands</a></li>
+    <li><a href="#">Compare</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="icon-btn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    </button>
+    <button class="icon-btn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+    </button>
+    <button class="icon-btn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+      <span class="badge">3</span>
+    </button>
+  </div>
+</nav>
+
+<div class="breadcrumb">
+  <a href="redwan-mobile-shop.html">Home</a><span class="sep">›</span>
+  <a href="#">Smartphones</a><span class="sep">›</span>
+  <a href="#">Samsung</a><span class="sep">›</span>
+  <span class="current">Galaxy S25 Ultra</span>
+</div>
+
+<div class="product-layout">
+  <!-- GALLERY -->
+  <div class="gallery-panel">
+    <div class="main-img" id="mainImg">
+      <div class="main-phone" id="mainEmoji">📱</div>
+      <div class="color-label" id="colorLabel">Titanium Black</div>
+      <div class="zoom-hint">🔍 Hover to zoom</div>
+    </div>
+    <div class="thumbs">
+      <div class="thumb active" onclick="setThumb(this,'📱','Front View')">📱</div>
+      <div class="thumb" onclick="setThumb(this,'🔲','Back View')">🔲</div>
+      <div class="thumb" onclick="setThumb(this,'📷','Camera')">📷</div>
+      <div class="thumb" onclick="setThumb(this,'✏️','S Pen')">✏️</div>
+      <div class="thumb" onclick="setThumb(this,'🖥️','Display')">🖥️</div>
+    </div>
+    <div class="share-row">
+      <span class="share-label">Share:</span>
+      <div class="share-btn">f</div>
+      <div class="share-btn">wa</div>
+      <div class="share-btn">📋</div>
+    </div>
+  </div>
+
+  <!-- INFO -->
+  <div class="info-panel">
+    <div class="product-tags">
+      <span class="tag tag-official">✓ Official</span>
+      <span class="tag tag-stock">● In Stock</span>
+      <span class="tag tag-warranty">1 Year Warranty</span>
+    </div>
+    <div class="product-brand">Samsung</div>
+    <div class="product-name">Galaxy S25 Ultra</div>
+    <div class="product-model">Model: SM-S9380 | 5G | Android 15</div>
+
+    <div class="rating-row">
+      <span class="stars">★★★★★</span>
+      <span class="rating-num">4.9</span>
+      <span class="rating-count">(247 reviews)</span>
+      <a href="#reviews" class="review-link" onclick="showTab('reviews')">Read Reviews →</a>
+    </div>
+
+    <div class="price-block">
+      <div style="display:flex;align-items:baseline;flex-wrap:wrap;gap:4px;">
+        <span class="price-main">৳<span>1,19,999</span></span>
+        <span class="price-old">৳1,39,999</span>
+        <span class="price-save">Save ৳20,000</span>
+      </div>
+      <div class="emi-badge">💳 EMI from ৳9,999/month · 0% interest · 12 months</div>
+    </div>
+
+    <!-- COLOR -->
+    <div class="variant-section">
+      <div class="variant-label">Color: <span id="selectedColor">Titanium Black</span></div>
+      <div class="color-options">
+        <div class="color-opt active" style="background:#1a1a1a;" onclick="selectColor(this,'Titanium Black')"><span class="color-tooltip">Titanium Black</span></div>
+        <div class="color-opt" style="background:#e8e0d8;" onclick="selectColor(this,'Titanium White Silver')"><span class="color-tooltip">White Silver</span></div>
+        <div class="color-opt" style="background:#7a6a8a;" onclick="selectColor(this,'Titanium Violet')"><span class="color-tooltip">Titanium Violet</span></div>
+        <div class="color-opt" style="background:#e8c860;" onclick="selectColor(this,'Titanium Yellow')"><span class="color-tooltip">Titanium Yellow</span></div>
+        <div class="color-opt" style="background:#c0a882;" onclick="selectColor(this,'Titanium Jade')"><span class="color-tooltip">Titanium Jade</span></div>
+      </div>
+    </div>
+
+    <!-- STORAGE -->
+    <div class="variant-section">
+      <div class="variant-label">Storage: <span id="selectedStorage">256GB</span></div>
+      <div class="storage-options">
+        <div class="storage-opt active" onclick="selectStorage(this,'256GB','1,19,999')">256GB</div>
+        <div class="storage-opt" onclick="selectStorage(this,'512GB','1,34,999')">512GB</div>
+        <div class="storage-opt" onclick="selectStorage(this,'1TB','1,59,999')">1TB</div>
+      </div>
+    </div>
+
+    <!-- BUY -->
+    <div class="buy-actions">
+      <button class="btn-buy" onclick="buyNow()">⚡ Buy Now</button>
+      <button class="btn-cart-add" onclick="addCart()">🛒 Add to Cart</button>
+      <button class="btn-wish" onclick="toggleWish(this)">♡</button>
+    </div>
+
+    <!-- DELIVERY -->
+    <div class="delivery-box">
+      <div class="delivery-row">
+        <div class="delivery-icon">🚚</div>
+        <div><div class="delivery-title">Free Home Delivery</div><div class="delivery-desc">Same-day delivery in Dhaka · 1–3 days nationwide via Pathao / Steadfast</div></div>
+      </div>
+      <div class="delivery-row">
+        <div class="delivery-icon">🔄</div>
+        <div><div class="delivery-title">7-Day Easy Return</div><div class="delivery-desc">Return within 7 days if not satisfied. Full refund guaranteed.</div></div>
+      </div>
+      <div class="delivery-row">
+        <div class="delivery-icon">🛡️</div>
+        <div><div class="delivery-title">1 Year Official Warranty</div><div class="delivery-desc">Samsung Bangladesh authorized warranty. Claim at any service centre.</div></div>
+      </div>
+      <div class="delivery-row">
+        <div class="delivery-icon">💳</div>
+        <div><div class="delivery-title">Secure Payment</div><div class="delivery-desc">bKash · Nagad · VISA · Mastercard · Cash on Delivery</div></div>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="showTab('specs')">Full Specs</button>
+      <button class="tab-btn" onclick="showTab('features')">Key Features</button>
+      <button class="tab-btn" onclick="showTab('reviews')" id="reviews-tab">Reviews (247)</button>
+      <button class="tab-btn" onclick="showTab('compare')">Compare</button>
+    </div>
+
+    <!-- SPECS TAB -->
+    <div class="tab-content active" id="tab-specs">
+      <div class="specs-group">
+        <div class="specs-group-title">📱 Display</div>
+        <table class="specs-table">
+          <tr><td>Screen Size</td><td class="spec-highlight">6.9 inch</td></tr>
+          <tr><td>Resolution</td><td>3088 × 1440 (QHD+)</td></tr>
+          <tr><td>Display Type</td><td>Dynamic AMOLED 2X</td></tr>
+          <tr><td>Refresh Rate</td><td class="spec-highlight">1–120 Hz Adaptive</td></tr>
+          <tr><td>Brightness</td><td>2600 nits peak</td></tr>
+          <tr><td>Protection</td><td>Gorilla Glass Armor 2</td></tr>
+        </table>
+      </div>
+      <div class="specs-group">
+        <div class="specs-group-title">⚡ Performance</div>
+        <table class="specs-table">
+          <tr><td>Processor</td><td class="spec-highlight">Snapdragon 8 Elite</td></tr>
+          <tr><td>RAM</td><td class="spec-highlight">12 GB LPDDR5X</td></tr>
+          <tr><td>Storage</td><td>256GB / 512GB / 1TB UFS 4.0</td></tr>
+          <tr><td>OS</td><td>Android 15, One UI 7</td></tr>
+          <tr><td>AI Features</td><td>Galaxy AI (Circle to Search, Live Translate)</td></tr>
+        </table>
+      </div>
+      <div class="specs-group">
+        <div class="specs-group-title">📷 Camera</div>
+        <table class="specs-table">
+          <tr><td>Main Camera</td><td class="spec-highlight">200MP f/1.7 (wide)</td></tr>
+          <tr><td>Ultra Wide</td><td>50MP f/1.9</td></tr>
+          <tr><td>Telephoto 1</td><td>10MP f/2.4 (3× optical)</td></tr>
+          <tr><td>Telephoto 2</td><td>50MP f/3.4 (5× optical)</td></tr>
+          <tr><td>Front Camera</td><td>12MP f/2.2</td></tr>
+          <tr><td>Video</td><td>8K@30fps · 4K@120fps</td></tr>
+          <tr><td>Zoom</td><td class="spec-highlight">Up to 100× Space Zoom</td></tr>
+        </table>
+      </div>
+      <div class="specs-group">
+        <div class="specs-group-title">🔋 Battery & Charging</div>
+        <table class="specs-table">
+          <tr><td>Battery</td><td class="spec-highlight">5000 mAh</td></tr>
+          <tr><td>Wired Charging</td><td>45W Super Fast Charging</td></tr>
+          <tr><td>Wireless</td><td>15W Wireless · 4.5W Reverse</td></tr>
+          <tr><td>Charger Included</td><td>No (USB-C cable only)</td></tr>
+        </table>
+      </div>
+      <div class="specs-group">
+        <div class="specs-group-title">📡 Connectivity</div>
+        <table class="specs-table">
+          <tr><td>Network</td><td class="spec-highlight">5G SA/NSA, 4G LTE</td></tr>
+          <tr><td>Wi-Fi</td><td>Wi-Fi 7 (802.11be)</td></tr>
+          <tr><td>Bluetooth</td><td>5.4</td></tr>
+          <tr><td>NFC</td><td>Yes</td></tr>
+          <tr><td>USB</td><td>USB 3.2 Type-C</td></tr>
+          <tr><td>SIM</td><td>Dual SIM (Nano + eSIM)</td></tr>
+        </table>
+      </div>
+      <div class="specs-group">
+        <div class="specs-group-title">📐 Build & Design</div>
+        <table class="specs-table">
+          <tr><td>Dimensions</td><td>162.8 × 79.0 × 8.2 mm</td></tr>
+          <tr><td>Weight</td><td>218g</td></tr>
+          <tr><td>Build</td><td>Titanium frame · Gorilla Glass back</td></tr>
+          <tr><td>Water Resistance</td><td class="spec-highlight">IP68 (2m / 30 min)</td></tr>
+          <tr><td>S Pen</td><td>Yes (built-in)</td></tr>
+          <tr><td>Colors</td><td>Titanium Black, White Silver, Violet, Yellow, Jade</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- FEATURES TAB -->
+    <div class="tab-content" id="tab-features">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;">
+          <div style="font-size:28px;margin-bottom:10px;">🤖</div>
+          <div style="font-weight:700;font-size:14px;margin-bottom:6px;">Galaxy AI</div>
+          <div style="font-size:13px;color:var(--muted);line-height:1.6;">Circle to Search, Live Translate, Note Assist, Chat Assist — all powered by on-device AI.</div>
+        </div>
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;">
+          <div style="font-size:28px;margin-bottom:10px;">✏️</div>
+          <div style="font-weight:700;font-size:14px;margin-bottom:6px;">Built-in S Pen</div>
+          <div style="font-size:13px;color:var(--muted);line-height:1.6;">Low-latency writing, sketching, and note-taking. Fits perfectly inside the phone.</div>
+        </div>
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;">
+          <div style="font-size:28px;margin-bottom:10px;">🔭</div>
+          <div style="font-weight:700;font-size:14px;margin-bottom:6px;">100× Space Zoom</div>
+          <div style="font-size:13px;color:var(--muted);line-height:1.6;">5× optical zoom + AI-enhanced 100× zoom for incredible long-range photography.</div>
+        </div>
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;">
+          <div style="font-size:28px;margin-bottom:10px;">💧</div>
+          <div style="font-weight:700;font-size:14px;margin-bottom:6px;">IP68 Water Resistant</div>
+          <div style="font-size:13px;color:var(--muted);line-height:1.6;">Submerge up to 2 metres for 30 minutes. Rain, splashes, and pool-proof.</div>
+        </div>
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;">
+          <div style="font-size:28px;margin-bottom:10px;">⚡</div>
+          <div style="font-weight:700;font-size:14px;margin-bottom:6px;">Snapdragon 8 Elite</div>
+          <div style="font-size:13px;color:var(--muted);line-height:1.6;">World's fastest mobile chip. Handles 8K video, gaming, and multitasking flawlessly.</div>
+        </div>
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;">
+          <div style="font-size:28px;margin-bottom:10px;">🎥</div>
+          <div style="font-weight:700;font-size:14px;margin-bottom:6px;">8K Video Pro</div>
+          <div style="font-size:13px;color:var(--muted);line-height:1.6;">Shoot 8K@30fps or cinematic 4K@120fps with advanced ProVideo controls.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- REVIEWS TAB -->
+    <div class="tab-content" id="tab-reviews" id="reviews">
+      <div class="review-summary">
+        <div class="big-rating">
+          <div class="big-num">4.9</div>
+          <div class="big-stars">★★★★★</div>
+          <div class="big-count">247 reviews</div>
+        </div>
+        <div class="rating-bars">
+          <div class="bar-row"><span class="bar-label">5★</span><div class="bar-track"><div class="bar-fill" style="width:88%"></div></div><span class="bar-count">218</span></div>
+          <div class="bar-row"><span class="bar-label">4★</span><div class="bar-track"><div class="bar-fill" style="width:9%"></div></div><span class="bar-count">22</span></div>
+          <div class="bar-row"><span class="bar-label">3★</span><div class="bar-track"><div class="bar-fill" style="width:2%"></div></div><span class="bar-count">5</span></div>
+          <div class="bar-row"><span class="bar-label">2★</span><div class="bar-track"><div class="bar-fill" style="width:1%"></div></div><span class="bar-count">2</span></div>
+          <div class="bar-row"><span class="bar-label">1★</span><div class="bar-track"><div class="bar-fill" style="width:0%"></div></div><span class="bar-count">0</span></div>
+        </div>
+      </div>
+      <div class="review-item">
+        <div class="review-header">
+          <div class="reviewer-avatar">R</div>
+          <div class="reviewer-info"><div class="name">Rafiqul Islam</div><div class="date">March 15, 2025</div></div>
+          <span class="verified">✓ Verified</span>
+          <div class="review-stars">★★★★★</div>
+        </div>
+        <div class="review-body">Absolutely phenomenal phone! The 200MP camera is insane — I can zoom into things I couldn't even see with my eyes. S Pen works perfectly and the Galaxy AI features are genuinely useful for my work. Got delivered in 24 hours from Redwan Mobile. 100% recommend!</div>
+      </div>
+      <div class="review-item">
+        <div class="review-header">
+          <div class="reviewer-avatar" style="background:#1d8cf8;">S</div>
+          <div class="reviewer-info"><div class="name">Sumaiya Akter</div><div class="date">February 28, 2025</div></div>
+          <span class="verified">✓ Verified</span>
+          <div class="review-stars">★★★★★</div>
+        </div>
+        <div class="review-body">Best phone I've ever owned. Coming from an iPhone 14, this S25 Ultra blows it away in every category. The display is stunning, the battery easily lasts a full day with heavy use, and the Titanium build feels incredibly premium.</div>
+      </div>
+      <div class="review-item">
+        <div class="review-header">
+          <div class="reviewer-avatar" style="background:#f59e0b;">M</div>
+          <div class="reviewer-info"><div class="name">Md. Karim Uddin</div><div class="date">February 10, 2025</div></div>
+          <span class="verified">✓ Verified</span>
+          <div class="review-stars">★★★★☆</div>
+        </div>
+        <div class="review-body">Excellent phone overall. Camera is outstanding especially in low light. Only minor issue is no charger in the box — had to buy separately. But price from Redwan was the best I found anywhere in Bangladesh.</div>
+      </div>
+    </div>
+
+    <!-- COMPARE TAB -->
+    <div class="tab-content" id="tab-compare">
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;font-size:13px;min-width:500px;">
+          <thead>
+            <tr style="border-bottom:2px solid var(--border);">
+              <th style="text-align:left;padding:12px;color:var(--muted);font-weight:600;">Specification</th>
+              <th style="padding:12px;color:var(--red);font-weight:700;">S25 Ultra</th>
+              <th style="padding:12px;color:var(--muted);font-weight:600;">iPhone 16 Pro Max</th>
+              <th style="padding:12px;color:var(--muted);font-weight:600;">OnePlus 13</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom:1px solid var(--border);"><td style="padding:12px;color:var(--muted);">Price</td><td style="padding:12px;text-align:center;color:var(--red);font-weight:700;">৳1,19,999</td><td style="padding:12px;text-align:center;color:var(--muted);">৳1,74,999</td><td style="padding:12px;text-align:center;color:var(--muted);">৳74,999</td></tr>
+            <tr style="border-bottom:1px solid var(--border);"><td style="padding:12px;color:var(--muted);">Display</td><td style="padding:12px;text-align:center;">6.9" QHD+ 120Hz</td><td style="padding:12px;text-align:center;color:var(--muted);">6.9" OLED 120Hz</td><td style="padding:12px;text-align:center;color:var(--muted);">6.82" AMOLED 120Hz</td></tr>
+            <tr style="border-bottom:1px solid var(--border);"><td style="padding:12px;color:var(--muted);">Processor</td><td style="padding:12px;text-align:center;">Snapdragon 8 Elite</td><td style="padding:12px;text-align:center;color:var(--muted);">Apple A18 Pro</td><td style="padding:12px;text-align:center;color:var(--muted);">Snapdragon 8 Gen 3</td></tr>
+            <tr style="border-bottom:1px solid var(--border);"><td style="padding:12px;color:var(--muted);">Main Camera</td><td style="padding:12px;text-align:center;color:var(--green);font-weight:700;">200MP</td><td style="padding:12px;text-align:center;color:var(--muted);">48MP</td><td style="padding:12px;text-align:center;color:var(--muted);">50MP</td></tr>
+            <tr style="border-bottom:1px solid var(--border);"><td style="padding:12px;color:var(--muted);">RAM</td><td style="padding:12px;text-align:center;">12GB</td><td style="padding:12px;text-align:center;color:var(--muted);">8GB</td><td style="padding:12px;text-align:center;color:var(--green);font-weight:700;">16GB</td></tr>
+            <tr style="border-bottom:1px solid var(--border);"><td style="padding:12px;color:var(--muted);">Battery</td><td style="padding:12px;text-align:center;">5000mAh 45W</td><td style="padding:12px;text-align:center;color:var(--muted);">4685mAh 20W</td><td style="padding:12px;text-align:center;color:var(--green);font-weight:700;">6000mAh 100W</td></tr>
+            <tr style="border-bottom:1px solid var(--border);"><td style="padding:12px;color:var(--muted);">S Pen</td><td style="padding:12px;text-align:center;color:var(--green);">✓ Yes</td><td style="padding:12px;text-align:center;color:var(--muted);">✗ No</td><td style="padding:12px;text-align:center;color:var(--muted);">✗ No</td></tr>
+            <tr><td style="padding:12px;color:var(--muted);">Water Resist.</td><td style="padding:12px;text-align:center;">IP68</td><td style="padding:12px;text-align:center;color:var(--muted);">IP68</td><td style="padding:12px;text-align:center;color:var(--muted);">IP65</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <button style="margin-top:20px;background:var(--red);color:white;border:none;border-radius:10px;padding:12px 28px;font-family:'Outfit',sans-serif;font-weight:700;font-size:14px;cursor:pointer;transition:background 0.2s;" onmouseover="this.style.background='var(--red-dark)'" onmouseout="this.style.background='var(--red)'">Full Compare Tool →</button>
+    </div>
+  </div>
+</div>
+
+<!-- RELATED PRODUCTS -->
+<div class="related-section">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;">
+    <div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:1px;">RELATED <span style="color:var(--red);">PRODUCTS</span></div>
+      <div style="font-size:13px;color:var(--muted);margin-top:4px;">You might also like</div>
+    </div>
+    <a href="#" style="color:var(--red);font-weight:600;font-size:13px;text-decoration:none;">View All →</a>
+  </div>
+  <div class="related-grid">
+    <div class="rel-card"><div class="rel-img">📱</div><div class="rel-body"><div class="rel-brand">Samsung</div><div class="rel-name">Galaxy S25+</div><div class="rel-price">৳84,999</div></div></div>
+    <div class="rel-card"><div class="rel-img">📱</div><div class="rel-body"><div class="rel-brand">Samsung</div><div class="rel-name">Galaxy Z Fold 6</div><div class="rel-price">৳1,89,999</div></div></div>
+    <div class="rel-card"><div class="rel-img">📱</div><div class="rel-body"><div class="rel-brand">Apple</div><div class="rel-name">iPhone 16 Pro Max</div><div class="rel-price">৳1,74,999</div></div></div>
+    <div class="rel-card"><div class="rel-img">📱</div><div class="rel-body"><div class="rel-brand">OnePlus</div><div class="rel-name">OnePlus 13</div><div class="rel-price">৳74,999</div></div></div>
+    <div class="rel-card"><div class="rel-img">🎧</div><div class="rel-body"><div class="rel-brand">Samsung</div><div class="rel-name">Galaxy Buds3 Pro</div><div class="rel-price">৳14,999</div></div></div>
+  </div>
+</div>
+
+<script>
+function setThumb(el, emoji, label) {
+  document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('mainEmoji').textContent = emoji;
+  document.getElementById('colorLabel').textContent = label;
+}
+function selectColor(el, name) {
+  document.querySelectorAll('.color-opt').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('selectedColor').textContent = name;
+  document.getElementById('colorLabel').textContent = name;
+}
+function selectStorage(el, size, price) {
+  document.querySelectorAll('.storage-opt').forEach(s => s.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('selectedStorage').textContent = size;
+  document.querySelector('.price-main').innerHTML = '৳<span>' + price + '</span>';
+}
+function showTab(id) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  event.target.classList.add('active');
+}
+function buyNow() {
+  window.location.href = 'checkout.html';
+}
+function addCart() {
+  const btn = event.target;
+  btn.innerHTML = '✓ Added to Cart!';
+  btn.style.borderColor = 'var(--green)';
+  btn.style.color = 'var(--green)';
+  setTimeout(() => { btn.innerHTML = '🛒 Add to Cart'; btn.style.borderColor = ''; btn.style.color = ''; }, 2000);
+}
+function toggleWish(btn) {
+  btn.textContent = btn.textContent === '♡' ? '❤️' : '♡';
+  btn.style.color = btn.textContent === '❤️' ? 'var(--red)' : '';
+  btn.style.borderColor = btn.textContent === '❤️' ? 'var(--red)' : '';
+}
+// Scroll reveal
+const obs = new IntersectionObserver(e => e.forEach(x => { if(x.isIntersecting){ x.target.style.opacity='1'; x.target.style.transform='translateY(0)'; }}), {threshold:0.1});
+document.querySelectorAll('.rel-card,.review-item').forEach(el => { el.style.opacity='0'; el.style.transform='translateY(16px)'; el.style.transition='opacity 0.5s ease, transform 0.5s ease, border-color 0.3s'; obs.observe(el); });
+</script>
+</body>
+</html>

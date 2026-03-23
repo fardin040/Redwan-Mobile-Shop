@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Login / Register — Redwan Mobile Shop</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{--red:#E8132A;--red-dark:#b50f21;--black:#0a0a0a;--dark:#111214;--card:#181a1e;--card2:#1e2026;--border:rgba(255,255,255,0.07);--text:#f0f0f0;--muted:#888;--white:#fff;--green:#22c55e;--gold:#f5c842;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Outfit',sans-serif;background:var(--black);color:var(--text);min-height:100vh;display:flex;flex-direction:column;}
+::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:var(--dark);}::-webkit-scrollbar-thumb{background:var(--red);border-radius:3px;}
+nav{background:rgba(10,10,10,0.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 48px;height:64px;display:flex;align-items:center;justify-content:space-between;}
+.nav-logo{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;color:var(--white);text-decoration:none;}
+.nav-logo span{color:var(--red);}
+.back-link{font-size:13px;color:var(--muted);text-decoration:none;display:flex;align-items:center;gap:6px;transition:color 0.2s;}
+.back-link:hover{color:var(--red);}
+
+/* MAIN */
+.auth-wrapper{flex:1;display:flex;align-items:center;justify-content:center;padding:60px 20px;position:relative;overflow:hidden;}
+.auth-wrapper::before{content:'';position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:700px;height:700px;background:radial-gradient(circle,rgba(232,19,42,0.06) 0%,transparent 70%);pointer-events:none;}
+.auth-box{width:100%;max-width:480px;position:relative;}
+.auth-header{text-align:center;margin-bottom:36px;}
+.auth-header h1{font-family:'Bebas Neue',sans-serif;font-size:40px;letter-spacing:2px;margin-bottom:6px;}
+.auth-header h1 span{color:var(--red);}
+.auth-header p{font-size:14px;color:var(--muted);}
+
+/* TABS */
+.auth-tabs{display:flex;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:4px;margin-bottom:28px;}
+.auth-tab{flex:1;padding:10px;text-align:center;border-radius:9px;cursor:pointer;font-size:14px;font-weight:600;color:var(--muted);transition:all 0.2s;}
+.auth-tab.active{background:var(--red);color:white;}
+
+/* FORM */
+.auth-form{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:36px;}
+.form-panel{display:none;}
+.form-panel.active{display:block;animation:fadeUp 0.3s ease;}
+.form-group{margin-bottom:18px;}
+.form-label{display:block;font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;}
+.form-input{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:13px 16px;font-family:'Outfit',sans-serif;font-size:14px;color:var(--text);outline:none;transition:border-color 0.2s;}
+.form-input:focus{border-color:var(--red);}
+.form-input::placeholder{color:var(--muted);}
+.input-icon-wrap{position:relative;}
+.input-icon-wrap .form-input{padding-right:44px;}
+.input-icon-wrap .eye-btn{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;padding:0;}
+.input-icon-wrap .eye-btn:hover{color:var(--text);}
+.form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.form-check{display:flex;align-items:flex-start;gap:10px;margin-bottom:20px;}
+.form-check input[type=checkbox]{width:16px;height:16px;accent-color:var(--red);margin-top:2px;cursor:pointer;}
+.form-check label{font-size:13px;color:var(--muted);cursor:pointer;line-height:1.5;}
+.form-check label a{color:var(--red);text-decoration:none;}
+.forgot-link{float:right;font-size:12px;color:var(--red);text-decoration:none;margin-top:-12px;margin-bottom:18px;display:block;}
+.forgot-link:hover{text-decoration:underline;}
+.btn-submit{width:100%;background:var(--red);color:white;border:none;border-radius:12px;padding:15px;font-family:'Outfit',sans-serif;font-weight:700;font-size:15px;cursor:pointer;transition:all 0.25s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.btn-submit:hover{background:var(--red-dark);transform:translateY(-2px);box-shadow:0 8px 24px rgba(232,19,42,0.3);}
+
+/* DIVIDER */
+.divider{display:flex;align-items:center;gap:14px;margin:22px 0;}
+.divider-line{flex:1;height:1px;background:var(--border);}
+.divider-text{font-size:12px;color:var(--muted);}
+
+/* SOCIAL */
+.social-logins{display:flex;gap:10px;}
+.social-btn{flex:1;background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:12px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;color:var(--text);cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.social-btn:hover{border-color:var(--red);}
+
+/* OTP SECTION */
+.otp-section{display:none;}
+.otp-section.show{display:block;animation:fadeUp 0.3s ease;}
+.otp-inputs{display:flex;gap:10px;justify-content:center;margin:20px 0;}
+.otp-input{width:52px;height:56px;background:var(--card2);border:2px solid var(--border);border-radius:12px;text-align:center;font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--text);outline:none;transition:border-color 0.2s;}
+.otp-input:focus{border-color:var(--red);}
+
+/* PROFILE (logged-in view) */
+.profile-view{display:none;}
+.profile-view.show{display:block;animation:fadeUp 0.4s ease;}
+.profile-header{display:flex;align-items:center;gap:20px;padding:28px;background:var(--card);border:1px solid var(--border);border-radius:20px;margin-bottom:20px;}
+.profile-avatar{width:72px;height:72px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:32px;color:white;flex-shrink:0;cursor:pointer;position:relative;}
+.profile-avatar .edit-overlay{position:absolute;inset:0;border-radius:50%;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.2s;font-size:18px;}
+.profile-avatar:hover .edit-overlay{opacity:1;}
+.profile-name{font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:1px;}
+.profile-email{font-size:13px;color:var(--muted);}
+.profile-badge{background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.25);color:var(--green);border-radius:6px;padding:3px 10px;font-size:11px;font-weight:700;margin-top:6px;display:inline-block;}
+.profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;}
+.profile-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:14px;}
+.profile-card:hover{border-color:rgba(232,19,42,0.4);transform:translateY(-2px);}
+.profile-card-icon{font-size:28px;}
+.profile-card-title{font-weight:700;font-size:14px;margin-bottom:2px;}
+.profile-card-sub{font-size:12px;color:var(--muted);}
+
+/* STRENGTH METER */
+.strength-meter{margin-top:6px;}
+.strength-bars{display:flex;gap:4px;margin-bottom:4px;}
+.strength-bar{flex:1;height:4px;border-radius:2px;background:var(--card2);transition:background 0.3s;}
+.strength-label{font-size:11px;color:var(--muted);}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+@media(max-width:600px){.form-row-2{grid-template-columns:1fr;}.auth-form{padding:24px 20px;}.profile-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="redwan-mobile-shop.html" class="nav-logo">REDWAN<span>.</span>MOBILE</a>
+  <a href="redwan-mobile-shop.html" class="back-link">← Back to Shop</a>
+</nav>
+
+<div class="auth-wrapper">
+  <div class="auth-box">
+
+    <!-- LOGIN / REGISTER PANEL -->
+    <div id="authPanel">
+      <div class="auth-header">
+        <h1>MY <span>ACCOUNT</span></h1>
+        <p>Sign in to track orders, save wishlist &amp; get exclusive deals</p>
+      </div>
+      <div class="auth-tabs">
+        <div class="auth-tab active" onclick="switchTab('login')">Sign In</div>
+        <div class="auth-tab" onclick="switchTab('register')">Create Account</div>
+      </div>
+      <div class="auth-form">
+
+        <!-- LOGIN -->
+        <div class="form-panel active" id="loginPanel">
+          <div class="form-group">
+            <label class="form-label">Phone or Email</label>
+            <input class="form-input" type="text" placeholder="+880 1700-000000 or email@example.com"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <div class="input-icon-wrap">
+              <input class="form-input" type="password" id="loginPass" placeholder="Enter your password"/>
+              <button class="eye-btn" onclick="togglePass('loginPass',this)">👁️</button>
+            </div>
+          </div>
+          <a href="#" class="forgot-link" onclick="showOTP(event)">Forgot password? →</a>
+          <div class="form-check">
+            <input type="checkbox" id="remember"/>
+            <label for="remember">Remember me on this device</label>
+          </div>
+          <button class="btn-submit" onclick="doLogin()">🔐 Sign In to My Account</button>
+          <div class="divider"><div class="divider-line"></div><div class="divider-text">or continue with</div><div class="divider-line"></div></div>
+          <div class="social-logins">
+            <button class="social-btn">G Google</button>
+            <button class="social-btn">f Facebook</button>
+          </div>
+        </div>
+
+        <!-- REGISTER -->
+        <div class="form-panel" id="registerPanel">
+          <div class="form-row-2">
+            <div class="form-group">
+              <label class="form-label">First Name</label>
+              <input class="form-input" type="text" placeholder="Rafiqul"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Last Name</label>
+              <input class="form-input" type="text" placeholder="Islam"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone Number</label>
+            <input class="form-input" type="tel" placeholder="+880 1700-000000"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email Address</label>
+            <input class="form-input" type="email" placeholder="you@email.com"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <div class="input-icon-wrap">
+              <input class="form-input" type="password" id="regPass" placeholder="Min. 8 characters" oninput="checkStrength(this.value)"/>
+              <button class="eye-btn" onclick="togglePass('regPass',this)">👁️</button>
+            </div>
+            <div class="strength-meter">
+              <div class="strength-bars">
+                <div class="strength-bar" id="sb1"></div>
+                <div class="strength-bar" id="sb2"></div>
+                <div class="strength-bar" id="sb3"></div>
+                <div class="strength-bar" id="sb4"></div>
+              </div>
+              <div class="strength-label" id="strengthLabel">Enter a password</div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Confirm Password</label>
+            <div class="input-icon-wrap">
+              <input class="form-input" type="password" placeholder="Repeat password"/>
+            </div>
+          </div>
+          <div class="form-check">
+            <input type="checkbox" id="terms"/>
+            <label for="terms">I agree to the <a href="#">Terms &amp; Conditions</a> and <a href="#">Privacy Policy</a></label>
+          </div>
+          <div class="form-check" style="margin-top:-10px;">
+            <input type="checkbox" id="newsletter" checked/>
+            <label for="newsletter">Send me exclusive deals and new arrival alerts</label>
+          </div>
+          <button class="btn-submit" onclick="doRegister()">🚀 Create My Account</button>
+        </div>
+
+        <!-- OTP PANEL -->
+        <div class="otp-section" id="otpSection">
+          <div style="text-align:center;margin-bottom:20px;">
+            <div style="font-size:40px;margin-bottom:12px;">📱</div>
+            <div style="font-weight:700;font-size:18px;margin-bottom:6px;">OTP Verification</div>
+            <div style="font-size:13px;color:var(--muted);">We sent a 6-digit code to <strong style="color:var(--text);">+880 1700-000000</strong></div>
+          </div>
+          <div class="otp-inputs">
+            <input class="otp-input" maxlength="1" oninput="moveNext(this,1)"/>
+            <input class="otp-input" maxlength="1" oninput="moveNext(this,2)"/>
+            <input class="otp-input" maxlength="1" oninput="moveNext(this,3)"/>
+            <input class="otp-input" maxlength="1" oninput="moveNext(this,4)"/>
+            <input class="otp-input" maxlength="1" oninput="moveNext(this,5)"/>
+            <input class="otp-input" maxlength="1" oninput="moveNext(this,6)"/>
+          </div>
+          <button class="btn-submit" onclick="verifyOTP()">✓ Verify OTP</button>
+          <div style="text-align:center;margin-top:14px;font-size:13px;color:var(--muted);">Didn't receive it? <a href="#" style="color:var(--red);" id="resendBtn">Resend in <span id="timer">60</span>s</a></div>
+          <div style="text-align:center;margin-top:10px;"><a href="#" style="font-size:13px;color:var(--muted);" onclick="hideOTP(event)">← Go Back</a></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- PROFILE VIEW (shown after login) -->
+    <div class="profile-view" id="profileView">
+      <div class="auth-header">
+        <h1>MY <span>ACCOUNT</span></h1>
+      </div>
+      <div class="profile-header">
+        <div class="profile-avatar">R<div class="edit-overlay">✏️</div></div>
+        <div>
+          <div class="profile-name">Rafiqul Islam</div>
+          <div class="profile-email">rafiqul@email.com · +880 1700-000000</div>
+          <div class="profile-badge">✓ Verified Customer</div>
+        </div>
+        <button style="margin-left:auto;background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:8px 16px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;" onclick="doLogout()">Logout</button>
+      </div>
+      <div class="profile-grid">
+        <div class="profile-card" onclick="window.location.href='my-orders.html'">
+          <div class="profile-card-icon">📦</div>
+          <div><div class="profile-card-title">My Orders</div><div class="profile-card-sub">7 total orders</div></div>
+        </div>
+        <div class="profile-card" onclick="window.location.href='wishlist.html'">
+          <div class="profile-card-icon">❤️</div>
+          <div><div class="profile-card-title">Wishlist</div><div class="profile-card-sub">4 saved items</div></div>
+        </div>
+        <div class="profile-card">
+          <div class="profile-card-icon">📍</div>
+          <div><div class="profile-card-title">Addresses</div><div class="profile-card-sub">2 saved addresses</div></div>
+        </div>
+        <div class="profile-card">
+          <div class="profile-card-icon">🔔</div>
+          <div><div class="profile-card-title">Notifications</div><div class="profile-card-sub">3 unread alerts</div></div>
+        </div>
+        <div class="profile-card">
+          <div class="profile-card-icon">💳</div>
+          <div><div class="profile-card-title">Payment Methods</div><div class="profile-card-sub">bKash saved</div></div>
+        </div>
+        <div class="profile-card">
+          <div class="profile-card-icon">⚙️</div>
+          <div><div class="profile-card-title">Account Settings</div><div class="profile-card-sub">Edit profile, password</div></div>
+        </div>
+      </div>
+      <!-- Edit Profile Form -->
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:20px;padding:28px;">
+        <div style="font-weight:700;font-size:16px;margin-bottom:20px;">Edit Profile</div>
+        <div class="form-row-2">
+          <div class="form-group"><label class="form-label">First Name</label><input class="form-input" value="Rafiqul"/></div>
+          <div class="form-group"><label class="form-label">Last Name</label><input class="form-input" value="Islam"/></div>
+        </div>
+        <div class="form-group"><label class="form-label">Phone Number</label><input class="form-input" value="+880 1700-000000"/></div>
+        <div class="form-group"><label class="form-label">Email Address</label><input class="form-input" value="rafiqul@email.com"/></div>
+        <div class="form-group"><label class="form-label">Date of Birth</label><input class="form-input" type="date" value="1990-06-15"/></div>
+        <div class="form-group"><label class="form-label">Gender</label>
+          <select class="form-input"><option>Male</option><option>Female</option><option>Prefer not to say</option></select>
+        </div>
+        <button class="btn-submit" onclick="saveProfile()">💾 Save Changes</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function switchTab(tab){
+  document.querySelectorAll('.auth-tab').forEach((t,i)=>t.classList.toggle('active',i===(tab==='login'?0:1)));
+  document.querySelectorAll('.form-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('otpSection').classList.remove('show');
+  document.getElementById(tab==='login'?'loginPanel':'registerPanel').classList.add('active');
+}
+function togglePass(id,btn){
+  const inp=document.getElementById(id);
+  inp.type=inp.type==='password'?'text':'password';
+  btn.textContent=inp.type==='password'?'👁️':'🔒';
+}
+function checkStrength(v){
+  const bars=[document.getElementById('sb1'),document.getElementById('sb2'),document.getElementById('sb3'),document.getElementById('sb4')];
+  const lbl=document.getElementById('strengthLabel');
+  let score=0;
+  if(v.length>=8)score++;
+  if(/[A-Z]/.test(v))score++;
+  if(/[0-9]/.test(v))score++;
+  if(/[^A-Za-z0-9]/.test(v))score++;
+  const colors=['#e8132a','#f97316','#f5c842','#22c55e'];
+  const labels=['Weak','Fair','Good','Strong'];
+  bars.forEach((b,i)=>{b.style.background=i<score?colors[score-1]:'var(--card2)';});
+  lbl.textContent=score>0?labels[score-1]:'Enter a password';
+  lbl.style.color=score>0?colors[score-1]:'var(--muted)';
+}
+function showOTP(e){e.preventDefault();document.querySelectorAll('.form-panel').forEach(p=>p.classList.remove('active'));document.getElementById('otpSection').classList.add('show');startTimer();}
+function hideOTP(e){e.preventDefault();document.getElementById('otpSection').classList.remove('show');document.getElementById('loginPanel').classList.add('active');}
+function startTimer(){let t=60;const el=document.getElementById('timer');const iv=setInterval(()=>{el.textContent=--t;if(t<=0){clearInterval(iv);document.getElementById('resendBtn').innerHTML='Resend OTP';el.textContent='';}},1000);}
+const otpInputs=document.querySelectorAll('.otp-input');
+function moveNext(el,idx){if(el.value.length===1&&idx<6)otpInputs[idx].focus();}
+function verifyOTP(){
+  const code=Array.from(otpInputs).map(i=>i.value).join('');
+  if(code.length===6){showProfile();}else{alert('Please enter the 6-digit OTP');}
+}
+function doLogin(){
+  const p=document.querySelector('#loginPanel .form-input[type="password"]');
+  if(p&&p.value.length>0){showProfile();}else{alert('Please enter your password');}
+}
+function doRegister(){showProfile();}
+function showProfile(){
+  document.getElementById('authPanel').style.display='none';
+  document.getElementById('profileView').classList.add('show');
+}
+function doLogout(){
+  document.getElementById('authPanel').style.display='block';
+  document.getElementById('profileView').classList.remove('show');
+  switchTab('login');
+}
+function saveProfile(){const btn=event.target;btn.textContent='✓ Saved!';btn.style.background='#22c55e';setTimeout(()=>{btn.textContent='💾 Save Changes';btn.style.background='';},2000);}
+</script>
+</body>
+</html>

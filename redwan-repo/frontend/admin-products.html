@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Admin: Products & Inventory — Redwan Mobile Shop</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{--red:#E8132A;--red-dark:#b50f21;--black:#09090b;--dark:#111214;--card:#17191d;--card2:#1e2026;--border:rgba(255,255,255,0.07);--text:#f0f0f0;--muted:#777;--white:#fff;--gold:#f5c842;--green:#22c55e;--blue:#3b82f6;--orange:#f97316;--sidebar:220px;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Outfit',sans-serif;background:var(--black);color:var(--text);display:flex;}
+::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:var(--dark);}::-webkit-scrollbar-thumb{background:var(--red);border-radius:2px;}
+/* SIDEBAR */
+.sidebar{width:var(--sidebar);background:var(--dark);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;overflow-y:auto;}
+.sidebar-logo{padding:22px 18px;border-bottom:1px solid var(--border);}
+.sidebar-logo h1{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;}
+.sidebar-logo h1 span{color:var(--red);}
+.sidebar-logo p{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:2px;}
+.nav-sec{padding:18px 10px 6px;}
+.nav-sec-label{font-size:10px;color:var(--muted);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:0 8px;margin-bottom:5px;}
+.nav-item{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:7px;cursor:pointer;font-size:13px;font-weight:500;color:var(--muted);margin-bottom:2px;text-decoration:none;transition:all 0.2s;}
+.nav-item:hover{background:rgba(255,255,255,0.04);color:var(--text);}
+.nav-item.active{background:rgba(232,19,42,0.12);color:var(--red);}
+.nav-item .ico{font-size:15px;width:18px;text-align:center;flex-shrink:0;}
+.nav-badge{margin-left:auto;background:var(--red);color:white;font-size:10px;font-weight:700;padding:1px 6px;border-radius:100px;}
+.sidebar-footer{margin-top:auto;padding:14px 10px;border-top:1px solid var(--border);}
+.admin-row{display:flex;align-items:center;gap:9px;}
+.admin-av{width:32px;height:32px;border-radius:8px;background:var(--red);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0;}
+.admin-name{font-size:12px;font-weight:600;}
+.admin-role{font-size:10px;color:var(--muted);}
+/* MAIN */
+.main{margin-left:var(--sidebar);flex:1;display:flex;flex-direction:column;min-height:100vh;}
+.topbar{height:58px;background:var(--dark);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:50;}
+.page-title-bar{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1.5px;}
+.page-title-bar span{color:var(--red);}
+.topbar-right{display:flex;align-items:center;gap:10px;}
+.tb-btn{background:var(--card);border:1px solid var(--border);border-radius:7px;padding:7px 14px;font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;color:var(--text);}
+.tb-btn:hover{border-color:var(--red);color:var(--red);}
+.tb-btn.primary{background:var(--red);color:white;border-color:var(--red);}
+.tb-btn.primary:hover{background:var(--red-dark);}
+/* CONTENT */
+.content{padding:26px 28px;flex:1;}
+/* PAGE TABS */
+.admin-tabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:24px;}
+.admin-tab{padding:12px 20px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all 0.2s;}
+.admin-tab.active{color:var(--red);border-bottom-color:var(--red);}
+.admin-tab:hover{color:var(--text);}
+.admin-page{display:none;}
+.admin-page.active{display:block;}
+/* TOOLBAR */
+.toolbar{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;align-items:center;}
+.search-inp{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:9px 14px;font-family:'Outfit',sans-serif;font-size:13px;color:var(--text);outline:none;transition:border-color 0.2s;min-width:240px;}
+.search-inp:focus{border-color:var(--red);}
+.search-inp::placeholder{color:var(--muted);}
+.sel{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:9px 12px;font-family:'Outfit',sans-serif;font-size:13px;color:var(--muted);outline:none;cursor:pointer;}
+/* PRODUCTS TABLE */
+.data-table{width:100%;border-collapse:collapse;font-size:13px;}
+.data-table th{text-align:left;padding:10px 12px;color:var(--muted);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid var(--border);}
+.data-table td{padding:12px;border-bottom:1px solid rgba(255,255,255,0.04);vertical-align:middle;}
+.data-table tr:last-child td{border-bottom:none;}
+.data-table tr:hover td{background:rgba(255,255,255,0.02);}
+.prod-thumb{width:44px;height:44px;background:var(--card2);border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;}
+.prod-info .name{font-size:13px;font-weight:600;margin-bottom:2px;}
+.prod-info .model{font-size:11px;color:var(--muted);}
+.stock-pill{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:100px;font-size:11px;font-weight:700;}
+.stock-good{background:rgba(34,197,94,0.1);color:var(--green);border:1px solid rgba(34,197,94,0.2);}
+.stock-low{background:rgba(245,200,66,0.1);color:var(--gold);border:1px solid rgba(245,200,66,0.2);}
+.stock-out{background:rgba(232,19,42,0.1);color:var(--red);border:1px solid rgba(232,19,42,0.2);}
+.pub-pill{padding:3px 10px;border-radius:100px;font-size:11px;font-weight:700;}
+.pub-live{background:rgba(34,197,94,0.1);color:var(--green);border:1px solid rgba(34,197,94,0.2);}
+.pub-draft{background:rgba(119,119,119,0.1);color:var(--muted);border:1px solid rgba(119,119,119,0.2);}
+.act-btns{display:flex;gap:6px;}
+.act-btn{background:var(--card2);border:1px solid var(--border);border-radius:6px;padding:5px 10px;font-size:11px;font-weight:600;cursor:pointer;transition:all 0.2s;color:var(--muted);}
+.act-btn:hover{border-color:var(--red);color:var(--red);}
+.act-btn.danger:hover{border-color:var(--red);color:var(--red);}
+/* ADD PRODUCT MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;align-items:flex-start;justify-content:center;padding:40px 20px;overflow-y:auto;}
+.modal-overlay.show{display:flex;}
+.modal{background:var(--dark);border:1px solid var(--border);border-radius:20px;width:100%;max-width:780px;overflow:hidden;}
+.modal-header{padding:22px 28px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.modal-title{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:1px;}
+.modal-title span{color:var(--red);}
+.modal-close{background:var(--card2);border:1px solid var(--border);border-radius:8px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;color:var(--muted);transition:all 0.2s;}
+.modal-close:hover{color:var(--red);border-color:var(--red);}
+.modal-body{padding:28px;}
+.modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.modal-grid.full{grid-template-columns:1fr;}
+.form-group{margin-bottom:0;}
+.form-label{display:block;font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:5px;}
+.form-input{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:10px 13px;font-family:'Outfit',sans-serif;font-size:13px;color:var(--text);outline:none;transition:border-color 0.2s;}
+.form-input:focus{border-color:var(--red);}
+.form-input::placeholder{color:var(--muted);}
+textarea.form-input{resize:vertical;min-height:80px;}
+.spec-section{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;margin-top:16px;}
+.spec-section-title{font-size:12px;color:var(--red);font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:14px;}
+.spec-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+.upload-zone{border:2px dashed var(--border);border-radius:12px;padding:32px;text-align:center;cursor:pointer;transition:all 0.2s;margin-top:16px;}
+.upload-zone:hover{border-color:var(--red);background:rgba(232,19,42,0.04);}
+.upload-zone .icon{font-size:32px;margin-bottom:8px;}
+.upload-zone .text{font-size:13px;color:var(--muted);}
+.modal-footer{padding:18px 28px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-end;}
+.btn-cancel{background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:10px 20px;font-family:'Outfit',sans-serif;font-weight:600;font-size:13px;cursor:pointer;color:var(--muted);transition:all 0.2s;}
+.btn-cancel:hover{border-color:var(--red);color:var(--red);}
+.btn-save{background:var(--red);color:white;border:none;border-radius:8px;padding:10px 24px;font-family:'Outfit',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:background 0.2s;}
+.btn-save:hover{background:var(--red-dark);}
+/* INVENTORY */
+.inv-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;}
+.inv-stat{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;}
+.inv-stat-label{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;}
+.inv-stat-value{font-family:'Bebas Neue',sans-serif;font-size:30px;line-height:1;}
+.inv-stat-sub{font-size:11px;margin-top:4px;}
+/* STOCK TABLE */
+.stock-adj{display:flex;align-items:center;gap:6px;}
+.qty-btn{width:24px;height:24px;background:var(--card2);border:1px solid var(--border);border-radius:5px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;color:var(--text);transition:all 0.15s;}
+.qty-btn:hover{border-color:var(--red);color:var(--red);}
+.qty-val{font-weight:700;min-width:28px;text-align:center;font-size:13px;}
+.progress-bar{height:5px;background:var(--card2);border-radius:3px;overflow:hidden;width:100px;}
+.progress-fill{height:100%;border-radius:3px;}
+/* IMPORT */
+.import-zone{border:2px dashed var(--border);border-radius:12px;padding:40px;text-align:center;cursor:pointer;transition:all 0.2s;}
+.import-zone:hover{border-color:var(--blue);}
+.checkbox-cell input[type=checkbox]{accent-color:var(--red);width:14px;height:14px;cursor:pointer;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.modal{animation:fadeIn 0.3s ease;}
+@media(max-width:768px){.sidebar{display:none;}.main{margin-left:0;}.inv-stats{grid-template-columns:1fr 1fr;}.modal-grid{grid-template-columns:1fr;}.spec-grid{grid-template-columns:1fr 1fr;}.content{padding:16px;}}
+</style>
+</head>
+<body>
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo"><h1>REDWAN<span>.</span>ADMIN</h1><p>Control Panel v2.0</p></div>
+  <div class="nav-sec"><div class="nav-sec-label">Overview</div>
+    <a class="nav-item" href="admin-dashboard.html"><span class="ico">📊</span> Dashboard</a>
+  </div>
+  <div class="nav-sec"><div class="nav-sec-label">Catalog</div>
+    <a class="nav-item active" href="#"><span class="ico">📱</span> Products</a>
+    <a class="nav-item" href="#"><span class="ico">🗂️</span> Categories</a>
+    <a class="nav-item" href="#"><span class="ico">🏷️</span> Brands</a>
+  </div>
+  <div class="nav-sec"><div class="nav-sec-label">Sales</div>
+    <a class="nav-item" href="admin-orders.html"><span class="ico">🛒</span> Orders <span class="nav-badge">12</span></a>
+    <a class="nav-item" href="#"><span class="ico">💳</span> Payments</a>
+    <a class="nav-item" href="#"><span class="ico">🚚</span> Shipping</a>
+  </div>
+  <div class="nav-sec"><div class="nav-sec-label">Customers</div>
+    <a class="nav-item" href="admin-customers.html"><span class="ico">👥</span> Customers</a>
+    <a class="nav-item" href="#"><span class="ico">⭐</span> Reviews <span class="nav-badge" style="background:var(--blue);">5</span></a>
+  </div>
+  <div class="nav-sec"><div class="nav-sec-label">Marketing</div>
+    <a class="nav-item" href="#"><span class="ico">🎁</span> Promotions</a>
+    <a class="nav-item" href="#"><span class="ico">📢</span> Banners</a>
+  </div>
+  <div class="nav-sec"><div class="nav-sec-label">System</div>
+    <a class="nav-item" href="#"><span class="ico">⚙️</span> Settings</a>
+    <a class="nav-item" href="redwan-mobile-shop.html"><span class="ico">🌐</span> View Store</a>
+  </div>
+  <div class="sidebar-footer"><div class="admin-row"><div class="admin-av">R</div><div><div class="admin-name">Redwan Ahmed</div><div class="admin-role">Super Admin</div></div></div></div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="page-title-bar">CATALOG <span>MANAGEMENT</span></div>
+    <div class="topbar-right">
+      <button class="tb-btn" onclick="document.getElementById('importModal').classList.add('show')">⬆️ Bulk Import</button>
+      <button class="tb-btn primary" onclick="document.getElementById('addProductModal').classList.add('show')">+ Add Product</button>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="admin-tabs">
+      <div class="admin-tab active" onclick="switchAdminTab(this,'products')">📱 Products (528)</div>
+      <div class="admin-tab" onclick="switchAdminTab(this,'inventory')">📦 Inventory</div>
+    </div>
+
+    <!-- PRODUCTS TAB -->
+    <div class="admin-page active" id="tab-products">
+      <div class="toolbar">
+        <input class="search-inp" type="text" placeholder="Search by name, brand, SKU..."/>
+        <select class="sel"><option>All Brands</option><option>Samsung</option><option>Apple</option><option>Xiaomi</option><option>OPPO</option><option>Vivo</option></select>
+        <select class="sel"><option>All Categories</option><option>Smartphones</option><option>Accessories</option><option>Earphones</option><option>Tablets</option></select>
+        <select class="sel"><option>All Status</option><option>Published</option><option>Draft</option><option>Out of Stock</option></select>
+        <select class="sel" style="margin-left:auto;"><option>Bulk Actions</option><option>Publish Selected</option><option>Draft Selected</option><option>Delete Selected</option></select>
+        <button class="tb-btn primary" style="font-size:12px;">Apply</button>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th style="width:32px;"><input type="checkbox" onclick="toggleAll(this)" style="accent-color:var(--red);"/></th>
+              <th>Product</th>
+              <th>SKU</th>
+              <th>Price</th>
+              <th>Stock</th>
+              <th>Category</th>
+              <th>Status</th>
+              <th>Sales</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="productsTable">
+            <tr>
+              <td class="checkbox-cell"><input type="checkbox" style="accent-color:var(--red);"/></td>
+              <td><div style="display:flex;gap:10px;align-items:center;"><div class="prod-thumb">📱</div><div class="prod-info"><div class="name">Samsung Galaxy S25 Ultra</div><div class="model">SM-S9380 · Titanium Black</div></div></div></td>
+              <td style="font-size:11px;color:var(--muted);">SKU-SAM-001</td>
+              <td><div style="font-family:'Bebas Neue',sans-serif;font-size:16px;">৳1,19,999</div></td>
+              <td><span class="stock-pill stock-good">● 24 in stock</span></td>
+              <td style="font-size:12px;color:var(--muted);">Smartphones</td>
+              <td><span class="pub-pill pub-live">● Live</span></td>
+              <td style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--green);">84</td>
+              <td><div class="act-btns"><button class="act-btn" onclick="openEdit('Samsung Galaxy S25 Ultra')">✏️ Edit</button><button class="act-btn">👁️ View</button><button class="act-btn danger" onclick="deleteProduct(this)">🗑️</button></div></td>
+            </tr>
+            <tr>
+              <td class="checkbox-cell"><input type="checkbox" style="accent-color:var(--red);"/></td>
+              <td><div style="display:flex;gap:10px;align-items:center;"><div class="prod-thumb">📱</div><div class="prod-info"><div class="name">iPhone 16 Pro Max 256GB</div><div class="model">MYY33LL/A · Natural Titanium</div></div></div></td>
+              <td style="font-size:11px;color:var(--muted);">SKU-APL-001</td>
+              <td><div style="font-family:'Bebas Neue',sans-serif;font-size:16px;">৳1,74,999</div></td>
+              <td><span class="stock-pill stock-low">⚠ 2 left!</span></td>
+              <td style="font-size:12px;color:var(--muted);">Smartphones</td>
+              <td><span class="pub-pill pub-live">● Live</span></td>
+              <td style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--green);">41</td>
+              <td><div class="act-btns"><button class="act-btn" onclick="openEdit('iPhone 16 Pro Max')">✏️ Edit</button><button class="act-btn">👁️ View</button><button class="act-btn danger" onclick="deleteProduct(this)">🗑️</button></div></td>
+            </tr>
+            <tr>
+              <td class="checkbox-cell"><input type="checkbox" style="accent-color:var(--red);"/></td>
+              <td><div style="display:flex;gap:10px;align-items:center;"><div class="prod-thumb">📱</div><div class="prod-info"><div class="name">Redmi Note 13 Pro+ 256GB</div><div class="model">2312DRA50G · Midnight Black</div></div></div></td>
+              <td style="font-size:11px;color:var(--muted);">SKU-XIR-001</td>
+              <td><div style="font-family:'Bebas Neue',sans-serif;font-size:16px;">৳34,999</div></td>
+              <td><span class="stock-pill stock-good">● 47 in stock</span></td>
+              <td style="font-size:12px;color:var(--muted);">Smartphones</td>
+              <td><span class="pub-pill pub-live">● Live</span></td>
+              <td style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--green);">72</td>
+              <td><div class="act-btns"><button class="act-btn" onclick="openEdit('Redmi Note 13 Pro+')">✏️ Edit</button><button class="act-btn">👁️ View</button><button class="act-btn danger" onclick="deleteProduct(this)">🗑️</button></div></td>
+            </tr>
+            <tr>
+              <td class="checkbox-cell"><input type="checkbox" style="accent-color:var(--red);"/></td>
+              <td><div style="display:flex;gap:10px;align-items:center;"><div class="prod-thumb">🎧</div><div class="prod-info"><div class="name">Samsung Galaxy Buds3 Pro</div><div class="model">SM-R630NZAAXFE · Black</div></div></div></td>
+              <td style="font-size:11px;color:var(--muted);">SKU-SAM-021</td>
+              <td><div style="font-family:'Bebas Neue',sans-serif;font-size:16px;">৳14,999</div></td>
+              <td><span class="stock-pill stock-good">● 31 in stock</span></td>
+              <td style="font-size:12px;color:var(--muted);">Accessories</td>
+              <td><span class="pub-pill pub-live">● Live</span></td>
+              <td style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--green);">31</td>
+              <td><div class="act-btns"><button class="act-btn" onclick="openEdit('Galaxy Buds3 Pro')">✏️ Edit</button><button class="act-btn">👁️ View</button><button class="act-btn danger" onclick="deleteProduct(this)">🗑️</button></div></td>
+            </tr>
+            <tr>
+              <td class="checkbox-cell"><input type="checkbox" style="accent-color:var(--red);"/></td>
+              <td><div style="display:flex;gap:10px;align-items:center;"><div class="prod-thumb">📱</div><div class="prod-info"><div class="name">OnePlus 13 256GB</div><div class="model">CPH2673 · Midnight Ocean</div></div></div></td>
+              <td style="font-size:11px;color:var(--muted);">SKU-ONE-001</td>
+              <td><div style="font-family:'Bebas Neue',sans-serif;font-size:16px;">৳74,999</div></td>
+              <td><span class="stock-pill stock-low">⚠ 6 left</span></td>
+              <td style="font-size:12px;color:var(--muted);">Smartphones</td>
+              <td><span class="pub-pill pub-draft">● Draft</span></td>
+              <td style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--muted);">0</td>
+              <td><div class="act-btns"><button class="act-btn" onclick="openEdit('OnePlus 13')">✏️ Edit</button><button class="act-btn">👁️ View</button><button class="act-btn danger" onclick="deleteProduct(this)">🗑️</button></div></td>
+            </tr>
+            <tr>
+              <td class="checkbox-cell"><input type="checkbox" style="accent-color:var(--red);"/></td>
+              <td><div style="display:flex;gap:10px;align-items:center;"><div class="prod-thumb">📱</div><div class="prod-info"><div class="name">Realme 12 Pro+ 256GB</div><div class="model">RMX3840 · Navigator Beige</div></div></div></td>
+              <td style="font-size:11px;color:var(--muted);">SKU-REA-001</td>
+              <td><div style="font-family:'Bebas Neue',sans-serif;font-size:16px;">৳28,999</div></td>
+              <td><span class="stock-pill stock-out">✕ Out of stock</span></td>
+              <td style="font-size:12px;color:var(--muted);">Smartphones</td>
+              <td><span class="pub-pill pub-live">● Live</span></td>
+              <td style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--green);">38</td>
+              <td><div class="act-btns"><button class="act-btn" onclick="openEdit('Realme 12 Pro+')">✏️ Edit</button><button class="act-btn">👁️ View</button><button class="act-btn danger" onclick="deleteProduct(this)">🗑️</button></div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:16px;border-top:1px solid var(--border);">
+        <div style="font-size:12px;color:var(--muted);">Showing 6 of 528 products</div>
+        <div style="display:flex;gap:6px;">
+          <button class="act-btn">← Prev</button>
+          <button class="act-btn" style="color:var(--red);border-color:rgba(232,19,42,0.4);">1</button>
+          <button class="act-btn">2</button><button class="act-btn">3</button>
+          <button class="act-btn">Next →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- INVENTORY TAB -->
+    <div class="admin-page" id="tab-inventory">
+      <div class="inv-stats">
+        <div class="inv-stat"><div class="inv-stat-label">Total SKUs</div><div class="inv-stat-value" style="color:var(--text);">528</div><div class="inv-stat-sub" style="color:var(--muted);">across all products</div></div>
+        <div class="inv-stat"><div class="inv-stat-label">In Stock</div><div class="inv-stat-value" style="color:var(--green);">4,821</div><div class="inv-stat-sub" style="color:var(--green);">units available</div></div>
+        <div class="inv-stat"><div class="inv-stat-label">Low Stock</div><div class="inv-stat-value" style="color:var(--gold);">7</div><div class="inv-stat-sub" style="color:var(--gold);">need restocking</div></div>
+        <div class="inv-stat"><div class="inv-stat-label">Out of Stock</div><div class="inv-stat-value" style="color:var(--red);">3</div><div class="inv-stat-sub" style="color:var(--red);">no units left</div></div>
+      </div>
+      <div class="toolbar">
+        <input class="search-inp" type="text" placeholder="Search inventory..."/>
+        <select class="sel"><option>All Alerts</option><option>Low Stock (&lt;10)</option><option>Out of Stock</option><option>In Stock</option></select>
+        <button class="tb-btn" style="margin-left:auto;" onclick="alert('Inventory export ready!')">⬇️ Export CSV</button>
+        <button class="tb-btn primary" onclick="alert('Set low stock threshold for all products')">⚙️ Set Thresholds</button>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>SKU</th>
+              <th>Current Stock</th>
+              <th>Threshold</th>
+              <th>Stock Level</th>
+              <th>Adjust Stock</th>
+              <th>Last Updated</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><div style="display:flex;gap:8px;align-items:center;"><div class="prod-thumb" style="width:36px;height:36px;font-size:16px;">📱</div><div class="prod-info"><div class="name" style="font-size:12px;">iPhone 16 Pro Max 1TB</div><div class="model">Apple · Space Black</div></div></div></td>
+              <td style="font-size:11px;color:var(--muted);">SKU-APL-004</td>
+              <td><span class="stock-pill stock-out" style="font-size:12px;">2 units</span></td>
+              <td style="font-size:12px;color:var(--muted);">10</td>
+              <td><div class="progress-bar"><div class="progress-fill" style="width:20%;background:var(--red);"></div></div></td>
+              <td><div class="stock-adj"><button class="qty-btn" onclick="adj(this,-1)">−</button><span class="qty-val">2</span><button class="qty-btn" onclick="adj(this,1)">+</button></div></td>
+              <td style="font-size:11px;color:var(--muted);">Mar 23, 2026</td>
+              <td><button class="act-btn" style="color:var(--red);border-color:rgba(232,19,42,0.3);font-size:11px;" onclick="restock(this)">🔄 Restock</button></td>
+            </tr>
+            <tr>
+              <td><div style="display:flex;gap:8px;align-items:center;"><div class="prod-thumb" style="width:36px;height:36px;font-size:16px;">📱</div><div class="prod-info"><div class="name" style="font-size:12px;">Samsung S25 Ultra (Violet)</div><div class="model">Samsung · Titanium Violet</div></div></div></td>
+              <td style="font-size:11px;color:var(--muted);">SKU-SAM-003</td>
+              <td><span class="stock-pill stock-low" style="font-size:12px;">3 units</span></td>
+              <td style="font-size:12px;color:var(--muted);">10</td>
+              <td><div class="progress-bar"><div class="progress-fill" style="width:30%;background:var(--gold);"></div></div></td>
+              <td><div class="stock-adj"><button class="qty-btn" onclick="adj(this,-1)">−</button><span class="qty-val">3</span><button class="qty-btn" onclick="adj(this,1)">+</button></div></td>
+              <td style="font-size:11px;color:var(--muted);">Mar 22, 2026</td>
+              <td><button class="act-btn" style="color:var(--red);border-color:rgba(232,19,42,0.3);font-size:11px;" onclick="restock(this)">🔄 Restock</button></td>
+            </tr>
+            <tr>
+              <td><div style="display:flex;gap:8px;align-items:center;"><div class="prod-thumb" style="width:36px;height:36px;font-size:16px;">🔋</div><div class="prod-info"><div class="name" style="font-size:12px;">Anker 20000mAh Power Bank</div><div class="model">Anker · Black</div></div></div></td>
+              <td style="font-size:11px;color:var(--muted);">SKU-ANK-001</td>
+              <td><span class="stock-pill stock-low" style="font-size:12px;">4 units</span></td>
+              <td style="font-size:12px;color:var(--muted);">15</td>
+              <td><div class="progress-bar"><div class="progress-fill" style="width:27%;background:var(--gold);"></div></div></td>
+              <td><div class="stock-adj"><button class="qty-btn" onclick="adj(this,-1)">−</button><span class="qty-val">4</span><button class="qty-btn" onclick="adj(this,1)">+</button></div></td>
+              <td style="font-size:11px;color:var(--muted);">Mar 20, 2026</td>
+              <td><button class="act-btn" style="color:var(--red);border-color:rgba(232,19,42,0.3);font-size:11px;" onclick="restock(this)">🔄 Restock</button></td>
+            </tr>
+            <tr>
+              <td><div style="display:flex;gap:8px;align-items:center;"><div class="prod-thumb" style="width:36px;height:36px;font-size:16px;">📱</div><div class="prod-info"><div class="name" style="font-size:12px;">Samsung Galaxy A55 5G (Blue)</div><div class="model">Samsung · Awesome Iceblue</div></div></div></td>
+              <td style="font-size:11px;color:var(--muted);">SKU-SAM-012</td>
+              <td><span class="stock-pill stock-good" style="font-size:12px;">34 units</span></td>
+              <td style="font-size:12px;color:var(--muted);">10</td>
+              <td><div class="progress-bar"><div class="progress-fill" style="width:68%;background:var(--green);"></div></div></td>
+              <td><div class="stock-adj"><button class="qty-btn" onclick="adj(this,-1)">−</button><span class="qty-val">34</span><button class="qty-btn" onclick="adj(this,1)">+</button></div></td>
+              <td style="font-size:11px;color:var(--muted);">Mar 21, 2026</td>
+              <td><button class="act-btn" style="font-size:11px;">✏️ Edit</button></td>
+            </tr>
+            <tr>
+              <td><div style="display:flex;gap:8px;align-items:center;"><div class="prod-thumb" style="width:36px;height:36px;font-size:16px;">📱</div><div class="prod-info"><div class="name" style="font-size:12px;">Realme 12 Pro+ (Beige)</div><div class="model">Realme · Navigator Beige</div></div></div></td>
+              <td style="font-size:11px;color:var(--muted);">SKU-REA-001</td>
+              <td><span class="stock-pill stock-out" style="font-size:12px;">0 units</span></td>
+              <td style="font-size:12px;color:var(--muted);">10</td>
+              <td><div class="progress-bar"><div class="progress-fill" style="width:0%;background:var(--red);"></div></div></td>
+              <td><div class="stock-adj"><button class="qty-btn" onclick="adj(this,-1)">−</button><span class="qty-val">0</span><button class="qty-btn" onclick="adj(this,1)">+</button></div></td>
+              <td style="font-size:11px;color:var(--muted);">Mar 18, 2026</td>
+              <td><button class="act-btn" style="color:var(--red);border-color:rgba(232,19,42,0.3);font-size:11px;" onclick="restock(this)">🔄 Restock</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ADD PRODUCT MODAL -->
+<div class="modal-overlay" id="addProductModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">ADD <span>PRODUCT</span></div>
+      <button class="modal-close" onclick="document.getElementById('addProductModal').classList.remove('show')">✕</button>
+    </div>
+    <div class="modal-body" style="max-height:70vh;overflow-y:auto;">
+      <div class="modal-grid">
+        <div class="form-group"><label class="form-label">Product Name *</label><input class="form-input" placeholder="e.g. Samsung Galaxy S25 Ultra"/></div>
+        <div class="form-group"><label class="form-label">Brand *</label><select class="form-input"><option>Select Brand</option><option>Samsung</option><option>Apple</option><option>Xiaomi</option><option>OPPO</option><option>Vivo</option><option>OnePlus</option><option>Realme</option></select></div>
+        <div class="form-group"><label class="form-label">Category *</label><select class="form-input"><option>Smartphones</option><option>Accessories</option><option>Earphones</option><option>Tablets</option><option>Smart Watches</option></select></div>
+        <div class="form-group"><label class="form-label">Model Number</label><input class="form-input" placeholder="e.g. SM-S9380"/></div>
+        <div class="form-group"><label class="form-label">Regular Price (৳) *</label><input class="form-input" type="number" placeholder="119999"/></div>
+        <div class="form-group"><label class="form-label">Sale Price (৳)</label><input class="form-input" type="number" placeholder="Optional"/></div>
+        <div class="form-group"><label class="form-label">Stock Quantity *</label><input class="form-input" type="number" placeholder="e.g. 50"/></div>
+        <div class="form-group"><label class="form-label">Low Stock Alert</label><input class="form-input" type="number" placeholder="e.g. 10"/></div>
+        <div class="form-group"><label class="form-label">SKU</label><input class="form-input" placeholder="Auto-generated"/></div>
+        <div class="form-group"><label class="form-label">Status</label><select class="form-input"><option>Published (Live)</option><option>Draft</option></select></div>
+      </div>
+      <div class="modal-grid full" style="margin-top:14px;">
+        <div class="form-group"><label class="form-label">Short Description</label><textarea class="form-input" placeholder="Brief product description shown in listings..."></textarea></div>
+        <div class="form-group"><label class="form-label">Full Description</label><textarea class="form-input" style="min-height:100px;" placeholder="Full product description with features, what's in the box..."></textarea></div>
+      </div>
+      <div class="spec-section">
+        <div class="spec-section-title">📱 Display Specs</div>
+        <div class="spec-grid">
+          <div class="form-group"><label class="form-label">Screen Size</label><input class="form-input" placeholder="e.g. 6.9 inch"/></div>
+          <div class="form-group"><label class="form-label">Display Type</label><input class="form-input" placeholder="e.g. Dynamic AMOLED"/></div>
+          <div class="form-group"><label class="form-label">Resolution</label><input class="form-input" placeholder="e.g. 3088×1440"/></div>
+          <div class="form-group"><label class="form-label">Refresh Rate</label><input class="form-input" placeholder="e.g. 1-120Hz"/></div>
+        </div>
+      </div>
+      <div class="spec-section">
+        <div class="spec-section-title">⚡ Performance</div>
+        <div class="spec-grid">
+          <div class="form-group"><label class="form-label">Processor</label><input class="form-input" placeholder="e.g. Snapdragon 8 Elite"/></div>
+          <div class="form-group"><label class="form-label">RAM</label><input class="form-input" placeholder="e.g. 12GB"/></div>
+          <div class="form-group"><label class="form-label">Storage</label><input class="form-input" placeholder="e.g. 256GB / 512GB / 1TB"/></div>
+          <div class="form-group"><label class="form-label">OS Version</label><input class="form-input" placeholder="e.g. Android 15"/></div>
+        </div>
+      </div>
+      <div class="spec-section">
+        <div class="spec-section-title">📷 Camera</div>
+        <div class="spec-grid">
+          <div class="form-group"><label class="form-label">Main Camera</label><input class="form-input" placeholder="e.g. 200MP f/1.7"/></div>
+          <div class="form-group"><label class="form-label">Front Camera</label><input class="form-input" placeholder="e.g. 12MP"/></div>
+          <div class="form-group"><label class="form-label">Video</label><input class="form-input" placeholder="e.g. 8K@30fps"/></div>
+        </div>
+      </div>
+      <div class="spec-section">
+        <div class="spec-section-title">🔋 Battery</div>
+        <div class="spec-grid">
+          <div class="form-group"><label class="form-label">Battery</label><input class="form-input" placeholder="e.g. 5000mAh"/></div>
+          <div class="form-group"><label class="form-label">Wired Charging</label><input class="form-input" placeholder="e.g. 45W"/></div>
+          <div class="form-group"><label class="form-label">Wireless</label><input class="form-input" placeholder="e.g. 15W"/></div>
+        </div>
+      </div>
+      <div class="spec-section">
+        <div class="spec-section-title">📐 Physical</div>
+        <div class="spec-grid">
+          <div class="form-group"><label class="form-label">Weight</label><input class="form-input" placeholder="e.g. 218g"/></div>
+          <div class="form-group"><label class="form-label">Water Resistance</label><input class="form-input" placeholder="e.g. IP68"/></div>
+          <div class="form-group"><label class="form-label">Colors</label><input class="form-input" placeholder="e.g. Black, White, Violet"/></div>
+          <div class="form-group"><label class="form-label">SIM</label><input class="form-input" placeholder="e.g. Dual SIM + eSIM"/></div>
+        </div>
+      </div>
+      <div class="upload-zone" onclick="alert('Image upload dialog')">
+        <div class="icon">🖼️</div>
+        <div class="text">Click to upload product images<br/><span style="font-size:11px;color:var(--muted);">PNG, JPG up to 5MB each · First image = thumbnail</span></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="document.getElementById('addProductModal').classList.remove('show')">Cancel</button>
+      <button class="btn-cancel">Save as Draft</button>
+      <button class="btn-save" onclick="saveProduct()">✓ Publish Product</button>
+    </div>
+  </div>
+</div>
+
+<!-- BULK IMPORT MODAL -->
+<div class="modal-overlay" id="importModal">
+  <div class="modal" style="max-width:480px;">
+    <div class="modal-header">
+      <div class="modal-title">BULK <span>IMPORT</span></div>
+      <button class="modal-close" onclick="document.getElementById('importModal').classList.remove('show')">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">Upload a CSV file to import multiple products at once. Download the template to see the required format.</p>
+      <button style="background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:10px 18px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;color:var(--text);cursor:pointer;margin-bottom:18px;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--blue)'" onmouseout="this.style.borderColor=''">⬇️ Download CSV Template</button>
+      <div class="import-zone" onclick="alert('File picker opened')">
+        <div style="font-size:40px;margin-bottom:10px;">📁</div>
+        <div style="font-size:14px;font-weight:600;margin-bottom:4px;">Drop your CSV file here</div>
+        <div style="font-size:12px;color:var(--muted);">or click to browse · Max 5MB</div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="document.getElementById('importModal').classList.remove('show')">Cancel</button>
+      <button class="btn-save">⬆️ Import Products</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function switchAdminTab(el,tab){
+  document.querySelectorAll('.admin-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.admin-page').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tab-'+tab).classList.add('active');
+}
+function toggleAll(cb){document.querySelectorAll('.checkbox-cell input').forEach(i=>i.checked=cb.checked);}
+function deleteProduct(btn){if(confirm('Delete this product?')){btn.closest('tr').style.opacity='0';setTimeout(()=>btn.closest('tr').remove(),300);}}
+function openEdit(name){alert('Opening edit form for: '+name);}
+function saveProduct(){const btn=event.target;btn.textContent='✓ Published!';btn.style.background='#22c55e';setTimeout(()=>{document.getElementById('addProductModal').classList.remove('show');btn.textContent='✓ Publish Product';btn.style.background='';},1500);}
+function adj(btn,delta){
+  const span=btn.parentNode.querySelector('.qty-val');
+  let v=parseInt(span.textContent)+delta;
+  if(v<0)v=0;
+  span.textContent=v;
+  const row=btn.closest('tr');
+  const fill=row.querySelector('.progress-fill');
+  if(fill){const pct=Math.min(100,v*5);fill.style.width=pct+'%';fill.style.background=v===0?'var(--red)':v<10?'var(--gold)':'var(--green)';}
+}
+function restock(btn){
+  const qty=prompt('Enter restock quantity:','50');
+  if(qty){
+    const row=btn.closest('tr');
+    const span=row.querySelector('.qty-val');
+    const fill=row.querySelector('.progress-fill');
+    span.textContent=parseInt(qty);
+    if(fill){fill.style.width=Math.min(100,parseInt(qty)*5)+'%';fill.style.background='var(--green)';}
+    btn.textContent='✓ Restocked';btn.style.color='var(--green)';
+    setTimeout(()=>{btn.textContent='🔄 Restock';btn.style.color='';},2000);
+  }
+}
+</script>
+</body>
+</html>

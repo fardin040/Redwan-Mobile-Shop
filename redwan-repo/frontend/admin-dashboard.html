@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Admin Dashboard — Redwan Mobile Shop</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root {
+    --red:#E8132A;--red-dark:#b50f21;--red-glow:rgba(232,19,42,0.12);
+    --black:#09090b;--dark:#111214;--card:#17191d;--card2:#1e2026;
+    --border:rgba(255,255,255,0.07);--text:#f0f0f0;--muted:#777;
+    --white:#fff;--gold:#f5c842;--green:#22c55e;--blue:#3b82f6;--orange:#f97316;
+    --sidebar:220px;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Outfit',sans-serif;background:var(--black);color:var(--text);display:flex;min-height:100vh;overflow-x:hidden;}
+  ::-webkit-scrollbar{width:4px;} ::-webkit-scrollbar-track{background:var(--dark);} ::-webkit-scrollbar-thumb{background:var(--red);border-radius:2px;}
+
+  /* SIDEBAR */
+  .sidebar{width:var(--sidebar);background:var(--dark);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;overflow-y:auto;}
+  .sidebar-logo{padding:24px 20px;border-bottom:1px solid var(--border);}
+  .sidebar-logo h1{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;}
+  .sidebar-logo h1 span{color:var(--red);}
+  .sidebar-logo p{font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:2px;}
+  .nav-section{padding:20px 12px 8px;}
+  .nav-section-label{font-size:10px;color:var(--muted);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:0 8px;margin-bottom:6px;}
+  .nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;transition:all 0.2s;font-size:13px;font-weight:500;color:var(--muted);margin-bottom:2px;text-decoration:none;}
+  .nav-item:hover{background:rgba(255,255,255,0.05);color:var(--text);}
+  .nav-item.active{background:rgba(232,19,42,0.12);color:var(--red);}
+  .nav-item .icon{font-size:16px;width:20px;text-align:center;flex-shrink:0;}
+  .nav-badge{margin-left:auto;background:var(--red);color:white;font-size:10px;font-weight:700;padding:2px 7px;border-radius:100px;}
+  .sidebar-footer{margin-top:auto;padding:16px 12px;border-top:1px solid var(--border);}
+  .admin-profile{display:flex;align-items:center;gap:10px;}
+  .admin-avatar{width:36px;height:36px;border-radius:10px;background:var(--red);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0;}
+  .admin-name{font-size:13px;font-weight:600;}
+  .admin-role{font-size:11px;color:var(--muted);}
+
+  /* MAIN */
+  .main{margin-left:var(--sidebar);flex:1;display:flex;flex-direction:column;min-height:100vh;}
+
+  /* TOP BAR */
+  .topbar{height:60px;background:var(--dark);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 32px;position:sticky;top:0;z-index:50;}
+  .page-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1.5px;}
+  .page-title span{color:var(--red);}
+  .topbar-right{display:flex;align-items:center;gap:12px;}
+  .topbar-btn{background:var(--card);border:1px solid var(--border);border-radius:8px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;font-size:14px;position:relative;}
+  .topbar-btn:hover{border-color:var(--red);}
+  .topbar-dot{position:absolute;top:6px;right:6px;width:7px;height:7px;border-radius:50%;background:var(--red);}
+  .date-chip{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:6px 14px;font-size:12px;color:var(--muted);}
+
+  /* CONTENT */
+  .content{padding:28px 32px;flex:1;}
+
+  /* STATS GRID */
+  .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
+  .stat-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;transition:border-color 0.2s;position:relative;overflow:hidden;}
+  .stat-card::before{content:'';position:absolute;top:-20px;right:-20px;width:80px;height:80px;border-radius:50%;opacity:0.08;}
+  .stat-card.red::before{background:var(--red);}
+  .stat-card.green::before{background:var(--green);}
+  .stat-card.blue::before{background:var(--blue);}
+  .stat-card.gold::before{background:var(--gold);}
+  .stat-card:hover{border-color:rgba(232,19,42,0.3);}
+  .stat-icon{font-size:22px;margin-bottom:14px;}
+  .stat-label{font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;}
+  .stat-value{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:0.5px;line-height:1;}
+  .stat-value.red{color:var(--red);}
+  .stat-value.green{color:var(--green);}
+  .stat-value.blue{color:var(--blue);}
+  .stat-value.gold{color:var(--gold);}
+  .stat-change{font-size:12px;margin-top:6px;display:flex;align-items:center;gap:4px;}
+  .stat-change.up{color:var(--green);}
+  .stat-change.down{color:var(--red);}
+
+  /* TWO-COL GRID */
+  .two-col{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:24px;}
+  .three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:24px;}
+
+  .panel{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px;}
+  .panel-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+  .panel-title{font-weight:700;font-size:15px;}
+  .panel-action{font-size:12px;color:var(--red);cursor:pointer;font-weight:600;}
+  .panel-action:hover{text-decoration:underline;}
+
+  /* ORDERS TABLE */
+  .orders-table{width:100%;border-collapse:collapse;font-size:13px;}
+  .orders-table th{text-align:left;padding:10px 12px;color:var(--muted);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid var(--border);}
+  .orders-table td{padding:12px;border-bottom:1px solid rgba(255,255,255,0.04);vertical-align:middle;}
+  .orders-table tr:last-child td{border-bottom:none;}
+  .orders-table tr:hover td{background:rgba(255,255,255,0.02);}
+  .order-id{font-weight:700;color:var(--red);font-size:12px;}
+  .customer-cell{display:flex;align-items:center;gap:8px;}
+  .mini-avatar{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;}
+  .status-pill{padding:3px 10px;border-radius:100px;font-size:11px;font-weight:700;white-space:nowrap;}
+  .s-pending{background:rgba(245,200,66,0.12);color:var(--gold);border:1px solid rgba(245,200,66,0.25);}
+  .s-processing{background:rgba(59,130,246,0.12);color:var(--blue);border:1px solid rgba(59,130,246,0.25);}
+  .s-shipped{background:rgba(249,115,22,0.12);color:var(--orange);border:1px solid rgba(249,115,22,0.25);}
+  .s-delivered{background:rgba(34,197,94,0.12);color:var(--green);border:1px solid rgba(34,197,94,0.25);}
+  .s-cancelled{background:rgba(232,19,42,0.1);color:var(--red);border:1px solid rgba(232,19,42,0.2);}
+  .action-btn{background:var(--card2);border:1px solid var(--border);border-radius:6px;padding:5px 10px;font-size:11px;font-weight:600;cursor:pointer;transition:all 0.2s;color:var(--muted);}
+  .action-btn:hover{border-color:var(--red);color:var(--red);}
+
+  /* TOP PRODUCTS */
+  .product-rank{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+  .product-rank:last-child{border-bottom:none;padding-bottom:0;}
+  .rank-num{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--muted);width:20px;text-align:center;flex-shrink:0;}
+  .rank-icon{font-size:24px;width:44px;height:44px;background:var(--card2);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .rank-info{flex:1;}
+  .rank-name{font-size:13px;font-weight:600;margin-bottom:2px;}
+  .rank-brand{font-size:11px;color:var(--muted);}
+  .rank-right{text-align:right;}
+  .rank-price{font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--text);}
+  .rank-sold{font-size:11px;color:var(--muted);}
+
+  /* INVENTORY ALERTS */
+  .alert-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+  .alert-item:last-child{border-bottom:none;}
+  .alert-icon{font-size:22px;}
+  .alert-info{flex:1;}
+  .alert-name{font-size:13px;font-weight:600;margin-bottom:2px;}
+  .alert-stock{font-size:11px;}
+  .alert-stock.critical{color:var(--red);}
+  .alert-stock.low{color:var(--gold);}
+  .restock-btn{background:rgba(232,19,42,0.1);border:1px solid rgba(232,19,42,0.25);border-radius:6px;padding:5px 12px;font-size:11px;font-weight:700;color:var(--red);cursor:pointer;transition:all 0.2s;white-space:nowrap;}
+  .restock-btn:hover{background:var(--red);color:white;}
+
+  /* QUICK ACTIONS */
+  .quick-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .qa-btn{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600;}
+  .qa-btn:hover{border-color:var(--red);background:rgba(232,19,42,0.06);}
+  .qa-icon{font-size:18px;}
+
+  /* CHART */
+  .chart-wrap{position:relative;height:200px;}
+
+  /* RECENT ACTIVITY */
+  .activity-item{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+  .activity-item:last-child{border-bottom:none;}
+  .activity-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+  .activity-text{font-size:13px;color:var(--muted);line-height:1.5;}
+  .activity-text strong{color:var(--text);font-weight:600;}
+  .activity-time{font-size:11px;color:var(--muted);margin-top:2px;}
+
+  @keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+  .stat-card,.panel{animation:fadeUp 0.5s ease both;}
+  .stat-card:nth-child(1){animation-delay:0s;} .stat-card:nth-child(2){animation-delay:.07s;} .stat-card:nth-child(3){animation-delay:.14s;} .stat-card:nth-child(4){animation-delay:.21s;}
+
+  @media(max-width:1100px){.stats-grid{grid-template-columns:repeat(2,1fr);} .two-col{grid-template-columns:1fr;} .three-col{grid-template-columns:1fr 1fr;}}
+  @media(max-width:768px){.sidebar{transform:translateX(-100%);} .main{margin-left:0;} .stats-grid{grid-template-columns:1fr 1fr;} .three-col{grid-template-columns:1fr;} .content{padding:16px;} .topbar{padding:0 16px;}}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <h1>REDWAN<span>.</span>ADMIN</h1>
+    <p>Control Panel v2.0</p>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-label">Overview</div>
+    <a class="nav-item active" href="#"><span class="icon">📊</span> Dashboard</a>
+    <a class="nav-item" href="#"><span class="icon">📈</span> Analytics</a>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-label">Catalog</div>
+    <a class="nav-item" href="#"><span class="icon">📱</span> Products</a>
+    <a class="nav-item" href="#"><span class="icon">🗂️</span> Categories</a>
+    <a class="nav-item" href="#"><span class="icon">🏷️</span> Brands</a>
+    <a class="nav-item" href="#"><span class="icon">🎧</span> Accessories</a>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-label">Sales</div>
+    <a class="nav-item" href="#"><span class="icon">🛒</span> Orders <span class="nav-badge">12</span></a>
+    <a class="nav-item" href="#"><span class="icon">↩️</span> Returns <span class="nav-badge" style="background:var(--gold);color:#111;">3</span></a>
+    <a class="nav-item" href="#"><span class="icon">💳</span> Payments</a>
+    <a class="nav-item" href="#"><span class="icon">🚚</span> Shipping</a>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-label">Marketing</div>
+    <a class="nav-item" href="#"><span class="icon">🎁</span> Promotions</a>
+    <a class="nav-item" href="#"><span class="icon">📢</span> Banners</a>
+    <a class="nav-item" href="#"><span class="icon">✉️</span> Newsletter</a>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-label">Customers</div>
+    <a class="nav-item" href="#"><span class="icon">👥</span> Customers</a>
+    <a class="nav-item" href="#"><span class="icon">⭐</span> Reviews <span class="nav-badge" style="background:var(--blue);">5</span></a>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-label">System</div>
+    <a class="nav-item" href="#"><span class="icon">⚙️</span> Settings</a>
+    <a class="nav-item" href="#"><span class="icon">🔒</span> Admins</a>
+    <a class="nav-item" href="redwan-mobile-shop.html"><span class="icon">🌐</span> View Store</a>
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="admin-profile">
+      <div class="admin-avatar">R</div>
+      <div><div class="admin-name">Redwan Ahmed</div><div class="admin-role">Super Admin</div></div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="page-title">DASHBOARD <span>OVERVIEW</span></div>
+    <div class="topbar-right">
+      <div class="date-chip">📅 Monday, March 23, 2026</div>
+      <div class="topbar-btn">
+        🔔
+        <div class="topbar-dot"></div>
+      </div>
+      <div class="topbar-btn">⚙️</div>
+      <button style="background:var(--red);color:white;border:none;border-radius:8px;padding:8px 16px;font-family:'Outfit',sans-serif;font-weight:700;font-size:12px;cursor:pointer;">+ Add Product</button>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- STATS -->
+    <div class="stats-grid">
+      <div class="stat-card red">
+        <div class="stat-icon">💰</div>
+        <div class="stat-label">Today's Revenue</div>
+        <div class="stat-value red">৳3,84,200</div>
+        <div class="stat-change up">▲ 18.4% vs yesterday</div>
+      </div>
+      <div class="stat-card green">
+        <div class="stat-icon">🛒</div>
+        <div class="stat-label">Total Orders</div>
+        <div class="stat-value green">247</div>
+        <div class="stat-change up">▲ 32 new today</div>
+      </div>
+      <div class="stat-card blue">
+        <div class="stat-icon">👥</div>
+        <div class="stat-label">Total Customers</div>
+        <div class="stat-value blue">12,481</div>
+        <div class="stat-change up">▲ 94 this week</div>
+      </div>
+      <div class="stat-card gold">
+        <div class="stat-icon">📦</div>
+        <div class="stat-label">Products In Stock</div>
+        <div class="stat-value gold">528</div>
+        <div class="stat-change down">▼ 7 low stock alerts</div>
+      </div>
+    </div>
+
+    <!-- CHART + QUICK ACTIONS -->
+    <div class="two-col">
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Revenue This Month</div>
+          <div style="display:flex;gap:8px;">
+            <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);"><div style="width:8px;height:8px;border-radius:50%;background:var(--red);"></div>Revenue</div>
+            <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);"><div style="width:8px;height:8px;border-radius:50%;background:var(--blue);"></div>Orders</div>
+          </div>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="revenueChart"></canvas>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">Quick Actions</div></div>
+        <div class="quick-actions">
+          <div class="qa-btn" onclick="alert('Add Product page')"><span class="qa-icon">➕</span> Add Product</div>
+          <div class="qa-btn" onclick="alert('View Orders')"><span class="qa-icon">📋</span> View Orders</div>
+          <div class="qa-btn" onclick="alert('Manage Inventory')"><span class="qa-icon">📦</span> Inventory</div>
+          <div class="qa-btn" onclick="alert('Create Coupon')"><span class="qa-icon">🏷️</span> New Coupon</div>
+          <div class="qa-btn" onclick="alert('Shipping Manager')"><span class="qa-icon">🚚</span> Shipping</div>
+          <div class="qa-btn" onclick="alert('Reports')"><span class="qa-icon">📊</span> Reports</div>
+          <div class="qa-btn" onclick="alert('Bulk Import')"><span class="qa-icon">⬆️</span> Bulk Import</div>
+          <div class="qa-btn" onclick="alert('Settings')"><span class="qa-icon">⚙️</span> Settings</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RECENT ORDERS TABLE -->
+    <div class="panel" style="margin-bottom:24px;">
+      <div class="panel-header">
+        <div class="panel-title">Recent Orders</div>
+        <div style="display:flex;gap:10px;align-items:center;">
+          <select style="background:var(--card2);border:1px solid var(--border);border-radius:6px;padding:5px 10px;font-size:12px;color:var(--muted);font-family:'Outfit',sans-serif;outline:none;">
+            <option>All Status</option>
+            <option>Pending</option>
+            <option>Processing</option>
+            <option>Shipped</option>
+            <option>Delivered</option>
+          </select>
+          <span class="panel-action">View All →</span>
+        </div>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="orders-table">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Customer</th>
+              <th>Product</th>
+              <th>Amount</th>
+              <th>Payment</th>
+              <th>Status</th>
+              <th>Date</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="order-id">#RM-2026-0247</span></td>
+              <td><div class="customer-cell"><div class="mini-avatar" style="background:#e8132a;">R</div><div><div style="font-size:12px;font-weight:600;">Rafiqul Islam</div><div style="font-size:10px;color:var(--muted);">Dhaka</div></div></div></td>
+              <td style="font-size:12px;">Samsung Galaxy S25 Ultra</td>
+              <td style="font-family:'Bebas Neue',sans-serif;font-size:15px;">৳1,19,999</td>
+              <td style="font-size:11px;color:var(--green);">bKash ✓</td>
+              <td><span class="status-pill s-processing">Processing</span></td>
+              <td style="font-size:11px;color:var(--muted);">Mar 23, 2026</td>
+              <td><button class="action-btn" onclick="this.textContent='Shipped ✓';this.style.color='var(--green)';this.style.borderColor='var(--green)'">Process</button></td>
+            </tr>
+            <tr>
+              <td><span class="order-id">#RM-2026-0246</span></td>
+              <td><div class="customer-cell"><div class="mini-avatar" style="background:#3b82f6;">S</div><div><div style="font-size:12px;font-weight:600;">Sumaiya Akter</div><div style="font-size:10px;color:var(--muted);">Chittagong</div></div></div></td>
+              <td style="font-size:12px;">iPhone 16 Pro Max 256GB</td>
+              <td style="font-family:'Bebas Neue',sans-serif;font-size:15px;">৳1,74,999</td>
+              <td style="font-size:11px;color:var(--green);">Card ✓</td>
+              <td><span class="status-pill s-shipped">Shipped</span></td>
+              <td style="font-size:11px;color:var(--muted);">Mar 22, 2026</td>
+              <td><button class="action-btn">Track</button></td>
+            </tr>
+            <tr>
+              <td><span class="order-id">#RM-2026-0245</span></td>
+              <td><div class="customer-cell"><div class="mini-avatar" style="background:#f59e0b;">M</div><div><div style="font-size:12px;font-weight:600;">Mahbub Hossain</div><div style="font-size:10px;color:var(--muted);">Sylhet</div></div></div></td>
+              <td style="font-size:12px;">Redmi Note 13 Pro+</td>
+              <td style="font-family:'Bebas Neue',sans-serif;font-size:15px;">৳34,999</td>
+              <td style="font-size:11px;color:var(--gold);">COD</td>
+              <td><span class="status-pill s-pending">Pending</span></td>
+              <td style="font-size:11px;color:var(--muted);">Mar 22, 2026</td>
+              <td><button class="action-btn" onclick="this.textContent='Confirmed ✓';this.style.color='var(--green)'">Confirm</button></td>
+            </tr>
+            <tr>
+              <td><span class="order-id">#RM-2026-0244</span></td>
+              <td><div class="customer-cell"><div class="mini-avatar" style="background:#22c55e;">K</div><div><div style="font-size:12px;font-weight:600;">Karim Uddin</div><div style="font-size:10px;color:var(--muted);">Rajshahi</div></div></div></td>
+              <td style="font-size:12px;">Samsung Galaxy Buds3 Pro</td>
+              <td style="font-family:'Bebas Neue',sans-serif;font-size:15px;">৳14,999</td>
+              <td style="font-size:11px;color:var(--green);">Nagad ✓</td>
+              <td><span class="status-pill s-delivered">Delivered</span></td>
+              <td style="font-size:11px;color:var(--muted);">Mar 20, 2026</td>
+              <td><button class="action-btn">Invoice</button></td>
+            </tr>
+            <tr>
+              <td><span class="order-id">#RM-2026-0243</span></td>
+              <td><div class="customer-cell"><div class="mini-avatar" style="background:#8b5cf6;">N</div><div><div style="font-size:12px;font-weight:600;">Nasrin Begum</div><div style="font-size:10px;color:var(--muted);">Khulna</div></div></div></td>
+              <td style="font-size:12px;">OPPO Reno 12 Pro 5G</td>
+              <td style="font-family:'Bebas Neue',sans-serif;font-size:15px;">৳44,999</td>
+              <td style="font-size:11px;color:var(--red);">Failed ✗</td>
+              <td><span class="status-pill s-cancelled">Cancelled</span></td>
+              <td style="font-size:11px;color:var(--muted);">Mar 19, 2026</td>
+              <td><button class="action-btn">Refund</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- THREE COL: TOP PRODUCTS + INVENTORY ALERTS + ACTIVITY -->
+    <div class="three-col">
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">🏆 Top Selling</div><span class="panel-action">This Month</span></div>
+        <div class="product-rank"><div class="rank-num">1</div><div class="rank-icon">📱</div><div class="rank-info"><div class="rank-name">Samsung S25 Ultra</div><div class="rank-brand">Samsung</div></div><div class="rank-right"><div class="rank-price">৳1,19,999</div><div class="rank-sold" style="color:var(--green);">84 sold</div></div></div>
+        <div class="product-rank"><div class="rank-num">2</div><div class="rank-icon">📱</div><div class="rank-info"><div class="rank-name">Redmi Note 13 Pro+</div><div class="rank-brand">Xiaomi</div></div><div class="rank-right"><div class="rank-price">৳34,999</div><div class="rank-sold" style="color:var(--green);">72 sold</div></div></div>
+        <div class="product-rank"><div class="rank-num">3</div><div class="rank-icon">📱</div><div class="rank-info"><div class="rank-name">iPhone 16 Pro Max</div><div class="rank-brand">Apple</div></div><div class="rank-right"><div class="rank-price">৳1,74,999</div><div class="rank-sold" style="color:var(--green);">41 sold</div></div></div>
+        <div class="product-rank"><div class="rank-num">4</div><div class="rank-icon">📱</div><div class="rank-info"><div class="rank-name">Realme 12 Pro+</div><div class="rank-brand">Realme</div></div><div class="rank-right"><div class="rank-price">৳28,999</div><div class="rank-sold" style="color:var(--green);">38 sold</div></div></div>
+        <div class="product-rank"><div class="rank-num">5</div><div class="rank-icon">🎧</div><div class="rank-info"><div class="rank-name">Galaxy Buds3 Pro</div><div class="rank-brand">Samsung</div></div><div class="rank-right"><div class="rank-price">৳14,999</div><div class="rank-sold" style="color:var(--green);">31 sold</div></div></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">⚠️ Low Stock Alerts</div><span class="panel-action">7 Alerts</span></div>
+        <div class="alert-item"><div class="alert-icon">📱</div><div class="alert-info"><div class="alert-name">iPhone 16 Pro Max 1TB</div><div class="alert-stock critical">🔴 Only 2 left!</div></div><button class="restock-btn">Restock</button></div>
+        <div class="alert-item"><div class="alert-icon">📱</div><div class="alert-info"><div class="alert-name">Galaxy S25 Ultra (Violet)</div><div class="alert-stock critical">🔴 Only 3 left!</div></div><button class="restock-btn">Restock</button></div>
+        <div class="alert-item"><div class="alert-icon">🎧</div><div class="alert-info"><div class="alert-name">AirPods Pro 2nd Gen</div><div class="alert-stock low">🟡 5 remaining</div></div><button class="restock-btn">Restock</button></div>
+        <div class="alert-item"><div class="alert-icon">📱</div><div class="alert-info"><div class="alert-name">OnePlus 13 (Midnight Black)</div><div class="alert-stock low">🟡 6 remaining</div></div><button class="restock-btn">Restock</button></div>
+        <div class="alert-item"><div class="alert-icon">🔋</div><div class="alert-info"><div class="alert-name">Anker 20000mAh Power Bank</div><div class="alert-stock low">🟡 4 remaining</div></div><button class="restock-btn">Restock</button></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">🕐 Recent Activity</div><span class="panel-action">Today</span></div>
+        <div class="activity-item"><div class="activity-dot" style="background:var(--green);"></div><div><div class="activity-text"><strong>New order #0247</strong> placed by Rafiqul Islam for S25 Ultra</div><div class="activity-time">2 min ago</div></div></div>
+        <div class="activity-item"><div class="activity-dot" style="background:var(--blue);"></div><div><div class="activity-text"><strong>Payment confirmed</strong> ৳1,74,999 via Card from Sumaiya Akter</div><div class="activity-time">18 min ago</div></div></div>
+        <div class="activity-item"><div class="activity-dot" style="background:var(--gold);"></div><div><div class="activity-text"><strong>New review</strong> 5★ on Samsung S25 Ultra by Md. Karim</div><div class="activity-time">45 min ago</div></div></div>
+        <div class="activity-item"><div class="activity-dot" style="background:var(--red);"></div><div><div class="activity-text"><strong>Low stock alert:</strong> iPhone 16 Pro Max 1TB — only 2 left</div><div class="activity-time">1 hr ago</div></div></div>
+        <div class="activity-item"><div class="activity-dot" style="background:var(--green);"></div><div><div class="activity-text"><strong>Order #0244 delivered</strong> to Karim Uddin in Rajshahi</div><div class="activity-time">2 hrs ago</div></div></div>
+        <div class="activity-item"><div class="activity-dot" style="background:var(--orange);"></div><div><div class="activity-text"><strong>New coupon created:</strong> REDWAN20 — 20% off selected phones</div><div class="activity-time">3 hrs ago</div></div></div>
+      </div>
+    </div>
+
+    <!-- SALES BY CATEGORY DONUT -->
+    <div class="two-col">
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">Sales by Category</div><span class="panel-action">March 2026</span></div>
+        <div style="display:flex;gap:28px;align-items:center;flex-wrap:wrap;">
+          <div style="width:180px;height:180px;flex-shrink:0;"><canvas id="donutChart"></canvas></div>
+          <div style="flex:1;display:flex;flex-direction:column;gap:12px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;"><div style="display:flex;gap:8px;align-items:center;"><div style="width:10px;height:10px;border-radius:2px;background:var(--red);"></div><span style="font-size:13px;">Smartphones</span></div><span style="font-size:14px;font-weight:700;">68%</span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;"><div style="display:flex;gap:8px;align-items:center;"><div style="width:10px;height:10px;border-radius:2px;background:var(--blue);"></div><span style="font-size:13px;">Accessories</span></div><span style="font-size:14px;font-weight:700;">16%</span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;"><div style="display:flex;gap:8px;align-items:center;"><div style="width:10px;height:10px;border-radius:2px;background:var(--gold);"></div><span style="font-size:13px;">Earphones</span></div><span style="font-size:14px;font-weight:700;">9%</span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;"><div style="display:flex;gap:8px;align-items:center;"><div style="width:10px;height:10px;border-radius:2px;background:var(--green);"></div><span style="font-size:13px;">Smart Watches</span></div><span style="font-size:14px;font-weight:700;">5%</span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;"><div style="display:flex;gap:8px;align-items:center;"><div style="width:10px;height:10px;border-radius:2px;background:var(--orange);"></div><span style="font-size:13px;">Other</span></div><span style="font-size:14px;font-weight:700;">2%</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">Monthly Targets</div><span class="panel-action">March 2026</span></div>
+        <div style="display:flex;flex-direction:column;gap:18px;">
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px;"><span style="font-size:13px;">Revenue</span><span style="font-size:13px;font-weight:700;color:var(--green);">৳84L / ৳1Cr</span></div>
+            <div style="height:6px;background:var(--card2);border-radius:3px;overflow:hidden;"><div style="width:84%;height:100%;background:var(--green);border-radius:3px;transition:width 1s;"></div></div>
+            <div style="font-size:11px;color:var(--muted);margin-top:4px;">84% of target</div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px;"><span style="font-size:13px;">Orders</span><span style="font-size:13px;font-weight:700;color:var(--blue);">247 / 300</span></div>
+            <div style="height:6px;background:var(--card2);border-radius:3px;overflow:hidden;"><div style="width:82%;height:100%;background:var(--blue);border-radius:3px;"></div></div>
+            <div style="font-size:11px;color:var(--muted);margin-top:4px;">82% of target</div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px;"><span style="font-size:13px;">New Customers</span><span style="font-size:13px;font-weight:700;color:var(--gold);">94 / 150</span></div>
+            <div style="height:6px;background:var(--card2);border-radius:3px;overflow:hidden;"><div style="width:63%;height:100%;background:var(--gold);border-radius:3px;"></div></div>
+            <div style="font-size:11px;color:var(--muted);margin-top:4px;">63% of target</div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px;"><span style="font-size:13px;">Avg. Order Value</span><span style="font-size:13px;font-weight:700;color:var(--red);">৳34,100 / ৳40,000</span></div>
+            <div style="height:6px;background:var(--card2);border-radius:3px;overflow:hidden;"><div style="width:85%;height:100%;background:var(--red);border-radius:3px;"></div></div>
+            <div style="font-size:11px;color:var(--muted);margin-top:4px;">85% of target</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// Revenue Chart
+const ctx = document.getElementById('revenueChart').getContext('2d');
+new Chart(ctx, {
+  type: 'bar',
+  data: {
+    labels: ['Mar 1','Mar 5','Mar 8','Mar 10','Mar 13','Mar 15','Mar 17','Mar 20','Mar 22','Mar 23'],
+    datasets: [{
+      label: 'Revenue (৳)',
+      data: [280000, 420000, 310000, 580000, 490000, 720000, 380000, 640000, 510000, 384200],
+      backgroundColor: 'rgba(232,19,42,0.3)',
+      borderColor: '#E8132A',
+      borderWidth: 2,
+      borderRadius: 4,
+    },{
+      label: 'Orders',
+      data: [14, 22, 16, 31, 25, 38, 19, 34, 27, 20],
+      type: 'line',
+      borderColor: '#3b82f6',
+      backgroundColor: 'rgba(59,130,246,0.1)',
+      borderWidth: 2,
+      pointRadius: 3,
+      yAxisID: 'y2',
+      tension: 0.4,
+      fill: true,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#777', font: { size: 10 } } },
+      y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#777', font: { size: 10 }, callback: v => '৳' + (v/1000).toFixed(0) + 'K' } },
+      y2: { position: 'right', grid: { display: false }, ticks: { color: '#3b82f6', font: { size: 10 } } }
+    }
+  }
+});
+
+// Donut Chart
+const ctx2 = document.getElementById('donutChart').getContext('2d');
+new Chart(ctx2, {
+  type: 'doughnut',
+  data: {
+    datasets: [{
+      data: [68, 16, 9, 5, 2],
+      backgroundColor: ['#E8132A','#3b82f6','#f5c842','#22c55e','#f97316'],
+      borderWidth: 0,
+      hoverOffset: 4
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    cutout: '70%',
+    plugins: { legend: { display: false } }
+  }
+});
+
+// Nav active state
+document.querySelectorAll('.nav-item').forEach(item => {
+  item.addEventListener('click', function(e) {
+    if(this.href && !this.href.endsWith('#')) return;
+    e.preventDefault();
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>

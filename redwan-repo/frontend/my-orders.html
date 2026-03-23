@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>My Orders — Redwan Mobile Shop</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{--red:#E8132A;--red-dark:#b50f21;--black:#0a0a0a;--dark:#111214;--card:#181a1e;--card2:#1e2026;--border:rgba(255,255,255,0.07);--text:#f0f0f0;--muted:#888;--white:#fff;--green:#22c55e;--gold:#f5c842;--blue:#3b82f6;--orange:#f97316;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Outfit',sans-serif;background:var(--black);color:var(--text);}
+::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:var(--dark);}::-webkit-scrollbar-thumb{background:var(--red);border-radius:3px;}
+nav{position:sticky;top:0;z-index:100;background:rgba(10,10,10,0.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 48px;height:64px;display:flex;align-items:center;justify-content:space-between;}
+.nav-logo{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;color:var(--white);text-decoration:none;}
+.nav-logo span{color:var(--red);}
+.nav-right{display:flex;gap:12px;align-items:center;}
+.icon-btn{background:var(--card);border:1px solid var(--border);border-radius:8px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;color:var(--text);}
+.icon-btn:hover{border-color:var(--red);color:var(--red);}
+
+/* LAYOUT */
+.page-layout{display:grid;grid-template-columns:240px 1fr;min-height:calc(100vh - 64px);}
+.sidebar{background:var(--dark);border-right:1px solid var(--border);padding:32px 16px;}
+.side-profile{text-align:center;padding:20px 0 28px;border-bottom:1px solid var(--border);margin-bottom:16px;}
+.side-avatar{width:60px;height:60px;border-radius:50%;background:var(--red);margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:26px;}
+.side-name{font-weight:700;font-size:15px;}
+.side-email{font-size:12px;color:var(--muted);margin-top:2px;}
+.side-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:500;color:var(--muted);margin-bottom:2px;text-decoration:none;transition:all 0.2s;}
+.side-item:hover{background:rgba(255,255,255,0.04);color:var(--text);}
+.side-item.active{background:rgba(232,19,42,0.1);color:var(--red);}
+.side-item .ico{font-size:16px;width:20px;text-align:center;}
+.side-badge{margin-left:auto;background:var(--red);color:white;font-size:10px;font-weight:700;padding:2px 6px;border-radius:100px;}
+
+/* MAIN CONTENT */
+.main-content{padding:36px 40px;}
+.page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;}
+.page-title{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:1.5px;}
+.page-title span{color:var(--red);}
+
+/* STATUS FILTERS */
+.status-filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px;}
+.status-filter{padding:7px 16px;border-radius:100px;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;border:1px solid var(--border);color:var(--muted);background:var(--card);}
+.status-filter.active,.status-filter:hover{border-color:var(--red);color:var(--red);background:rgba(232,19,42,0.08);}
+.status-filter .count{margin-left:4px;background:var(--card2);border-radius:100px;padding:1px 6px;font-size:11px;}
+.status-filter.active .count{background:var(--red);color:white;}
+
+/* ORDER CARD */
+.orders-list{display:flex;flex-direction:column;gap:16px;}
+.order-card{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:border-color 0.2s;}
+.order-card:hover{border-color:rgba(232,19,42,0.3);}
+.order-card-header{padding:18px 22px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;border-bottom:1px solid var(--border);}
+.order-id{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--red);letter-spacing:0.5px;}
+.order-date{font-size:12px;color:var(--muted);}
+.order-status{margin-left:auto;}
+.status-pill{padding:4px 12px;border-radius:100px;font-size:11px;font-weight:700;}
+.sp-pending{background:rgba(245,200,66,0.12);color:var(--gold);border:1px solid rgba(245,200,66,0.25);}
+.sp-processing{background:rgba(59,130,246,0.12);color:var(--blue);border:1px solid rgba(59,130,246,0.25);}
+.sp-shipped{background:rgba(249,115,22,0.12);color:var(--orange);border:1px solid rgba(249,115,22,0.25);}
+.sp-delivered{background:rgba(34,197,94,0.12);color:var(--green);border:1px solid rgba(34,197,94,0.25);}
+.sp-cancelled{background:rgba(232,19,42,0.1);color:var(--red);border:1px solid rgba(232,19,42,0.2);}
+.order-card-body{padding:18px 22px;}
+.order-items-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;}
+.order-item-thumb{width:60px;height:60px;background:var(--card2);border:1px solid var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;}
+.order-item-info{flex:1;min-width:180px;}
+.order-item-name{font-size:14px;font-weight:600;margin-bottom:3px;}
+.order-item-meta{font-size:12px;color:var(--muted);}
+.order-total{margin-left:auto;text-align:right;}
+.order-amount{font-family:'Bebas Neue',sans-serif;font-size:22px;}
+.order-items-count{font-size:12px;color:var(--muted);}
+.order-card-footer{padding:14px 22px;border-top:1px solid var(--border);display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+.order-delivery{font-size:12px;color:var(--muted);flex:1;}
+.order-delivery strong{color:var(--text);}
+.btn-sm{padding:8px 16px;border-radius:8px;font-family:'Outfit',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all 0.2s;border:1px solid var(--border);background:var(--card2);color:var(--muted);}
+.btn-sm:hover{border-color:var(--red);color:var(--red);}
+.btn-sm.primary{background:var(--red);color:white;border-color:var(--red);}
+.btn-sm.primary:hover{background:var(--red-dark);}
+
+/* TRACK MINI PROGRESS */
+.track-mini{display:flex;align-items:center;gap:0;margin:12px 0 0;}
+.track-step{display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;}
+.track-dot{width:20px;height:20px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:10px;}
+.track-step.done .track-dot{background:var(--green);border-color:var(--green);color:white;}
+.track-step.active .track-dot{background:var(--red);border-color:var(--red);color:white;}
+.track-label{font-size:10px;color:var(--muted);text-align:center;}
+.track-step.active .track-label{color:var(--red);}
+.track-step.done .track-label{color:var(--green);}
+.track-line{flex:1;height:2px;background:var(--border);margin-bottom:14px;}
+.track-line.done{background:var(--green);}
+
+/* EMPTY STATE */
+.empty-state{text-align:center;padding:80px 20px;}
+.empty-icon{font-size:60px;margin-bottom:16px;}
+.empty-title{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:1px;margin-bottom:8px;}
+.empty-sub{font-size:14px;color:var(--muted);margin-bottom:24px;}
+
+/* SEARCH */
+.search-bar{display:flex;gap:10px;margin-bottom:20px;}
+.search-input{flex:1;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:11px 16px;font-family:'Outfit',sans-serif;font-size:14px;color:var(--text);outline:none;transition:border-color 0.2s;}
+.search-input:focus{border-color:var(--red);}
+.search-input::placeholder{color:var(--muted);}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+.order-card{animation:fadeUp 0.4s ease both;}
+.order-card:nth-child(1){animation-delay:0s;}.order-card:nth-child(2){animation-delay:.07s;}.order-card:nth-child(3){animation-delay:.14s;}
+@media(max-width:900px){.page-layout{grid-template-columns:1fr;}.sidebar{display:none;}.main-content{padding:20px;}.nav-logo{font-size:20px;}nav{padding:0 16px;}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="redwan-mobile-shop.html" class="nav-logo">REDWAN<span>.</span>MOBILE</a>
+  <div class="nav-right">
+    <button class="icon-btn" onclick="window.location.href='wishlist.html'">❤️</button>
+    <button class="icon-btn">🛒</button>
+    <button class="icon-btn" onclick="window.location.href='account.html'">👤</button>
+  </div>
+</nav>
+
+<div class="page-layout">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="side-profile">
+      <div class="side-avatar">R</div>
+      <div class="side-name">Rafiqul Islam</div>
+      <div class="side-email">rafiqul@email.com</div>
+    </div>
+    <a class="side-item active" href="my-orders.html"><span class="ico">📦</span> My Orders <span class="side-badge">7</span></a>
+    <a class="side-item" href="wishlist.html"><span class="ico">❤️</span> Wishlist</a>
+    <a class="side-item" href="#"><span class="ico">📍</span> Addresses</a>
+    <a class="side-item" href="#"><span class="ico">💳</span> Payments</a>
+    <a class="side-item" href="#"><span class="ico">🔔</span> Notifications <span class="side-badge" style="background:var(--blue);">3</span></a>
+    <a class="side-item" href="account.html"><span class="ico">⚙️</span> Settings</a>
+    <a class="side-item" href="redwan-mobile-shop.html" style="margin-top:12px;border-top:1px solid var(--border);padding-top:12px;"><span class="ico">🏠</span> Back to Shop</a>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main-content">
+    <div class="page-header">
+      <div class="page-title">MY <span>ORDERS</span></div>
+      <div style="font-size:13px;color:var(--muted);">7 orders placed</div>
+    </div>
+
+    <div class="search-bar">
+      <input class="search-input" type="text" placeholder="Search orders by product name or order ID..."/>
+      <select style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:0 14px;font-family:'Outfit',sans-serif;font-size:13px;color:var(--muted);outline:none;cursor:pointer;">
+        <option>All Time</option>
+        <option>Last 30 days</option>
+        <option>Last 3 months</option>
+        <option>2025</option>
+      </select>
+    </div>
+
+    <div class="status-filters">
+      <div class="status-filter active" onclick="filterOrders(this,'all')">All Orders <span class="count">7</span></div>
+      <div class="status-filter" onclick="filterOrders(this,'processing')">Processing <span class="count">1</span></div>
+      <div class="status-filter" onclick="filterOrders(this,'shipped')">Shipped <span class="count">1</span></div>
+      <div class="status-filter" onclick="filterOrders(this,'delivered')">Delivered <span class="count">4</span></div>
+      <div class="status-filter" onclick="filterOrders(this,'cancelled')">Cancelled <span class="count">1</span></div>
+    </div>
+
+    <div class="orders-list" id="ordersList">
+
+      <!-- ORDER 1 - Processing -->
+      <div class="order-card" data-status="processing">
+        <div class="order-card-header">
+          <div>
+            <div class="order-id">#RM-2026-0247</div>
+            <div class="order-date">Placed on March 23, 2026 · bKash Payment</div>
+          </div>
+          <div class="order-status"><span class="status-pill sp-processing">● Processing</span></div>
+        </div>
+        <div class="order-card-body">
+          <div class="order-items-row">
+            <div class="order-item-thumb">📱</div>
+            <div class="order-item-info">
+              <div class="order-item-name">Samsung Galaxy S25 Ultra</div>
+              <div class="order-item-meta">Titanium Black · 256GB · Qty: 1</div>
+            </div>
+            <div class="order-total"><div class="order-amount">৳1,19,999</div><div class="order-items-count">3 items total</div></div>
+          </div>
+          <div class="track-mini">
+            <div class="track-step done"><div class="track-dot">✓</div><div class="track-label">Placed</div></div>
+            <div class="track-line done"></div>
+            <div class="track-step active"><div class="track-dot">●</div><div class="track-label">Processing</div></div>
+            <div class="track-line"></div>
+            <div class="track-step"><div class="track-dot"></div><div class="track-label">Shipped</div></div>
+            <div class="track-line"></div>
+            <div class="track-step"><div class="track-dot"></div><div class="track-label">Delivered</div></div>
+          </div>
+        </div>
+        <div class="order-card-footer">
+          <div class="order-delivery">Est. delivery: <strong>Today by 8 PM</strong> · Pathao Courier</div>
+          <button class="btn-sm" onclick="window.location.href='checkout-tracking.html'">🚚 Track Order</button>
+          <button class="btn-sm">📄 Invoice</button>
+          <button class="btn-sm" style="color:var(--red);border-color:rgba(232,19,42,0.3);">✕ Cancel</button>
+        </div>
+      </div>
+
+      <!-- ORDER 2 - Delivered -->
+      <div class="order-card" data-status="delivered">
+        <div class="order-card-header">
+          <div>
+            <div class="order-id">#RM-2026-0231</div>
+            <div class="order-date">Placed on March 10, 2026 · Card Payment</div>
+          </div>
+          <div class="order-status"><span class="status-pill sp-delivered">✓ Delivered</span></div>
+        </div>
+        <div class="order-card-body">
+          <div class="order-items-row">
+            <div class="order-item-thumb">📱</div>
+            <div class="order-item-info">
+              <div class="order-item-name">iPhone 16 Pro Max</div>
+              <div class="order-item-meta">Natural Titanium · 256GB · Qty: 1</div>
+            </div>
+            <div class="order-total"><div class="order-amount">৳1,74,999</div><div class="order-items-count">1 item</div></div>
+          </div>
+          <div class="track-mini">
+            <div class="track-step done"><div class="track-dot">✓</div><div class="track-label">Placed</div></div>
+            <div class="track-line done"></div>
+            <div class="track-step done"><div class="track-dot">✓</div><div class="track-label">Processing</div></div>
+            <div class="track-line done"></div>
+            <div class="track-step done"><div class="track-dot">✓</div><div class="track-label">Shipped</div></div>
+            <div class="track-line done"></div>
+            <div class="track-step done"><div class="track-dot">✓</div><div class="track-label">Delivered</div></div>
+          </div>
+        </div>
+        <div class="order-card-footer">
+          <div class="order-delivery">Delivered on <strong>March 12, 2026</strong> · Received by: Rafiqul Islam</div>
+          <button class="btn-sm primary" onclick="reorder()">🔁 Re-order</button>
+          <button class="btn-sm" onclick="writeReview()">⭐ Write Review</button>
+          <button class="btn-sm">📄 Invoice</button>
+          <button class="btn-sm">↩️ Return</button>
+        </div>
+      </div>
+
+      <!-- ORDER 3 - Shipped -->
+      <div class="order-card" data-status="shipped">
+        <div class="order-card-header">
+          <div>
+            <div class="order-id">#RM-2026-0219</div>
+            <div class="order-date">Placed on March 5, 2026 · Nagad Payment</div>
+          </div>
+          <div class="order-status"><span class="status-pill sp-shipped">🚚 Shipped</span></div>
+        </div>
+        <div class="order-card-body">
+          <div class="order-items-row">
+            <div class="order-item-thumb">🎧</div>
+            <div class="order-item-info">
+              <div class="order-item-name">Samsung Galaxy Buds3 Pro + Case</div>
+              <div class="order-item-meta">Black · Qty: 1 + Qty: 1</div>
+            </div>
+            <div class="order-total"><div class="order-amount">৳18,499</div><div class="order-items-count">2 items</div></div>
+          </div>
+          <div class="track-mini">
+            <div class="track-step done"><div class="track-dot">✓</div><div class="track-label">Placed</div></div>
+            <div class="track-line done"></div>
+            <div class="track-step done"><div class="track-dot">✓</div><div class="track-label">Processing</div></div>
+            <div class="track-line done"></div>
+            <div class="track-step active"><div class="track-dot">●</div><div class="track-label">Shipped</div></div>
+            <div class="track-line"></div>
+            <div class="track-step"><div class="track-dot"></div><div class="track-label">Delivered</div></div>
+          </div>
+        </div>
+        <div class="order-card-footer">
+          <div class="order-delivery">Expected by: <strong>March 25, 2026</strong> · Steadfast Courier · TRK: STD-882234</div>
+          <button class="btn-sm" onclick="window.location.href='checkout-tracking.html'">🚚 Track</button>
+          <button class="btn-sm">📄 Invoice</button>
+        </div>
+      </div>
+
+      <!-- ORDER 4 - Delivered -->
+      <div class="order-card" data-status="delivered">
+        <div class="order-card-header">
+          <div>
+            <div class="order-id">#RM-2026-0198</div>
+            <div class="order-date">Placed on February 18, 2026 · bKash Payment</div>
+          </div>
+          <div class="order-status"><span class="status-pill sp-delivered">✓ Delivered</span></div>
+        </div>
+        <div class="order-card-body">
+          <div class="order-items-row">
+            <div class="order-item-thumb">📱</div>
+            <div class="order-item-info">
+              <div class="order-item-name">Redmi Note 13 Pro+</div>
+              <div class="order-item-meta">Midnight Black · 256GB · Qty: 1</div>
+            </div>
+            <div class="order-total"><div class="order-amount">৳34,999</div><div class="order-items-count">1 item</div></div>
+          </div>
+        </div>
+        <div class="order-card-footer">
+          <div class="order-delivery">Delivered on <strong>February 20, 2026</strong></div>
+          <button class="btn-sm primary">🔁 Re-order</button>
+          <button class="btn-sm">⭐ Write Review</button>
+          <button class="btn-sm">📄 Invoice</button>
+        </div>
+      </div>
+
+      <!-- ORDER 5 - Cancelled -->
+      <div class="order-card" data-status="cancelled">
+        <div class="order-card-header">
+          <div>
+            <div class="order-id">#RM-2026-0185</div>
+            <div class="order-date">Placed on February 1, 2026 · Card Payment</div>
+          </div>
+          <div class="order-status"><span class="status-pill sp-cancelled">✕ Cancelled</span></div>
+        </div>
+        <div class="order-card-body">
+          <div class="order-items-row">
+            <div class="order-item-thumb">📱</div>
+            <div class="order-item-info">
+              <div class="order-item-name">OPPO Reno 12 Pro 5G</div>
+              <div class="order-item-meta">Sunset Gold · 256GB · Qty: 1</div>
+            </div>
+            <div class="order-total"><div class="order-amount" style="color:var(--muted);text-decoration:line-through;">৳44,999</div><div class="order-items-count" style="color:var(--red);">Refunded</div></div>
+          </div>
+        </div>
+        <div class="order-card-footer">
+          <div class="order-delivery" style="color:var(--red);">Cancelled by customer · Refund processed in 3-5 days</div>
+          <button class="btn-sm primary" onclick="reorder()">🔁 Re-order</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+function filterOrders(el, status){
+  document.querySelectorAll('.status-filter').forEach(f=>f.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.order-card').forEach(card=>{
+    const show = status==='all' || card.dataset.status===status;
+    card.style.display = show?'block':'none';
+  });
+}
+function reorder(){
+  if(confirm('Add this item back to cart?')){alert('Added to cart! Redirecting to checkout...');}
+}
+function writeReview(){
+  const r=prompt('Rate this product 1-5 stars:','5');
+  if(r)alert('Thank you for your review! It will appear after moderation.');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Wishlist & Search — Redwan Mobile Shop</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{--red:#E8132A;--red-dark:#b50f21;--black:#0a0a0a;--dark:#111214;--card:#181a1e;--card2:#1e2026;--border:rgba(255,255,255,0.07);--text:#f0f0f0;--muted:#888;--white:#fff;--green:#22c55e;--gold:#f5c842;--blue:#3b82f6;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Outfit',sans-serif;background:var(--black);color:var(--text);}
+::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:var(--dark);}::-webkit-scrollbar-thumb{background:var(--red);border-radius:3px;}
+nav{position:sticky;top:0;z-index:100;background:rgba(10,10,10,0.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 48px;height:64px;display:flex;align-items:center;justify-content:space-between;}
+.nav-logo{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;color:var(--white);text-decoration:none;}
+.nav-logo span{color:var(--red);}
+.nav-right{display:flex;gap:10px;align-items:center;}
+.icon-btn{background:var(--card);border:1px solid var(--border);border-radius:8px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;color:var(--text);}
+.icon-btn:hover{border-color:var(--red);color:var(--red);}
+/* PAGE SWITCHER */
+.page-switcher{background:var(--dark);border-bottom:1px solid var(--border);padding:0 48px;display:flex;gap:0;}
+.page-tab{padding:16px 24px;font-size:14px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all 0.2s;}
+.page-tab.active{color:var(--red);border-bottom-color:var(--red);}
+.page-tab:hover{color:var(--text);}
+/* PAGES */
+.page{display:none;padding:40px 48px;}
+.page.active{display:block;}
+/* WISHLIST */
+.page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;}
+.page-title{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:1.5px;}
+.page-title span{color:var(--red);}
+.wishlist-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:18px;}
+.wish-card{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:all 0.3s;position:relative;}
+.wish-card:hover{border-color:rgba(232,19,42,0.4);transform:translateY(-3px);}
+.wish-remove{position:absolute;top:10px;right:10px;width:28px;height:28px;background:rgba(0,0,0,0.6);border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:12px;color:var(--muted);transition:all 0.2s;z-index:2;}
+.wish-remove:hover{background:var(--red);color:white;border-color:var(--red);}
+.wish-img{height:180px;background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:72px;}
+.wish-body{padding:16px;}
+.wish-brand{font-size:11px;color:var(--red);font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:3px;}
+.wish-name{font-size:14px;font-weight:600;margin-bottom:8px;line-height:1.3;}
+.wish-specs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;}
+.spec-tag{background:var(--card2);border:1px solid var(--border);border-radius:4px;padding:2px 7px;font-size:10px;color:var(--muted);}
+.wish-price-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.wish-price{font-family:'Bebas Neue',sans-serif;font-size:22px;}
+.wish-old-price{font-size:12px;color:var(--muted);text-decoration:line-through;margin-left:6px;}
+.stock-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;}
+.in-stock{background:rgba(34,197,94,0.1);color:var(--green);border:1px solid rgba(34,197,94,0.25);}
+.low-stock{background:rgba(245,200,66,0.1);color:var(--gold);border:1px solid rgba(245,200,66,0.25);}
+.wish-actions{display:flex;gap:8px;}
+.btn-cart-w{flex:1;background:var(--red);color:white;border:none;border-radius:8px;padding:10px;font-family:'Outfit',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:background 0.2s;}
+.btn-cart-w:hover{background:var(--red-dark);}
+.btn-view-w{background:var(--card2);color:var(--muted);border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;}
+.btn-view-w:hover{border-color:var(--red);color:var(--red);}
+.wish-toolbar{display:flex;gap:10px;margin-bottom:20px;align-items:center;flex-wrap:wrap;}
+.wish-sort{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:8px 14px;font-family:'Outfit',sans-serif;font-size:13px;color:var(--muted);outline:none;cursor:pointer;}
+.clear-all-btn{background:transparent;border:1px solid rgba(232,19,42,0.3);border-radius:8px;padding:8px 16px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;color:var(--red);cursor:pointer;transition:all 0.2s;}
+.clear-all-btn:hover{background:var(--red);color:white;}
+.add-all-btn{background:var(--red);border:none;border-radius:8px;padding:8px 18px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:700;color:white;cursor:pointer;transition:background 0.2s;margin-left:auto;}
+.add-all-btn:hover{background:var(--red-dark);}
+
+/* SEARCH PAGE */
+.search-layout{display:grid;grid-template-columns:260px 1fr;gap:28px;}
+/* Filter Sidebar */
+.filter-sidebar{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px;height:fit-content;position:sticky;top:80px;}
+.filter-title{font-weight:700;font-size:15px;margin-bottom:18px;display:flex;justify-content:space-between;align-items:center;}
+.clear-filters{font-size:12px;color:var(--red);cursor:pointer;font-weight:600;}
+.filter-section{margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border);}
+.filter-section:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+.filter-section-title{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;}
+.filter-check{display:flex;align-items:center;gap:8px;padding:5px 0;cursor:pointer;}
+.filter-check input{accent-color:var(--red);width:14px;height:14px;}
+.filter-check label{font-size:13px;color:var(--muted);cursor:pointer;flex:1;}
+.filter-check .filter-count{font-size:11px;color:var(--muted);}
+.price-range{display:flex;gap:8px;align-items:center;}
+.price-input{flex:1;background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:8px 10px;font-family:'Outfit',sans-serif;font-size:13px;color:var(--text);outline:none;width:100%;}
+.price-input:focus{border-color:var(--red);}
+.range-sep{color:var(--muted);font-size:12px;}
+.apply-filter-btn{width:100%;background:var(--red);color:white;border:none;border-radius:8px;padding:10px;font-family:'Outfit',sans-serif;font-weight:700;font-size:13px;cursor:pointer;margin-top:12px;transition:background 0.2s;}
+.apply-filter-btn:hover{background:var(--red-dark);}
+/* Search Results */
+.search-results-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px;}
+.search-query{font-size:14px;color:var(--muted);}
+.search-query strong{color:var(--text);}
+.result-count{font-size:13px;color:var(--muted);}
+.sort-row{display:flex;align-items:center;gap:10px;}
+.sort-label{font-size:13px;color:var(--muted);}
+.sort-select{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:7px 12px;font-family:'Outfit',sans-serif;font-size:13px;color:var(--text);outline:none;cursor:pointer;}
+.view-toggle{display:flex;background:var(--card);border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.view-btn{padding:7px 12px;cursor:pointer;font-size:13px;color:var(--muted);transition:all 0.2s;border:none;background:none;font-family:'Outfit',sans-serif;}
+.view-btn.active{background:var(--red);color:white;}
+/* Product grid (search) */
+.results-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;}
+.result-card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:all 0.25s;cursor:pointer;position:relative;}
+.result-card:hover{border-color:rgba(232,19,42,0.4);transform:translateY(-3px);}
+.result-card:hover .rc-actions{opacity:1;transform:translateY(0);}
+.rc-badge{position:absolute;top:10px;left:10px;padding:3px 8px;border-radius:4px;font-size:10px;font-weight:700;text-transform:uppercase;}
+.rc-badge-sale{background:var(--red);color:white;}
+.rc-badge-new{background:var(--blue);color:white;}
+.rc-wishlist{position:absolute;top:10px;right:10px;width:28px;height:28px;background:rgba(0,0,0,0.5);border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:12px;transition:all 0.2s;}
+.rc-wishlist:hover{background:var(--red);color:white;border-color:var(--red);}
+.rc-img{height:160px;background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:64px;}
+.rc-body{padding:14px;}
+.rc-brand{font-size:10px;color:var(--red);font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:2px;}
+.rc-name{font-size:13px;font-weight:600;margin-bottom:8px;line-height:1.3;}
+.rc-specs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px;}
+.rc-price{font-family:'Bebas Neue',sans-serif;font-size:20px;}
+.rc-old{font-size:11px;color:var(--muted);text-decoration:line-through;margin-left:4px;}
+.rc-actions{opacity:0;transform:translateY(6px);transition:all 0.2s;padding:0 14px 14px;display:flex;gap:6px;}
+.rc-btn-cart{flex:1;background:var(--red);color:white;border:none;border-radius:7px;padding:8px;font-family:'Outfit',sans-serif;font-weight:700;font-size:12px;cursor:pointer;}
+.rc-btn-cart:hover{background:var(--red-dark);}
+/* Pagination */
+.pagination{display:flex;justify-content:center;gap:6px;margin-top:32px;}
+.pg-btn{width:36px;height:36px;background:var(--card);border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;font-weight:600;color:var(--muted);transition:all 0.2s;}
+.pg-btn:hover,.pg-btn.active{background:var(--red);color:white;border-color:var(--red);}
+/* Big search bar */
+.big-search{display:flex;gap:10px;margin-bottom:24px;}
+.big-search-input{flex:1;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 18px;font-family:'Outfit',sans-serif;font-size:15px;color:var(--text);outline:none;transition:border-color 0.2s;}
+.big-search-input:focus{border-color:var(--red);}
+.big-search-input::placeholder{color:var(--muted);}
+.big-search-btn{background:var(--red);color:white;border:none;border-radius:12px;padding:14px 24px;font-family:'Outfit',sans-serif;font-weight:700;font-size:14px;cursor:pointer;}
+.big-search-btn:hover{background:var(--red-dark);}
+/* Active filters */
+.active-filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
+.active-filter-tag{background:rgba(232,19,42,0.1);border:1px solid rgba(232,19,42,0.25);color:var(--red);border-radius:100px;padding:4px 12px;font-size:12px;font-weight:600;display:flex;align-items:center;gap:6px;cursor:pointer;}
+.active-filter-tag:hover{background:var(--red);color:white;}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+.wish-card,.result-card{animation:fadeUp 0.4s ease both;}
+@media(max-width:900px){.search-layout{grid-template-columns:1fr;}.filter-sidebar{position:static;}.page{padding:20px;}.page-switcher{padding:0 20px;}nav{padding:0 16px;}.nav-logo{font-size:20px;}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="redwan-mobile-shop.html" class="nav-logo">REDWAN<span>.</span>MOBILE</a>
+  <div class="nav-right">
+    <button class="icon-btn" onclick="showPage('wishlist')">❤️</button>
+    <button class="icon-btn" onclick="showPage('search')">🔍</button>
+    <button class="icon-btn">🛒</button>
+    <button class="icon-btn" onclick="window.location.href='account.html'">👤</button>
+  </div>
+</nav>
+
+<div class="page-switcher">
+  <div class="page-tab active" onclick="showPage('wishlist')">❤️ Wishlist (4)</div>
+  <div class="page-tab" onclick="showPage('search')">🔍 Search Results</div>
+</div>
+
+<!-- ===== WISHLIST PAGE ===== -->
+<div class="page active" id="wishlist-page">
+  <div class="page-header">
+    <div class="page-title">MY <span>WISHLIST</span></div>
+    <div style="font-size:13px;color:var(--muted);">4 saved items</div>
+  </div>
+  <div class="wish-toolbar">
+    <select class="wish-sort" onchange="sortWishlist(this.value)">
+      <option>Sort: Recently Added</option>
+      <option>Price: Low to High</option>
+      <option>Price: High to Low</option>
+      <option>Name A-Z</option>
+    </select>
+    <button class="add-all-btn" onclick="addAllToCart()">🛒 Add All to Cart</button>
+    <button class="clear-all-btn" onclick="clearWishlist()">Clear All</button>
+  </div>
+  <div class="wishlist-grid" id="wishlistGrid">
+
+    <div class="wish-card">
+      <button class="wish-remove" onclick="removeWish(this)" title="Remove">✕</button>
+      <div class="wish-img">📱</div>
+      <div class="wish-body">
+        <div class="wish-brand">Samsung</div>
+        <div class="wish-name">Galaxy S25 Ultra 256GB</div>
+        <div class="wish-specs"><span class="spec-tag">200MP</span><span class="spec-tag">5G</span><span class="spec-tag">S Pen</span></div>
+        <div class="wish-price-row"><div><span class="wish-price">৳1,19,999</span></div><span class="stock-badge in-stock">In Stock</span></div>
+        <div class="wish-actions">
+          <button class="btn-cart-w" onclick="addToCart(this,'Galaxy S25 Ultra')">🛒 Add to Cart</button>
+          <button class="btn-view-w" onclick="window.location.href='product-detail.html'">View</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="wish-card">
+      <button class="wish-remove" onclick="removeWish(this)" title="Remove">✕</button>
+      <div class="wish-img">📱</div>
+      <div class="wish-body">
+        <div class="wish-brand">Apple</div>
+        <div class="wish-name">iPhone 16 Pro Max 256GB</div>
+        <div class="wish-specs"><span class="spec-tag">A18 Pro</span><span class="spec-tag">5G</span><span class="spec-tag">48MP</span></div>
+        <div class="wish-price-row"><div><span class="wish-price">৳1,74,999</span></div><span class="stock-badge in-stock">In Stock</span></div>
+        <div class="wish-actions">
+          <button class="btn-cart-w" onclick="addToCart(this,'iPhone 16 Pro Max')">🛒 Add to Cart</button>
+          <button class="btn-view-w">View</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="wish-card">
+      <button class="wish-remove" onclick="removeWish(this)" title="Remove">✕</button>
+      <div class="wish-img">📱</div>
+      <div class="wish-body">
+        <div class="wish-brand">OnePlus</div>
+        <div class="wish-name">OnePlus 13 256GB</div>
+        <div class="wish-specs"><span class="spec-tag">Snapdragon</span><span class="spec-tag">100W</span><span class="spec-tag">16GB</span></div>
+        <div class="wish-price-row"><div><span class="wish-price">৳74,999</span></div><span class="stock-badge low-stock">Only 6 left</span></div>
+        <div class="wish-actions">
+          <button class="btn-cart-w" onclick="addToCart(this,'OnePlus 13')">🛒 Add to Cart</button>
+          <button class="btn-view-w">View</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="wish-card">
+      <button class="wish-remove" onclick="removeWish(this)" title="Remove">✕</button>
+      <div class="wish-img">🎧</div>
+      <div class="wish-body">
+        <div class="wish-brand">Samsung</div>
+        <div class="wish-name">Galaxy Buds3 Pro</div>
+        <div class="wish-specs"><span class="spec-tag">ANC</span><span class="spec-tag">360 Audio</span></div>
+        <div class="wish-price-row"><div><span class="wish-price">৳14,999</span><span class="wish-old-price">৳18,999</span></div><span class="stock-badge in-stock">In Stock</span></div>
+        <div class="wish-actions">
+          <button class="btn-cart-w" onclick="addToCart(this,'Galaxy Buds3 Pro')">🛒 Add to Cart</button>
+          <button class="btn-view-w">View</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== SEARCH RESULTS PAGE ===== -->
+<div class="page" id="search-page">
+  <div class="big-search">
+    <input class="big-search-input" type="text" id="searchInput" placeholder="Search for phones, brands, accessories..." value="Samsung 5G phone"/>
+    <button class="big-search-btn" onclick="doSearch()">🔍 Search</button>
+  </div>
+
+  <div class="active-filters">
+    <div class="active-filter-tag" onclick="removeFilter(this)">Samsung ✕</div>
+    <div class="active-filter-tag" onclick="removeFilter(this)">5G ✕</div>
+    <div class="active-filter-tag" onclick="removeFilter(this)">৳20,000 – ৳2,00,000 ✕</div>
+  </div>
+
+  <div class="search-layout">
+    <!-- FILTER SIDEBAR -->
+    <div class="filter-sidebar">
+      <div class="filter-title">Filters <span class="clear-filters" onclick="clearFilters()">Clear all</span></div>
+
+      <div class="filter-section">
+        <div class="filter-section-title">Brand</div>
+        <label class="filter-check"><input type="checkbox" checked/><label>Samsung <span class="filter-count">(84)</span></label></label>
+        <label class="filter-check"><input type="checkbox"/><label>Apple <span class="filter-count">(41)</span></label></label>
+        <label class="filter-check"><input type="checkbox"/><label>Xiaomi <span class="filter-count">(56)</span></label></label>
+        <label class="filter-check"><input type="checkbox"/><label>OPPO <span class="filter-count">(32)</span></label></label>
+        <label class="filter-check"><input type="checkbox"/><label>Vivo <span class="filter-count">(28)</span></label></label>
+        <label class="filter-check"><input type="checkbox"/><label>OnePlus <span class="filter-count">(19)</span></label></label>
+        <label class="filter-check"><input type="checkbox"/><label>Realme <span class="filter-count">(24)</span></label></label>
+      </div>
+
+      <div class="filter-section">
+        <div class="filter-section-title">Price Range (৳)</div>
+        <div class="price-range">
+          <input class="price-input" type="number" placeholder="Min" value="20000"/>
+          <span class="range-sep">—</span>
+          <input class="price-input" type="number" placeholder="Max" value="200000"/>
+        </div>
+      </div>
+
+      <div class="filter-section">
+        <div class="filter-section-title">Network</div>
+        <label class="filter-check"><input type="checkbox" checked/><label>5G</label></label>
+        <label class="filter-check"><input type="checkbox"/><label>4G LTE</label></label>
+      </div>
+
+      <div class="filter-section">
+        <div class="filter-section-title">RAM</div>
+        <label class="filter-check"><input type="checkbox"/><label>4 GB</label></label>
+        <label class="filter-check"><input type="checkbox"/><label>6 GB</label></label>
+        <label class="filter-check"><input type="checkbox" checked/><label>8 GB</label></label>
+        <label class="filter-check"><input type="checkbox" checked/><label>12 GB</label></label>
+        <label class="filter-check"><input type="checkbox"/><label>16 GB</label></label>
+      </div>
+
+      <div class="filter-section">
+        <div class="filter-section-title">Storage</div>
+        <label class="filter-check"><input type="checkbox"/><label>128 GB</label></label>
+        <label class="filter-check"><input type="checkbox" checked/><label>256 GB</label></label>
+        <label class="filter-check"><input type="checkbox"/><label>512 GB</label></label>
+        <label class="filter-check"><input type="checkbox"/><label>1 TB</label></label>
+      </div>
+
+      <div class="filter-section">
+        <div class="filter-section-title">Battery</div>
+        <label class="filter-check"><input type="checkbox"/><label>3000–4000 mAh</label></label>
+        <label class="filter-check"><input type="checkbox" checked/><label>4000–5000 mAh</label></label>
+        <label class="filter-check"><input type="checkbox"/><label>5000+ mAh</label></label>
+      </div>
+
+      <div class="filter-section">
+        <div class="filter-section-title">Availability</div>
+        <label class="filter-check"><input type="checkbox" checked/><label>In Stock</label></label>
+        <label class="filter-check"><input type="checkbox"/><label>Pre-order</label></label>
+      </div>
+
+      <button class="apply-filter-btn" onclick="applyFilters()">Apply Filters</button>
+    </div>
+
+    <!-- RESULTS -->
+    <div>
+      <div class="search-results-header">
+        <div>
+          <div class="search-query">Results for <strong>"Samsung 5G phone"</strong></div>
+          <div class="result-count">28 products found</div>
+        </div>
+        <div class="sort-row">
+          <span class="sort-label">Sort:</span>
+          <select class="sort-select" onchange="sortResults(this.value)">
+            <option>Relevance</option>
+            <option>Price: Low to High</option>
+            <option>Price: High to Low</option>
+            <option>Newest First</option>
+            <option>Best Rated</option>
+            <option>Most Popular</option>
+          </select>
+          <div class="view-toggle">
+            <button class="view-btn active" onclick="setView('grid',this)">⊞</button>
+            <button class="view-btn" onclick="setView('list',this)">☰</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="results-grid" id="resultsGrid">
+        <div class="result-card"><span class="rc-badge rc-badge-new">New</span><button class="rc-wishlist" onclick="this.textContent=this.textContent=='♡'?'❤️':'♡'">♡</button><div class="rc-img">📱</div><div class="rc-body"><div class="rc-brand">Samsung</div><div class="rc-name">Galaxy S25 Ultra</div><div class="rc-specs"><span class="spec-tag">200MP</span><span class="spec-tag">5G</span><span class="spec-tag">12GB</span></div><div><span class="rc-price">৳1,19,999</span></div></div><div class="rc-actions"><button class="rc-btn-cart" onclick="addToCart(this,'S25 Ultra')">🛒 Add to Cart</button></div></div>
+
+        <div class="result-card"><span class="rc-badge rc-badge-sale">-15%</span><button class="rc-wishlist" onclick="this.textContent=this.textContent=='♡'?'❤️':'♡'">♡</button><div class="rc-img">📱</div><div class="rc-body"><div class="rc-brand">Samsung</div><div class="rc-name">Galaxy A55 5G</div><div class="rc-specs"><span class="spec-tag">50MP</span><span class="spec-tag">5G</span><span class="spec-tag">8GB</span></div><div><span class="rc-price">৳37,499</span><span class="rc-old">৳43,999</span></div></div><div class="rc-actions"><button class="rc-btn-cart" onclick="addToCart(this,'A55 5G')">🛒 Add to Cart</button></div></div>
+
+        <div class="result-card"><button class="rc-wishlist" onclick="this.textContent=this.textContent=='♡'?'❤️':'♡'">♡</button><div class="rc-img">📱</div><div class="rc-body"><div class="rc-brand">Samsung</div><div class="rc-name">Galaxy S25+</div><div class="rc-specs"><span class="spec-tag">50MP</span><span class="spec-tag">5G</span><span class="spec-tag">12GB</span></div><div><span class="rc-price">৳84,999</span></div></div><div class="rc-actions"><button class="rc-btn-cart" onclick="addToCart(this,'S25+')">🛒 Add to Cart</button></div></div>
+
+        <div class="result-card"><button class="rc-wishlist" onclick="this.textContent=this.textContent=='♡'?'❤️':'♡'">♡</button><div class="rc-img">📱</div><div class="rc-body"><div class="rc-brand">Samsung</div><div class="rc-name">Galaxy Z Fold 6</div><div class="rc-specs"><span class="spec-tag">Foldable</span><span class="spec-tag">5G</span><span class="spec-tag">12GB</span></div><div><span class="rc-price">৳1,89,999</span></div></div><div class="rc-actions"><button class="rc-btn-cart" onclick="addToCart(this,'Z Fold 6')">🛒 Add to Cart</button></div></div>
+
+        <div class="result-card"><span class="rc-badge rc-badge-sale">-20%</span><button class="rc-wishlist" onclick="this.textContent=this.textContent=='♡'?'❤️':'♡'">♡</button><div class="rc-img">📱</div><div class="rc-body"><div class="rc-brand">Samsung</div><div class="rc-name">Galaxy A35 5G</div><div class="rc-specs"><span class="spec-tag">50MP</span><span class="spec-tag">5G</span><span class="spec-tag">6GB</span></div><div><span class="rc-price">৳27,999</span><span class="rc-old">৳34,999</span></div></div><div class="rc-actions"><button class="rc-btn-cart" onclick="addToCart(this,'A35 5G')">🛒 Add to Cart</button></div></div>
+
+        <div class="result-card"><button class="rc-wishlist" onclick="this.textContent=this.textContent=='♡'?'❤️':'♡'">♡</button><div class="rc-img">📱</div><div class="rc-body"><div class="rc-brand">Samsung</div><div class="rc-name">Galaxy Z Flip 6</div><div class="rc-specs"><span class="spec-tag">Flip</span><span class="spec-tag">5G</span><span class="spec-tag">12GB</span></div><div><span class="rc-price">৳1,09,999</span></div></div><div class="rc-actions"><button class="rc-btn-cart" onclick="addToCart(this,'Z Flip 6')">🛒 Add to Cart</button></div></div>
+      </div>
+
+      <div class="pagination">
+        <div class="pg-btn active">1</div>
+        <div class="pg-btn">2</div>
+        <div class="pg-btn">3</div>
+        <div class="pg-btn">4</div>
+        <div class="pg-btn">5</div>
+        <div class="pg-btn">→</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function showPage(page){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.page-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(page+'-page').classList.add('active');
+  event.target.classList.add('active');
+}
+function removeWish(btn){
+  const card=btn.closest('.wish-card');
+  card.style.transition='opacity 0.3s,transform 0.3s';
+  card.style.opacity='0';card.style.transform='scale(0.9)';
+  setTimeout(()=>card.remove(),300);
+}
+function addToCart(btn,name){
+  const orig=btn.innerHTML;
+  btn.innerHTML='✓ Added!';btn.style.background='#22c55e';
+  setTimeout(()=>{btn.innerHTML=orig;btn.style.background='';},1800);
+}
+function addAllToCart(){
+  const btn=event.target;btn.textContent='✓ All Added!';btn.style.background='#22c55e';
+  setTimeout(()=>{btn.textContent='🛒 Add All to Cart';btn.style.background='';},2000);
+}
+function clearWishlist(){if(confirm('Remove all items from wishlist?')){document.getElementById('wishlistGrid').innerHTML='<div style="padding:60px;text-align:center;color:var(--muted);font-size:14px;">Your wishlist is empty. <a href="redwan-mobile-shop.html" style="color:var(--red);">Start shopping →</a></div>';}}
+function removeFilter(el){el.style.opacity='0';setTimeout(()=>el.remove(),200);}
+function clearFilters(){document.querySelectorAll('.filter-check input').forEach(i=>i.checked=false);document.querySelectorAll('.active-filter-tag').forEach(t=>t.remove());}
+function applyFilters(){const btn=event.target;btn.textContent='✓ Applied!';setTimeout(()=>btn.textContent='Apply Filters',1500);}
+function doSearch(){const q=document.getElementById('searchInput').value;if(q)alert('Searching for: '+q);}
+function setView(v,btn){document.querySelectorAll('.view-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');const grid=document.getElementById('resultsGrid');grid.style.gridTemplateColumns=v==='list'?'1fr':'repeat(auto-fill,minmax(220px,1fr))';}
+function sortResults(v){const btn=document.querySelector('.sort-select');btn.style.borderColor='var(--green)';setTimeout(()=>btn.style.borderColor='',1000);}
+function sortWishlist(v){}
+</script>
+</body>
+</html>
