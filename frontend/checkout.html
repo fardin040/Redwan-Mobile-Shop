@@ -230,21 +230,21 @@
         <div class="form-row">
           <div class="form-group">
             <label class="form-label">First Name</label>
-            <input class="form-input" type="text" placeholder="Rafiqul" value="Rafiqul"/>
+            <input class="form-input" id="checkoutFirstName" type="text" placeholder="e.g. Rafiqul"/>
           </div>
           <div class="form-group">
             <label class="form-label">Last Name</label>
-            <input class="form-input" type="text" placeholder="Islam" value="Islam"/>
+            <input class="form-input" id="checkoutLastName" type="text" placeholder="e.g. Islam"/>
           </div>
         </div>
         <div class="form-row">
           <div class="form-group">
-            <label class="form-label">Phone Number</label>
-            <input class="form-input" type="tel" placeholder="+880 1700-000000"/>
+            <label class="form-label">Phone Number *</label>
+            <input class="form-input" id="checkoutPhone" type="tel" placeholder="+880 1700-000000"/>
           </div>
           <div class="form-group">
             <label class="form-label">Email Address</label>
-            <input class="form-input" type="email" placeholder="you@email.com"/>
+            <input class="form-input" id="checkoutEmail" type="email" placeholder="you@email.com"/>
           </div>
         </div>
       </div>
@@ -257,38 +257,36 @@
         </div>
         <div class="form-row full">
           <div class="form-group">
-            <label class="form-label">Full Address</label>
-            <input class="form-input" type="text" placeholder="House no, Road, Area..."/>
+            <label class="form-label">Full Address *</label>
+            <input class="form-input" id="checkoutAddress" type="text" placeholder="House no, Road, Area..."/>
           </div>
         </div>
         <div class="form-row">
           <div class="form-group">
-            <label class="form-label">District</label>
-            <select class="form-input">
-              <option>Select District</option>
-              <option selected>Dhaka</option>
-              <option>Chittagong</option>
-              <option>Sylhet</option>
-              <option>Rajshahi</option>
-              <option>Khulna</option>
-              <option>Barishal</option>
-              <option>Mymensingh</option>
-              <option>Narsingdi</option>
+            <label class="form-label">District *</label>
+            <select class="form-input" id="checkoutDistrict">
+              <option value="">Select District</option>
+              <option value="Dhaka" selected>Dhaka</option>
+              <option value="Chittagong">Chittagong</option>
+              <option value="Sylhet">Sylhet</option>
+              <option value="Rajshahi">Rajshahi</option>
+              <option value="Khulna">Khulna</option>
+              <option value="Barishal">Barishal</option>
             </select>
           </div>
           <div class="form-group">
             <label class="form-label">Upazila / Thana</label>
-            <input class="form-input" type="text" placeholder="e.g. Gulshan, Mirpur..."/>
+            <input class="form-input" id="checkoutUpazila" type="text" placeholder="e.g. Gulshan, Mirpur..."/>
           </div>
         </div>
         <div class="form-row">
           <div class="form-group">
             <label class="form-label">Postal Code</label>
-            <input class="form-input" type="text" placeholder="1200"/>
+            <input class="form-input" id="checkoutPostal" type="text" placeholder="1200"/>
           </div>
           <div class="form-group">
             <label class="form-label">Additional Notes</label>
-            <input class="form-input" type="text" placeholder="Landmark, floor, instructions..."/>
+            <input class="form-input" id="checkoutNotes" type="text" placeholder="Landmark, floor, instructions..."/>
           </div>
         </div>
       </div>
@@ -300,7 +298,7 @@
           <div><div class="section-title">Delivery Method</div><div class="section-subtitle">Choose how you want your order delivered</div></div>
         </div>
         <div class="delivery-options">
-          <div class="delivery-opt selected" onclick="selectDelivery(this, 0)">
+          <div class="delivery-opt selected" data-method="same_day" onclick="selectDelivery(this, 0, 'same_day')">
             <div class="radio-circle"><div class="radio-dot"></div></div>
             <div class="delivery-info">
               <div class="delivery-name">🚀 Same-Day Delivery (Dhaka only)</div>
@@ -308,15 +306,15 @@
             </div>
             <div class="delivery-price" style="color:var(--green);">FREE</div>
           </div>
-          <div class="delivery-opt" onclick="selectDelivery(this, 80)">
+          <div class="delivery-opt" data-method="standard" onclick="selectDelivery(this, 80, 'standard')">
             <div class="radio-circle"><div class="radio-dot"></div></div>
             <div class="delivery-info">
               <div class="delivery-name">📦 Standard Delivery</div>
-              <div class="delivery-desc">1–3 business days · Nationwide via Steadfast Courier</div>
+              <div class="delivery-desc">1–3 business days · Nationwide via Steadfast</div>
             </div>
             <div class="delivery-price">৳80</div>
           </div>
-          <div class="delivery-opt" onclick="selectDelivery(this, 150)">
+          <div class="delivery-opt" data-method="express" onclick="selectDelivery(this, 150, 'express')">
             <div class="radio-circle"><div class="radio-dot"></div></div>
             <div class="delivery-info">
               <div class="delivery-name">⚡ Express Delivery</div>
@@ -324,11 +322,11 @@
             </div>
             <div class="delivery-price">৳150</div>
           </div>
-          <div class="delivery-opt" onclick="selectDelivery(this, -1)">
+          <div class="delivery-opt" data-method="pickup" onclick="selectDelivery(this, 0, 'pickup')">
             <div class="radio-circle"><div class="radio-dot"></div></div>
             <div class="delivery-info">
-              <div class="delivery-name">🏪 Shop Pickup (Narsingdi)</div>
-              <div class="delivery-desc">Pick up at our shop · Ready within 2 hours</div>
+              <div class="delivery-name">🏪 Shop Pickup</div>
+              <div class="delivery-desc">Pick up at our store · Ready within 2 hours</div>
             </div>
             <div class="delivery-price" style="color:var(--green);">FREE</div>
           </div>
@@ -449,48 +447,23 @@
     <!-- ORDER SUMMARY -->
     <div class="order-summary">
       <div class="summary-title">ORDER <span>SUMMARY</span></div>
-      <div class="summary-items">
-        <div class="summary-item">
-          <div class="item-img">📱</div>
-          <div class="item-info">
-            <div class="item-name">Samsung Galaxy S25 Ultra</div>
-            <div class="item-variant">Titanium Black · 256GB</div>
-            <div class="item-qty">Qty: 1</div>
-          </div>
-          <div class="item-price">৳1,19,999</div>
-        </div>
-        <div class="summary-item">
-          <div class="item-img">📱</div>
-          <div class="item-info">
-            <div class="item-name">Redmi Note 13 Pro+</div>
-            <div class="item-variant">Midnight Black · 256GB</div>
-            <div class="item-qty">Qty: 1</div>
-          </div>
-          <div class="item-price">৳34,999</div>
-        </div>
-        <div class="summary-item">
-          <div class="item-img">🎧</div>
-          <div class="item-info">
-            <div class="item-name">Samsung Galaxy Buds3 Pro</div>
-            <div class="item-variant">Black</div>
-            <div class="item-qty">Qty: 1</div>
-          </div>
-          <div class="item-price">৳14,999</div>
-        </div>
+      <div class="summary-items" id="cartItemsContainer">
+        <!-- Rendered by checkout.js -->
+        <div style="font-size:13px;color:var(--muted);text-align:center;padding:20px;">Loading your cart...</div>
       </div>
 
       <div class="totals">
-        <div class="total-row"><span class="label">Subtotal (3 items)</span><span class="value">৳1,69,997</span></div>
+        <div class="total-row"><span class="label" id="subtotalLabel">Subtotal</span><span class="value" id="subtotalValue">...</span></div>
         <div class="total-row"><span class="label">Delivery</span><span class="value green" id="deliveryCost">FREE</span></div>
-        <div class="total-row" id="discountRow" style="display:none;"><span class="label">Promo Discount</span><span class="value red" id="discountAmt">−৳23,999</span></div>
-        <div class="total-row"><span class="label">VAT (5%)</span><span class="value">৳8,500</span></div>
+        <div class="total-row" id="discountRow" style="display:none;"><span class="label">Promo Discount</span><span class="value red" id="discountAmt">...</span></div>
+        <div class="total-row"><span class="label">VAT (5%)</span><span class="value" id="vatValue">...</span></div>
       </div>
       <div class="total-final">
         <span class="label">Total Amount</span>
         <span class="value" id="totalAmount">৳1,78,497</span>
       </div>
 
-      <button class="place-order-btn" onclick="placeOrder()">
+      <button class="place-order-btn" id="submitOrderBtn" onclick="window.submitCheckoutOrder()">
         🔒 Place Order Securely
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
       </button>
@@ -616,66 +589,9 @@
   </div>
 </div>
 
-<script>
-let deliveryFee = 0;
-let couponApplied = false;
-
-function selectDelivery(el, fee) {
-  document.querySelectorAll('.delivery-opt').forEach(o => o.classList.remove('selected'));
-  el.classList.add('selected');
-  deliveryFee = fee < 0 ? 0 : fee;
-  document.getElementById('deliveryCost').textContent = fee <= 0 ? 'FREE' : '৳' + fee;
-  updateTotal();
-}
-
-function selectPay(el, type) {
-  document.querySelectorAll('.pay-opt').forEach(o => o.classList.remove('selected'));
-  el.classList.add('selected');
-  document.querySelectorAll('.card-form').forEach(f => f.classList.remove('active'));
-  const form = document.getElementById('pay-' + type);
-  if(form) form.classList.add('active');
-}
-
-function applyCoupon() {
-  const code = document.getElementById('couponInput').value.trim().toUpperCase();
-  if(code === 'REDWAN20') {
-    document.getElementById('couponSuccess').style.display = 'block';
-    document.getElementById('discountRow').style.display = 'flex';
-    couponApplied = true;
-    updateTotal();
-  } else if(code === '') {
-    alert('Please enter a coupon code!');
-  } else {
-    alert('Invalid coupon code. Try: REDWAN20');
-  }
-}
-
-function updateTotal() {
-  let base = 178497;
-  if(couponApplied) base -= 23999;
-  if(deliveryFee > 0) base += deliveryFee;
-  document.getElementById('totalAmount').textContent = '৳' + base.toLocaleString('en-IN');
-}
-
-function placeOrder() {
-  document.getElementById('successOverlay').classList.add('show');
-  // Animate steps
-  setTimeout(() => {
-    document.getElementById('step3').classList.add('done');
-    document.getElementById('step3').querySelector('.step-circle').textContent = '✓';
-    document.getElementById('line2').classList.add('done');
-    document.getElementById('step4').classList.add('done');
-    document.getElementById('step4').querySelector('.step-circle').textContent = '✓';
-    document.getElementById('line3').classList.add('done');
-  }, 300);
-}
-
-function showTracking() {
-  document.getElementById('successOverlay').classList.remove('show');
-  document.getElementById('checkoutPage').style.display = 'none';
-  document.getElementById('trackingPage').style.display = 'block';
-  window.scrollTo({top: 0, behavior: 'smooth'});
-}
-</script>
+<script src="/js/api.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/cart.js"></script>
+<script src="/js/checkout.js"></script>
 </body>
 </html>
