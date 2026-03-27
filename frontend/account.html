@@ -122,7 +122,7 @@ nav{background:rgba(10,10,10,0.96);backdrop-filter:blur(12px);border-bottom:1px 
         <div class="form-panel active" id="loginPanel">
           <div class="form-group">
             <label class="form-label">Phone or Email</label>
-            <input class="form-input" type="text" placeholder="+880 1700-000000 or email@example.com"/>
+            <input class="form-input" type="text" id="loginIdentifier" placeholder="+880 1700-000000 or email@example.com"/>
           </div>
           <div class="form-group">
             <label class="form-label">Password</label>
@@ -149,20 +149,20 @@ nav{background:rgba(10,10,10,0.96);backdrop-filter:blur(12px);border-bottom:1px 
           <div class="form-row-2">
             <div class="form-group">
               <label class="form-label">First Name</label>
-              <input class="form-input" type="text" placeholder="Rafiqul"/>
+              <input class="form-input" type="text" id="regFirstName" placeholder="Rafiqul"/>
             </div>
             <div class="form-group">
               <label class="form-label">Last Name</label>
-              <input class="form-input" type="text" placeholder="Islam"/>
+              <input class="form-input" type="text" id="regLastName" placeholder="Islam"/>
             </div>
           </div>
           <div class="form-group">
             <label class="form-label">Phone Number</label>
-            <input class="form-input" type="tel" placeholder="+880 1700-000000"/>
+            <input class="form-input" type="tel" id="regPhone" placeholder="+880 1700-000000"/>
           </div>
           <div class="form-group">
             <label class="form-label">Email Address</label>
-            <input class="form-input" type="email" placeholder="you@email.com"/>
+            <input class="form-input" type="email" id="regEmail" placeholder="you@email.com"/>
           </div>
           <div class="form-group">
             <label class="form-label">Password</label>
@@ -280,56 +280,8 @@ nav{background:rgba(10,10,10,0.96);backdrop-filter:blur(12px);border-bottom:1px 
   </div>
 </div>
 
-<script>
-function switchTab(tab){
-  document.querySelectorAll('.auth-tab').forEach((t,i)=>t.classList.toggle('active',i===(tab==='login'?0:1)));
-  document.querySelectorAll('.form-panel').forEach(p=>p.classList.remove('active'));
-  document.getElementById('otpSection').classList.remove('show');
-  document.getElementById(tab==='login'?'loginPanel':'registerPanel').classList.add('active');
-}
-function togglePass(id,btn){
-  const inp=document.getElementById(id);
-  inp.type=inp.type==='password'?'text':'password';
-  btn.textContent=inp.type==='password'?'👁️':'🔒';
-}
-function checkStrength(v){
-  const bars=[document.getElementById('sb1'),document.getElementById('sb2'),document.getElementById('sb3'),document.getElementById('sb4')];
-  const lbl=document.getElementById('strengthLabel');
-  let score=0;
-  if(v.length>=8)score++;
-  if(/[A-Z]/.test(v))score++;
-  if(/[0-9]/.test(v))score++;
-  if(/[^A-Za-z0-9]/.test(v))score++;
-  const colors=['#e8132a','#f97316','#f5c842','#22c55e'];
-  const labels=['Weak','Fair','Good','Strong'];
-  bars.forEach((b,i)=>{b.style.background=i<score?colors[score-1]:'var(--card2)';});
-  lbl.textContent=score>0?labels[score-1]:'Enter a password';
-  lbl.style.color=score>0?colors[score-1]:'var(--muted)';
-}
-function showOTP(e){e.preventDefault();document.querySelectorAll('.form-panel').forEach(p=>p.classList.remove('active'));document.getElementById('otpSection').classList.add('show');startTimer();}
-function hideOTP(e){e.preventDefault();document.getElementById('otpSection').classList.remove('show');document.getElementById('loginPanel').classList.add('active');}
-function startTimer(){let t=60;const el=document.getElementById('timer');const iv=setInterval(()=>{el.textContent=--t;if(t<=0){clearInterval(iv);document.getElementById('resendBtn').innerHTML='Resend OTP';el.textContent='';}},1000);}
-const otpInputs=document.querySelectorAll('.otp-input');
-function moveNext(el,idx){if(el.value.length===1&&idx<6)otpInputs[idx].focus();}
-function verifyOTP(){
-  const code=Array.from(otpInputs).map(i=>i.value).join('');
-  if(code.length===6){showProfile();}else{alert('Please enter the 6-digit OTP');}
-}
-function doLogin(){
-  const p=document.querySelector('#loginPanel .form-input[type="password"]');
-  if(p&&p.value.length>0){showProfile();}else{alert('Please enter your password');}
-}
-function doRegister(){showProfile();}
-function showProfile(){
-  document.getElementById('authPanel').style.display='none';
-  document.getElementById('profileView').classList.add('show');
-}
-function doLogout(){
-  document.getElementById('authPanel').style.display='block';
-  document.getElementById('profileView').classList.remove('show');
-  switchTab('login');
-}
-function saveProfile(){const btn=event.target;btn.textContent='✓ Saved!';btn.style.background='#22c55e';setTimeout(()=>{btn.textContent='💾 Save Changes';btn.style.background='';},2000);}
-</script>
+<script src="/js/api.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/account.js"></script>
 </body>
 </html>
