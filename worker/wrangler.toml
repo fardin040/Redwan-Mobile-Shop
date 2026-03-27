@@ -3,53 +3,55 @@ main = "src/index.js"
 compatibility_date = "2024-03-01"
 compatibility_flags = ["nodejs_compat"]
 
-# ── KV Namespaces (replace IDs after: wrangler kv:namespace create "CART_KV") ─
+# ── D1 Database (fully on Cloudflare) ─────────────────────────
+[[d1_databases]]
+binding  = "DB"
+database_name = "redwan-mobile-shop-db"
+database_id   = "REPLACE_WITH_D1_DATABASE_ID"
+
+# ── KV Namespaces (Cart & Cache — run: wrangler kv:namespace create "CART_KV") ──
 [[kv_namespaces]]
-binding = "CART_KV"
-id = "REPLACE_WITH_KV_NAMESPACE_ID"
+binding    = "CART_KV"
+id         = "REPLACE_WITH_KV_NAMESPACE_ID"
 preview_id = "REPLACE_WITH_KV_NAMESPACE_PREVIEW_ID"
 
 [[kv_namespaces]]
-binding = "SESSION_KV"
-id = "REPLACE_WITH_KV_NAMESPACE_ID"
+binding    = "CACHE_KV"
+id         = "REPLACE_WITH_KV_NAMESPACE_ID"
 preview_id = "REPLACE_WITH_KV_NAMESPACE_PREVIEW_ID"
 
-[[kv_namespaces]]
-binding = "CACHE_KV"
-id = "REPLACE_WITH_KV_NAMESPACE_ID"
-preview_id = "REPLACE_WITH_KV_NAMESPACE_PREVIEW_ID"
-
-# ── Vars (non-secret, commit-safe) ────────────────────────────────────────────
+# ── Non-secret vars ────────────────────────────────────────────
 [vars]
-NODE_ENV    = "production"
-APP_NAME    = "Redwan Mobile Shop"
-BKASH_BASE_URL  = "https://tokenized.pay.bka.sh/v1.2.0-beta"
-NAGAD_BASE_URL  = "https://api.mynagad.com"
-SMTP_HOST       = "smtp.gmail.com"
-SMTP_PORT       = "587"
+NODE_ENV       = "production"
+APP_NAME       = "Redwan Mobile Shop"
+BKASH_BASE_URL = "https://tokenized.pay.bka.sh/v1.2.0-beta"
+NAGAD_BASE_URL = "https://api.mynagad.com"
 
-# ── Secrets (set via: wrangler secret put SECRET_NAME) ────────────────────────
-# DATABASE_URL          → Neon PostgreSQL connection string
-# JWT_SECRET            → 64-char random string
-# JWT_REFRESH_SECRET    → 64-char random string
-# JWT_EXPIRES_IN        → e.g. 7d
-# JWT_REFRESH_EXPIRES_IN→ e.g. 30d
+# ── Secrets (set via: wrangler secret put SECRET_NAME) ────────
+# JWT_SECRET                (64-char random string)
+# JWT_REFRESH_SECRET        (64-char random string)
+# JWT_EXPIRES_IN            e.g. 7d
+# JWT_REFRESH_EXPIRES_IN    e.g. 30d
 # BKASH_APP_KEY
 # BKASH_APP_SECRET
 # BKASH_USERNAME
 # BKASH_PASSWORD
 # NAGAD_MERCHANT_ID
 # NAGAD_MERCHANT_PRIVATE_KEY
-# NAGAD_PUBLIC_KEY
 # TWILIO_ACCOUNT_SID
 # TWILIO_AUTH_TOKEN
 # TWILIO_PHONE_NUMBER
-# SMTP_USER
-# SMTP_PASS
 # SENDER_EMAIL
 # CLOUDINARY_NAME
 # CLOUDINARY_API_KEY
 # CLOUDINARY_API_SECRET
-# PATHAO_API_KEY
+# SSLCOMMERZ_STORE_ID
+# SSLCOMMERZ_STORE_PASS
+# PATHAO_CLIENT_ID
+# PATHAO_CLIENT_SECRET
+# PATHAO_USERNAME
+# PATHAO_PASSWORD
 # STEADFAST_API_KEY
-# ALLOWED_ORIGINS       → e.g. https://yourdomain.pages.dev
+# STEADFAST_SECRET_KEY
+# ALLOWED_ORIGINS           e.g. https://yoursite.pages.dev
+# FRONTEND_URL              e.g. https://yoursite.pages.dev
