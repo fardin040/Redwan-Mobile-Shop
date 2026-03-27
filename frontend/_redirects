@@ -1,0 +1,3 @@
+# Cloudflare Pages — SPA Routing
+# All routes fall back to index.html (for single-page navigation)
+/*    /index.html   200

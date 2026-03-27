@@ -1,0 +1,21 @@
+{
+  "name": "redwan-mobile-shop-worker",
+  "version": "1.0.0",
+  "description": "Cloudflare Workers backend for Redwan Mobile Shop",
+  "private": true,
+  "scripts": {
+    "dev":    "wrangler dev --local",
+    "deploy": "wrangler deploy",
+    "tail":   "wrangler tail",
+    "kv:create": "wrangler kv:namespace create"
+  },
+  "dependencies": {
+    "hono":                      "^4.2.0",
+    "@neondatabase/serverless":  "^0.9.3",
+    "jose":                      "^5.2.4",
+    "bcryptjs":                  "^2.4.3"
+  },
+  "devDependencies": {
+    "wrangler": "^3.50.0"
+  }
+}
