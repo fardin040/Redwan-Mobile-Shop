@@ -1243,68 +1243,9 @@
   </div>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-  // Cart toggle
-  function toggleCart() {
-    document.getElementById('cartSidebar').classList.toggle('open');
-    document.getElementById('cartOverlay').classList.toggle('open');
-  }
-
-  // Wishlist toggle (placeholder)
-  function toggleWishlist() {
-    alert('Wishlist feature — sign in to save your favorites!');
-  }
-
-  // Add to cart notification
-  function addToCart(name) {
-    const btn = event.target;
-    const orig = btn.innerHTML;
-    btn.innerHTML = '✓ Added!';
-    btn.style.background = '#16a34a';
-    setTimeout(() => { btn.innerHTML = orig; btn.style.background = ''; }, 1500);
-  }
-
-  // Flash sale countdown
-  function startTimer() {
-    let total = 8 * 3600 + 45 * 60;
-    setInterval(() => {
-      total--;
-      if(total < 0) total = 86400;
-      const h = Math.floor(total / 3600);
-      const m = Math.floor((total % 3600) / 60);
-      const s = total % 60;
-      document.getElementById('hours').textContent = String(h).padStart(2,'0');
-      document.getElementById('mins').textContent = String(m).padStart(2,'0');
-      document.getElementById('secs').textContent = String(s).padStart(2,'0');
-    }, 1000);
-  }
-  startTimer();
-
-  // Brand pills toggle
-  document.querySelectorAll('.brand-pill').forEach(pill => {
-    pill.addEventListener('click', () => {
-      document.querySelectorAll('.brand-pill').forEach(p => p.classList.remove('active'));
-      pill.classList.add('active');
-    });
-  });
-
-  // Wishlist heart toggle
-  document.querySelectorAll('.card-wishlist').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      btn.textContent = btn.textContent === '♡' ? '❤️' : '♡';
-      btn.style.color = btn.textContent === '❤️' ? 'var(--red)' : '';
-    });
-  });
-
-  // Scroll reveal
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if(e.isIntersecting) {
-        e.target.style.opacity = '1';
-        e.target.style.transform = 'translateY(0)';
-      }
-    });
-  }, { threshold: 0.1 });
-  document.querySelectorAll('.product-card, .why-card, .review-card, .cat-card').forEach(el => {
-  
+<script src="/js/api.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/cart.js"></script>
+<script src="/js/home.js"></script>
+</body>
+</html>
