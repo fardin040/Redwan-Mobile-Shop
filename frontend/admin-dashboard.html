@@ -233,26 +233,25 @@
       <div class="stat-card red">
         <div class="stat-icon">💰</div>
         <div class="stat-label">Today's Revenue</div>
-        <div class="stat-value red">৳3,84,200</div>
-        <div class="stat-change up">▲ 18.4% vs yesterday</div>
-      </div>
+        <div class="stat-value red" id="statRevenue">৳0</div>
+        <div class="stat-change up" id="statRevenueChange">▲ 0% vs yesterday</div>
       <div class="stat-card green">
         <div class="stat-icon">🛒</div>
         <div class="stat-label">Total Orders</div>
-        <div class="stat-value green">247</div>
-        <div class="stat-change up">▲ 32 new today</div>
+        <div class="stat-value green" id="statOrders">0</div>
+        <div class="stat-change up" id="statOrdersChange">▲ 0 this week</div>
       </div>
       <div class="stat-card blue">
         <div class="stat-icon">👥</div>
         <div class="stat-label">Total Customers</div>
-        <div class="stat-value blue">12,481</div>
-        <div class="stat-change up">▲ 94 this week</div>
+        <div class="stat-value blue" id="statCustomers">0</div>
+        <div class="stat-change up" id="statCustomersChange">▲ 0 this month</div>
       </div>
       <div class="stat-card gold">
         <div class="stat-icon">📦</div>
-        <div class="stat-label">Products In Stock</div>
-        <div class="stat-value gold">528</div>
-        <div class="stat-change down">▼ 7 low stock alerts</div>
+        <div class="stat-label">Total Products</div>
+        <div class="stat-value gold" id="statProducts">0</div>
+        <div class="stat-change down" id="statProductsChange">0 published</div>
       </div>
     </div>
 
@@ -314,57 +313,9 @@
               <th>Action</th>
             </tr>
           </thead>
-          <tbody>
-            <tr>
-              <td><span class="order-id">#RM-2026-0247</span></td>
-              <td><div class="customer-cell"><div class="mini-avatar" style="background:#e8132a;">R</div><div><div style="font-size:12px;font-weight:600;">Rafiqul Islam</div><div style="font-size:10px;color:var(--muted);">Dhaka</div></div></div></td>
-              <td style="font-size:12px;">Samsung Galaxy S25 Ultra</td>
-              <td style="font-family:'Bebas Neue',sans-serif;font-size:15px;">৳1,19,999</td>
-              <td style="font-size:11px;color:var(--green);">bKash ✓</td>
-              <td><span class="status-pill s-processing">Processing</span></td>
-              <td style="font-size:11px;color:var(--muted);">Mar 23, 2026</td>
-              <td><button class="action-btn" onclick="this.textContent='Shipped ✓';this.style.color='var(--green)';this.style.borderColor='var(--green)'">Process</button></td>
-            </tr>
-            <tr>
-              <td><span class="order-id">#RM-2026-0246</span></td>
-              <td><div class="customer-cell"><div class="mini-avatar" style="background:#3b82f6;">S</div><div><div style="font-size:12px;font-weight:600;">Sumaiya Akter</div><div style="font-size:10px;color:var(--muted);">Chittagong</div></div></div></td>
-              <td style="font-size:12px;">iPhone 16 Pro Max 256GB</td>
-              <td style="font-family:'Bebas Neue',sans-serif;font-size:15px;">৳1,74,999</td>
-              <td style="font-size:11px;color:var(--green);">Card ✓</td>
-              <td><span class="status-pill s-shipped">Shipped</span></td>
-              <td style="font-size:11px;color:var(--muted);">Mar 22, 2026</td>
-              <td><button class="action-btn">Track</button></td>
-            </tr>
-            <tr>
-              <td><span class="order-id">#RM-2026-0245</span></td>
-              <td><div class="customer-cell"><div class="mini-avatar" style="background:#f59e0b;">M</div><div><div style="font-size:12px;font-weight:600;">Mahbub Hossain</div><div style="font-size:10px;color:var(--muted);">Sylhet</div></div></div></td>
-              <td style="font-size:12px;">Redmi Note 13 Pro+</td>
-              <td style="font-family:'Bebas Neue',sans-serif;font-size:15px;">৳34,999</td>
-              <td style="font-size:11px;color:var(--gold);">COD</td>
-              <td><span class="status-pill s-pending">Pending</span></td>
-              <td style="font-size:11px;color:var(--muted);">Mar 22, 2026</td>
-              <td><button class="action-btn" onclick="this.textContent='Confirmed ✓';this.style.color='var(--green)'">Confirm</button></td>
-            </tr>
-            <tr>
-              <td><span class="order-id">#RM-2026-0244</span></td>
-              <td><div class="customer-cell"><div class="mini-avatar" style="background:#22c55e;">K</div><div><div style="font-size:12px;font-weight:600;">Karim Uddin</div><div style="font-size:10px;color:var(--muted);">Rajshahi</div></div></div></td>
-              <td style="font-size:12px;">Samsung Galaxy Buds3 Pro</td>
-              <td style="font-family:'Bebas Neue',sans-serif;font-size:15px;">৳14,999</td>
-              <td style="font-size:11px;color:var(--green);">Nagad ✓</td>
-              <td><span class="status-pill s-delivered">Delivered</span></td>
-              <td style="font-size:11px;color:var(--muted);">Mar 20, 2026</td>
-              <td><button class="action-btn">Invoice</button></td>
-            </tr>
-            <tr>
-              <td><span class="order-id">#RM-2026-0243</span></td>
-              <td><div class="customer-cell"><div class="mini-avatar" style="background:#8b5cf6;">N</div><div><div style="font-size:12px;font-weight:600;">Nasrin Begum</div><div style="font-size:10px;color:var(--muted);">Khulna</div></div></div></td>
-              <td style="font-size:12px;">OPPO Reno 12 Pro 5G</td>
-              <td style="font-family:'Bebas Neue',sans-serif;font-size:15px;">৳44,999</td>
-              <td style="font-size:11px;color:var(--red);">Failed ✗</td>
-              <td><span class="status-pill s-cancelled">Cancelled</span></td>
-              <td style="font-size:11px;color:var(--muted);">Mar 19, 2026</td>
-              <td><button class="action-btn">Refund</button></td>
-            </tr>
+          <tbody id="recentOrdersBody">
+            <!-- Dynamic order rendering -->
+            <tr><td colspan="8" style="text-align:center;padding:30px;color:var(--muted);">Loading orders...</td></tr>
           </tbody>
         </table>
       </div>
@@ -372,22 +323,14 @@
 
     <!-- THREE COL: TOP PRODUCTS + INVENTORY ALERTS + ACTIVITY -->
     <div class="three-col">
-      <div class="panel">
+      <div class="panel" id="topProductsList">
         <div class="panel-header"><div class="panel-title">🏆 Top Selling</div><span class="panel-action">This Month</span></div>
-        <div class="product-rank"><div class="rank-num">1</div><div class="rank-icon">📱</div><div class="rank-info"><div class="rank-name">Samsung S25 Ultra</div><div class="rank-brand">Samsung</div></div><div class="rank-right"><div class="rank-price">৳1,19,999</div><div class="rank-sold" style="color:var(--green);">84 sold</div></div></div>
-        <div class="product-rank"><div class="rank-num">2</div><div class="rank-icon">📱</div><div class="rank-info"><div class="rank-name">Redmi Note 13 Pro+</div><div class="rank-brand">Xiaomi</div></div><div class="rank-right"><div class="rank-price">৳34,999</div><div class="rank-sold" style="color:var(--green);">72 sold</div></div></div>
-        <div class="product-rank"><div class="rank-num">3</div><div class="rank-icon">📱</div><div class="rank-info"><div class="rank-name">iPhone 16 Pro Max</div><div class="rank-brand">Apple</div></div><div class="rank-right"><div class="rank-price">৳1,74,999</div><div class="rank-sold" style="color:var(--green);">41 sold</div></div></div>
-        <div class="product-rank"><div class="rank-num">4</div><div class="rank-icon">📱</div><div class="rank-info"><div class="rank-name">Realme 12 Pro+</div><div class="rank-brand">Realme</div></div><div class="rank-right"><div class="rank-price">৳28,999</div><div class="rank-sold" style="color:var(--green);">38 sold</div></div></div>
-        <div class="product-rank"><div class="rank-num">5</div><div class="rank-icon">🎧</div><div class="rank-info"><div class="rank-name">Galaxy Buds3 Pro</div><div class="rank-brand">Samsung</div></div><div class="rank-right"><div class="rank-price">৳14,999</div><div class="rank-sold" style="color:var(--green);">31 sold</div></div></div>
+        <div style="text-align:center;padding:20px;color:var(--muted);">Loading products...</div>
       </div>
 
-      <div class="panel">
-        <div class="panel-header"><div class="panel-title">⚠️ Low Stock Alerts</div><span class="panel-action">7 Alerts</span></div>
-        <div class="alert-item"><div class="alert-icon">📱</div><div class="alert-info"><div class="alert-name">iPhone 16 Pro Max 1TB</div><div class="alert-stock critical">🔴 Only 2 left!</div></div><button class="restock-btn">Restock</button></div>
-        <div class="alert-item"><div class="alert-icon">📱</div><div class="alert-info"><div class="alert-name">Galaxy S25 Ultra (Violet)</div><div class="alert-stock critical">🔴 Only 3 left!</div></div><button class="restock-btn">Restock</button></div>
-        <div class="alert-item"><div class="alert-icon">🎧</div><div class="alert-info"><div class="alert-name">AirPods Pro 2nd Gen</div><div class="alert-stock low">🟡 5 remaining</div></div><button class="restock-btn">Restock</button></div>
-        <div class="alert-item"><div class="alert-icon">📱</div><div class="alert-info"><div class="alert-name">OnePlus 13 (Midnight Black)</div><div class="alert-stock low">🟡 6 remaining</div></div><button class="restock-btn">Restock</button></div>
-        <div class="alert-item"><div class="alert-icon">🔋</div><div class="alert-info"><div class="alert-name">Anker 20000mAh Power Bank</div><div class="alert-stock low">🟡 4 remaining</div></div><button class="restock-btn">Restock</button></div>
+      <div class="panel" id="lowStockList">
+        <div class="panel-header"><div class="panel-title">⚠️ Low Stock Alerts</div></div>
+        <div style="text-align:center;padding:20px;color:var(--muted);">Loading alerts...</div>
       </div>
 
       <div class="panel">
@@ -446,63 +389,10 @@
   </div>
 </div>
 
+<script src="/js/api.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/admin.js"></script>
 <script>
-// Revenue Chart
-const ctx = document.getElementById('revenueChart').getContext('2d');
-new Chart(ctx, {
-  type: 'bar',
-  data: {
-    labels: ['Mar 1','Mar 5','Mar 8','Mar 10','Mar 13','Mar 15','Mar 17','Mar 20','Mar 22','Mar 23'],
-    datasets: [{
-      label: 'Revenue (৳)',
-      data: [280000, 420000, 310000, 580000, 490000, 720000, 380000, 640000, 510000, 384200],
-      backgroundColor: 'rgba(232,19,42,0.3)',
-      borderColor: '#E8132A',
-      borderWidth: 2,
-      borderRadius: 4,
-    },{
-      label: 'Orders',
-      data: [14, 22, 16, 31, 25, 38, 19, 34, 27, 20],
-      type: 'line',
-      borderColor: '#3b82f6',
-      backgroundColor: 'rgba(59,130,246,0.1)',
-      borderWidth: 2,
-      pointRadius: 3,
-      yAxisID: 'y2',
-      tension: 0.4,
-      fill: true,
-    }]
-  },
-  options: {
-    responsive: true, maintainAspectRatio: false,
-    plugins: { legend: { display: false } },
-    scales: {
-      x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#777', font: { size: 10 } } },
-      y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#777', font: { size: 10 }, callback: v => '৳' + (v/1000).toFixed(0) + 'K' } },
-      y2: { position: 'right', grid: { display: false }, ticks: { color: '#3b82f6', font: { size: 10 } } }
-    }
-  }
-});
-
-// Donut Chart
-const ctx2 = document.getElementById('donutChart').getContext('2d');
-new Chart(ctx2, {
-  type: 'doughnut',
-  data: {
-    datasets: [{
-      data: [68, 16, 9, 5, 2],
-      backgroundColor: ['#E8132A','#3b82f6','#f5c842','#22c55e','#f97316'],
-      borderWidth: 0,
-      hoverOffset: 4
-    }]
-  },
-  options: {
-    responsive: true, maintainAspectRatio: false,
-    cutout: '70%',
-    plugins: { legend: { display: false } }
-  }
-});
-
 // Nav active state
 document.querySelectorAll('.nav-item').forEach(item => {
   item.addEventListener('click', function(e) {
