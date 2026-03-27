@@ -215,7 +215,7 @@
   <div class="topbar">
     <div class="page-title">DASHBOARD <span>OVERVIEW</span></div>
     <div class="topbar-right">
-      <div class="date-chip">📅 Monday, March 23, 2026</div>
+      <div class="date-chip" id="currentDate">📅 Monday, March 23, 2026</div>
       <div class="topbar-btn">
         🔔
         <div class="topbar-dot"></div>
@@ -235,6 +235,7 @@
         <div class="stat-label">Today's Revenue</div>
         <div class="stat-value red" id="statRevenue">৳0</div>
         <div class="stat-change up" id="statRevenueChange">▲ 0% vs yesterday</div>
+      </div>
       <div class="stat-card green">
         <div class="stat-icon">🛒</div>
         <div class="stat-label">Total Orders</div>
@@ -272,14 +273,14 @@
       <div class="panel">
         <div class="panel-header"><div class="panel-title">Quick Actions</div></div>
         <div class="quick-actions">
-          <div class="qa-btn" onclick="alert('Add Product page')"><span class="qa-icon">➕</span> Add Product</div>
-          <div class="qa-btn" onclick="alert('View Orders')"><span class="qa-icon">📋</span> View Orders</div>
-          <div class="qa-btn" onclick="alert('Manage Inventory')"><span class="qa-icon">📦</span> Inventory</div>
-          <div class="qa-btn" onclick="alert('Create Coupon')"><span class="qa-icon">🏷️</span> New Coupon</div>
-          <div class="qa-btn" onclick="alert('Shipping Manager')"><span class="qa-icon">🚚</span> Shipping</div>
-          <div class="qa-btn" onclick="alert('Reports')"><span class="qa-icon">📊</span> Reports</div>
-          <div class="qa-btn" onclick="alert('Bulk Import')"><span class="qa-icon">⬆️</span> Bulk Import</div>
-          <div class="qa-btn" onclick="alert('Settings')"><span class="qa-icon">⚙️</span> Settings</div>
+          <div class="qa-btn" onclick="console.log('Add Product page')"><span class="qa-icon">➕</span> Add Product</div>
+          <div class="qa-btn" onclick="console.log('View Orders')"><span class="qa-icon">📋</span> View Orders</div>
+          <div class="qa-btn" onclick="console.log('Manage Inventory')"><span class="qa-icon">📦</span> Inventory</div>
+          <div class="qa-btn" onclick="console.log('Create Coupon')"><span class="qa-icon">🏷️</span> New Coupon</div>
+          <div class="qa-btn" onclick="console.log('Shipping Manager')"><span class="qa-icon">🚚</span> Shipping</div>
+          <div class="qa-btn" onclick="console.log('Reports')"><span class="qa-icon">📊</span> Reports</div>
+          <div class="qa-btn" onclick="console.log('Bulk Import')"><span class="qa-icon">⬆</span> Bulk Import</div>
+          <div class="qa-btn" onclick="console.log('Settings')"><span class="qa-icon">⚙</span> Settings</div>
         </div>
       </div>
     </div>
@@ -389,9 +390,9 @@
   </div>
 </div>
 
-<script src="/js/api.js"></script>
-<script src="/js/auth.js"></script>
-<script src="/js/admin.js"></script>
+<script src="/js/api.js?v=0327f"></script>
+<script src="/js/auth.js?v=0327f"></script>
+<script src="/js/admin.js?v=0327f"></script>
 <script>
 // Nav active state
 document.querySelectorAll('.nav-item').forEach(item => {

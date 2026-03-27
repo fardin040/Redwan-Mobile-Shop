@@ -2,39 +2,56 @@
 // js/admin.js - Admin Dashboard & Catalog Logic
 // ==========================================================
 
-document.addEventListener("DOMContentLoaded", async () => {
-    // 1. Check Auth (Requires Admin)
-    // Wait slightly to ensure Auth state is processed
-    setTimeout(async () => {
-        if (!window.Auth || !window.Auth.user || window.Auth.user.role !== 'admin') {
-            document.body.innerHTML = `
-                <div style="display:flex;flex-direction:column;justify-content:center;align-items:center;height:100vh;background:#09090b;color:white;font-family:'Outfit',sans-serif;">
-                    <div style="font-size:48px;margin-bottom:20px;">🔒</div>
-                    <h2 style="font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:1px;margin-bottom:10px;">ACCESS <span style="color:#E8132A;">DENIED</span></h2>
-                    <p style="color:#777;margin-bottom:30px;font-size:14px;">You must have Administrator privileges to view this area.</p>
-                    <a href="/account.html" style="background:#E8132A;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;font-size:14px;">Return to Account</a>
-                </div>
-            `;
-            return;
-        }
+(async () => {
+    console.log('[AdminJS] Script Load Start');
 
-        // 2. Initialize Page Scoped Logic
-        if (document.getElementById('statRevenue')) {
-            await initDashboard();
-        }
-        
-        if (document.getElementById('productsTable')) {
-            await initProducts();
-        }
-    }, 100);
-});
+    // 1. Update Date (Immediate visual canary)
+    const dateEl = document.getElementById('currentDate');
+    if (dateEl) {
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        dateEl.textContent = '📅 ' + new Intl.DateTimeFormat('en-US', options).format(new Date());
+        console.log('[AdminJS] Date updated to today.');
+    }
+    
+    // 2. Check Auth (Requires Admin)
+    if (window.Auth && typeof window.Auth.init === 'function') {
+        console.log('[AdminJS] Initializing Auth...');
+        await window.Auth.init();
+    }
+
+    if (!window.Auth || !window.Auth.user || window.Auth.user.role !== 'admin') {
+        console.warn('[AdminJS] Access Denied: User not admin or not logged in.');
+        document.body.innerHTML = `
+            <div style="display:flex;flex-direction:column;justify-content:center;align-items:center;height:100vh;background:#09090b;color:white;font-family:'Outfit',sans-serif;">
+                <div style="font-size:48px;margin-bottom:20px;">🔒</div>
+                <h2 style="font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:1px;margin-bottom:10px;">ACCESS <span style="color:#E8132A;">DENIED</span></h2>
+                <p style="color:#777;margin-bottom:30px;font-size:14px;">You must have Administrator privileges to view this area.</p>
+                <a href="/account.html" style="background:#E8132A;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;font-size:14px;">Return to Account</a>
+            </div>
+        `;
+        return;
+    }
+
+    console.log('[AdminJS] Auth Success. Loading page parts.');
+
+    // 3. Initialize Page Scoped Logic
+    if (document.getElementById('statRevenue')) {
+        await initDashboard();
+    }
+    
+    if (document.getElementById('productsTable')) {
+        await initProducts();
+    }
+})();
 
 // ==========================================================
 // DASHBOARD VIEW
 // ==========================================================
 async function initDashboard() {
+    console.log('[AdminJS] Initializing Dashboard Stats...');
     try {
         const result = await window.API.get('/admin/stats');
+        console.log('[AdminJS] Stats result:', result);
         if (result.success && result.data) {
             const d = result.data;
             
@@ -97,7 +114,12 @@ async function initDashboard() {
         if (document.getElementById('revenueChart')) {
             const chartData = await window.API.get('/admin/revenue-chart?period=10');
             if (chartData.success && window.Chart) {
-                const ctx = document.getElementById('revenueChart').getContext('2d');
+                const canvas = document.getElementById('revenueChart');
+                if (!canvas) {
+                    console.warn('[AdminJS] Revenue chart canvas not found. Skipping chart init.');
+                    return;
+                }
+                const ctx = canvas.getContext('2d');
                 new Chart(ctx, {
                     type: 'bar',
                     data: {
@@ -110,8 +132,16 @@ async function initDashboard() {
                             label: 'Orders', data: chartData.data.map(c => c.orders), type: 'line', borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.1)', borderWidth: 2, pointRadius: 3, yAxisID: 'y2', tension: 0.4, fill: true
                         }]
                     },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
-                         scales: { x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#777', font: { size: 10 } } }, y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#777', font: { size: 10 }, callback: v => '৳' + (v/1000).toFixed(0) + 'K' } }, y2: { position: 'right', grid: { display: false }, ticks: { color: '#3b82f6', font: { size: 10 } } } }
+                    options: { 
+                        responsive: true, 
+                        maintainAspectRatio: false, 
+                        plugins: { legend: { display: false } },
+                        scales: { 
+                            x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#777', font: { size: 10 } } }, 
+                            y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#777', font: { size: 10 }, callback: v => '৳' + (v/1000).toFixed(0) + 'K' } }, 
+                            y2: { position: 'right', grid: { display: false }, ticks: { color: '#3b82f6', font: { size: 10 } } } 
+                        } 
+                    }
                 });
             }
         }

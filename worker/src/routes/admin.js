@@ -8,7 +8,10 @@ import { isAdmin } from '../middleware/auth.js';
 
 const admin = new Hono();
 
-admin.get('/stats', async (c) => {
+admin.get('/stats', ...isAdmin, async (c) => {
+  const user = c.get('user');
+  console.log('[AdminStats] Requesting stats for user:', user?.email, 'Role:', user?.role);
+
   const [revenue, orders, customers, products, lowStock, recentOrders] = await Promise.all([
     query(c.env, `SELECT
       COALESCE(SUM(total_amount),0) AS total,

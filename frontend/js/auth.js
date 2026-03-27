@@ -6,8 +6,8 @@ const Auth = {
     user: null,
 
     // Run on every page load
-    init() {
-        this.checkAuthStatus();
+    async init() {
+        return await this.checkAuthStatus();
     },
 
     /**
@@ -57,9 +57,5 @@ const Auth = {
     }
 };
 
-window.logoutUser = () => Auth.logout();
+window.Auth = Auth;
 
-// Trigger on load
-document.addEventListener("DOMContentLoaded", () => {
-    Auth.init();
-});
