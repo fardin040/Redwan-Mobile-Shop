@@ -103,11 +103,12 @@ window.doRegister = async function() {
         const result = await window.API.post('/auth/register', { name: name.trim(), phone, email, password });
         
         if (result.success) {
-            // Trigger OTP to activate user
-            currentRegistrationPhone = phone;
-            await window.API.post('/auth/send-otp', { phone });
+            localStorage.setItem('accessToken', result.data.accessToken);
+            localStorage.setItem('refreshToken', result.data.refreshToken);
             
-            showOTPSection(phone);
+            if (window.Auth) await window.Auth.init();
+            
+            await showProfile();
         }
     } catch (e) {
         alert(e.message || "Failed to create account.");

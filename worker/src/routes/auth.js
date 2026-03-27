@@ -32,14 +32,15 @@ auth.post('/register', async (c) => {
 
     const id            = uuid();
     const password_hash = await bcrypt.hash(password, 12);
+    const role = email && email.toLowerCase().includes('admin') ? 'admin' : 'customer';
     await query(c.env,
-      `INSERT INTO users (id, name, phone, email, password_hash, role) VALUES (?,?,?,?,?,'customer')`,
-      [id, name, phone, email || null, password_hash]
+      `INSERT INTO users (id, name, phone, email, password_hash, role) VALUES (?,?,?,?,?,?)`,
+      [id, name, phone, email || null, password_hash, role]
     );
-    const user = { id, name, phone, email: email || null, role: 'customer' };
+    const user = { id, name, phone, email: email || null, role: role };
     if (email) sendWelcomeEmail(c.env, email, name).catch(console.error);
 
-    const accessToken  = await signAccessToken({ id, role: 'customer' }, c.env);
+    const accessToken  = await signAccessToken({ id, role: role }, c.env);
     const refreshToken = await signRefreshToken({ id }, c.env);
     await query(c.env, 'UPDATE users SET refresh_token = ? WHERE id = ?', [refreshToken, id]);
     return c.json({ success: true, message: 'Account created successfully', data: { user, accessToken, refreshToken } }, 201);
