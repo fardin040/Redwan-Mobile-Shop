@@ -7,18 +7,18 @@ compatibility_flags = ["nodejs_compat"]
 [[d1_databases]]
 binding  = "DB"
 database_name = "redwan-mobile-shop-db"
-database_id   = "REPLACE_WITH_D1_DATABASE_ID"
+database_id   = "be3a8201-58a7-4a30-985d-391090b5cdb4"
 
-# ── KV Namespaces (Cart & Cache — run: wrangler kv:namespace create "CART_KV") ──
+# ── KV Namespaces (Cart & Cache) ──────────────────────────────
 [[kv_namespaces]]
 binding    = "CART_KV"
-id         = "REPLACE_WITH_KV_NAMESPACE_ID"
-preview_id = "REPLACE_WITH_KV_NAMESPACE_PREVIEW_ID"
+id         = "f1f198f366004b1b8a50752ff3f9202a"
+preview_id = "fbcc8ab372d84556be172bae698aec16"
 
 [[kv_namespaces]]
 binding    = "CACHE_KV"
-id         = "REPLACE_WITH_KV_NAMESPACE_ID"
-preview_id = "REPLACE_WITH_KV_NAMESPACE_PREVIEW_ID"
+id         = "971f5995f76040ae8b3c666f913dd12e"
+preview_id = "375a6f7252cb45fdb95a580b4a571706"
 
 # ── Non-secret vars ────────────────────────────────────────────
 [vars]
