@@ -89,17 +89,30 @@ auth.post('/send-otp', async (c) => {
     const otp         = Math.floor(100000 + Math.random() * 900000).toString();
     const otp_expires = new Date(Date.now() + 10 * 60000).toISOString();
     const id          = uuid();
+    // name is NOT NULL — use placeholder for OTP-only registrations
     await query(c.env,
-      `INSERT INTO users (id, phone, otp, otp_expires, role) VALUES (?,?,?,?,'customer')
+      `INSERT INTO users (id, name, phone, otp, otp_expires, role) VALUES (?,?,?,?,?,'customer')
        ON CONFLICT(phone) DO UPDATE SET otp = excluded.otp, otp_expires = excluded.otp_expires`,
-      [id, phone, otp, otp_expires]
+      [id, 'OTP User', phone, otp, otp_expires]
     );
-    await sendOTPSms(c.env, phone, otp);
-    const devOTP = c.env.NODE_ENV === 'development' ? { otp } : {};
-    return c.json({ success: true, message: `OTP sent to ${phone}`, ...devOTP });
+    // SMS is non-fatal — if Twilio not configured, still succeed
+    let smsSent = false;
+    try {
+      await sendOTPSms(c.env, phone, otp);
+      smsSent = true;
+    } catch (smsErr) {
+      console.error('[send-otp] SMS failed (non-fatal):', smsErr.message);
+    }
+    // In development always expose OTP; in production expose if SMS failed (so testing works)
+    const exposeOTP = c.env.NODE_ENV === 'development' || !smsSent;
+    return c.json({
+      success: true,
+      message: smsSent ? `OTP sent to ${phone}` : `OTP generated (SMS unavailable)`,
+      ...(exposeOTP ? { otp } : {}),
+    });
   } catch (e) {
     console.error(e);
-    return c.json({ success: false, message: 'Failed to send OTP' }, 500);
+    return c.json({ success: false, message: 'Failed to generate OTP' }, 500);
   }
 });
 

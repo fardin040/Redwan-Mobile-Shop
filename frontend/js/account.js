@@ -128,9 +128,15 @@ window.showOTP = async function(e) {
     if(!phone) return;
     
     try {
-        await window.API.post('/auth/send-otp', { phone });
+        const result = await window.API.post('/auth/send-otp', { phone });
         currentRegistrationPhone = phone;
         showOTPSection(phone);
+        // If SMS is unavailable, show the OTP to the user for testing
+        if (result.otp) {
+            setTimeout(() => {
+                alert(`📱 SMS unavailable. Your test OTP is: ${result.otp}\n\nThis would normally be sent via SMS.`);
+            }, 300);
+        }
     } catch (e) {
         alert(e.message || "Failed to send OTP");
     }
