@@ -59,7 +59,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(10,10,10,0.96);backdrop-fi
 .sp-cancelled{background:rgba(232,19,42,0.1);color:var(--red);border:1px solid rgba(232,19,42,0.2);}
 .order-card-body{padding:18px 22px;}
 .order-items-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;}
-.order-item-thumb{width:60px;height:60px;background:var(--card2);border:1px solid var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;}
+.order-item-thumb{width:60px;height:60px;background:var(--card2);border:1px solid var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;overflow:hidden;}
 .order-item-info{flex:1;min-width:180px;}
 .order-item-name{font-size:14px;font-weight:600;margin-bottom:3px;}
 .order-item-meta{font-size:12px;color:var(--muted);}
@@ -100,7 +100,6 @@ nav{position:sticky;top:0;z-index:100;background:rgba(10,10,10,0.96);backdrop-fi
 
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
 .order-card{animation:fadeUp 0.4s ease both;}
-.order-card:nth-child(1){animation-delay:0s;}.order-card:nth-child(2){animation-delay:.07s;}.order-card:nth-child(3){animation-delay:.14s;}
 @media(max-width:900px){.page-layout{grid-template-columns:1fr;}.sidebar{display:none;}.main-content{padding:20px;}.nav-logo{font-size:20px;}nav{padding:0 16px;}}
 </style>
 </head>
@@ -118,15 +117,15 @@ nav{position:sticky;top:0;z-index:100;background:rgba(10,10,10,0.96);backdrop-fi
   <!-- SIDEBAR -->
   <div class="sidebar">
     <div class="side-profile">
-      <div class="side-avatar">R</div>
-      <div class="side-name">Rafiqul Islam</div>
-      <div class="side-email">rafiqul@email.com</div>
+      <div class="side-avatar" id="sideAvatar">U</div>
+      <div class="side-name" id="sideName">Loading...</div>
+      <div class="side-email" id="sideEmail"></div>
     </div>
-    <a class="side-item active" href="my-orders.html"><span class="ico">📦</span> My Orders <span class="side-badge">7</span></a>
+    <a class="side-item active" href="my-orders.html"><span class="ico">📦</span> My Orders <span class="side-badge" id="ordersBadge">—</span></a>
     <a class="side-item" href="wishlist.html"><span class="ico">❤️</span> Wishlist</a>
     <a class="side-item" href="#"><span class="ico">📍</span> Addresses</a>
     <a class="side-item" href="#"><span class="ico">💳</span> Payments</a>
-    <a class="side-item" href="#"><span class="ico">🔔</span> Notifications <span class="side-badge" style="background:var(--blue);">3</span></a>
+    <a class="side-item" href="#"><span class="ico">🔔</span> Notifications</a>
     <a class="side-item" href="account.html"><span class="ico">⚙️</span> Settings</a>
     <a class="side-item" href="redwan-mobile-shop.html" style="margin-top:12px;border-top:1px solid var(--border);padding-top:12px;"><span class="ico">🏠</span> Back to Shop</a>
   </div>
@@ -135,209 +134,29 @@ nav{position:sticky;top:0;z-index:100;background:rgba(10,10,10,0.96);backdrop-fi
   <div class="main-content">
     <div class="page-header">
       <div class="page-title">MY <span>ORDERS</span></div>
-      <div style="font-size:13px;color:var(--muted);">7 orders placed</div>
+      <div style="font-size:13px;color:var(--muted);" id="orderCount">Loading...</div>
     </div>
 
     <div class="search-bar">
-      <input class="search-input" type="text" placeholder="Search orders by product name or order ID..."/>
-      <select style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:0 14px;font-family:'Outfit',sans-serif;font-size:13px;color:var(--muted);outline:none;cursor:pointer;">
-        <option>All Time</option>
-        <option>Last 30 days</option>
-        <option>Last 3 months</option>
-        <option>2025</option>
-      </select>
+      <input class="search-input" type="text" placeholder="Search orders by product name or order ID..." oninput="searchOrders(this.value)"/>
     </div>
 
     <div class="status-filters">
-      <div class="status-filter active" onclick="filterOrders(this,'all')">All Orders <span class="count">7</span></div>
-      <div class="status-filter" onclick="filterOrders(this,'processing')">Processing <span class="count">1</span></div>
-      <div class="status-filter" onclick="filterOrders(this,'shipped')">Shipped <span class="count">1</span></div>
-      <div class="status-filter" onclick="filterOrders(this,'delivered')">Delivered <span class="count">4</span></div>
-      <div class="status-filter" onclick="filterOrders(this,'cancelled')">Cancelled <span class="count">1</span></div>
+      <div class="status-filter active" data-filter="all" onclick="filterOrders(this,'all')">All Orders <span class="count">—</span></div>
+      <div class="status-filter" data-filter="processing" onclick="filterOrders(this,'processing')">Processing <span class="count">—</span></div>
+      <div class="status-filter" data-filter="shipped" onclick="filterOrders(this,'shipped')">Shipped <span class="count">—</span></div>
+      <div class="status-filter" data-filter="delivered" onclick="filterOrders(this,'delivered')">Delivered <span class="count">—</span></div>
+      <div class="status-filter" data-filter="cancelled" onclick="filterOrders(this,'cancelled')">Cancelled <span class="count">—</span></div>
     </div>
 
     <div class="orders-list" id="ordersList">
-
-      <!-- ORDER 1 - Processing -->
-      <div class="order-card" data-status="processing">
-        <div class="order-card-header">
-          <div>
-            <div class="order-id">#RM-2026-0247</div>
-            <div class="order-date">Placed on March 23, 2026 · bKash Payment</div>
-          </div>
-          <div class="order-status"><span class="status-pill sp-processing">● Processing</span></div>
-        </div>
-        <div class="order-card-body">
-          <div class="order-items-row">
-            <div class="order-item-thumb">📱</div>
-            <div class="order-item-info">
-              <div class="order-item-name">Samsung Galaxy S25 Ultra</div>
-              <div class="order-item-meta">Titanium Black · 256GB · Qty: 1</div>
-            </div>
-            <div class="order-total"><div class="order-amount">৳1,19,999</div><div class="order-items-count">3 items total</div></div>
-          </div>
-          <div class="track-mini">
-            <div class="track-step done"><div class="track-dot">✓</div><div class="track-label">Placed</div></div>
-            <div class="track-line done"></div>
-            <div class="track-step active"><div class="track-dot">●</div><div class="track-label">Processing</div></div>
-            <div class="track-line"></div>
-            <div class="track-step"><div class="track-dot"></div><div class="track-label">Shipped</div></div>
-            <div class="track-line"></div>
-            <div class="track-step"><div class="track-dot"></div><div class="track-label">Delivered</div></div>
-          </div>
-        </div>
-        <div class="order-card-footer">
-          <div class="order-delivery">Est. delivery: <strong>Today by 8 PM</strong> · Pathao Courier</div>
-          <button class="btn-sm" onclick="window.location.href='checkout-tracking.html'">🚚 Track Order</button>
-          <button class="btn-sm">📄 Invoice</button>
-          <button class="btn-sm" style="color:var(--red);border-color:rgba(232,19,42,0.3);">✕ Cancel</button>
-        </div>
-      </div>
-
-      <!-- ORDER 2 - Delivered -->
-      <div class="order-card" data-status="delivered">
-        <div class="order-card-header">
-          <div>
-            <div class="order-id">#RM-2026-0231</div>
-            <div class="order-date">Placed on March 10, 2026 · Card Payment</div>
-          </div>
-          <div class="order-status"><span class="status-pill sp-delivered">✓ Delivered</span></div>
-        </div>
-        <div class="order-card-body">
-          <div class="order-items-row">
-            <div class="order-item-thumb">📱</div>
-            <div class="order-item-info">
-              <div class="order-item-name">iPhone 16 Pro Max</div>
-              <div class="order-item-meta">Natural Titanium · 256GB · Qty: 1</div>
-            </div>
-            <div class="order-total"><div class="order-amount">৳1,74,999</div><div class="order-items-count">1 item</div></div>
-          </div>
-          <div class="track-mini">
-            <div class="track-step done"><div class="track-dot">✓</div><div class="track-label">Placed</div></div>
-            <div class="track-line done"></div>
-            <div class="track-step done"><div class="track-dot">✓</div><div class="track-label">Processing</div></div>
-            <div class="track-line done"></div>
-            <div class="track-step done"><div class="track-dot">✓</div><div class="track-label">Shipped</div></div>
-            <div class="track-line done"></div>
-            <div class="track-step done"><div class="track-dot">✓</div><div class="track-label">Delivered</div></div>
-          </div>
-        </div>
-        <div class="order-card-footer">
-          <div class="order-delivery">Delivered on <strong>March 12, 2026</strong> · Received by: Rafiqul Islam</div>
-          <button class="btn-sm primary" onclick="reorder()">🔁 Re-order</button>
-          <button class="btn-sm" onclick="writeReview()">⭐ Write Review</button>
-          <button class="btn-sm">📄 Invoice</button>
-          <button class="btn-sm">↩️ Return</button>
-        </div>
-      </div>
-
-      <!-- ORDER 3 - Shipped -->
-      <div class="order-card" data-status="shipped">
-        <div class="order-card-header">
-          <div>
-            <div class="order-id">#RM-2026-0219</div>
-            <div class="order-date">Placed on March 5, 2026 · Nagad Payment</div>
-          </div>
-          <div class="order-status"><span class="status-pill sp-shipped">🚚 Shipped</span></div>
-        </div>
-        <div class="order-card-body">
-          <div class="order-items-row">
-            <div class="order-item-thumb">🎧</div>
-            <div class="order-item-info">
-              <div class="order-item-name">Samsung Galaxy Buds3 Pro + Case</div>
-              <div class="order-item-meta">Black · Qty: 1 + Qty: 1</div>
-            </div>
-            <div class="order-total"><div class="order-amount">৳18,499</div><div class="order-items-count">2 items</div></div>
-          </div>
-          <div class="track-mini">
-            <div class="track-step done"><div class="track-dot">✓</div><div class="track-label">Placed</div></div>
-            <div class="track-line done"></div>
-            <div class="track-step done"><div class="track-dot">✓</div><div class="track-label">Processing</div></div>
-            <div class="track-line done"></div>
-            <div class="track-step active"><div class="track-dot">●</div><div class="track-label">Shipped</div></div>
-            <div class="track-line"></div>
-            <div class="track-step"><div class="track-dot"></div><div class="track-label">Delivered</div></div>
-          </div>
-        </div>
-        <div class="order-card-footer">
-          <div class="order-delivery">Expected by: <strong>March 25, 2026</strong> · Steadfast Courier · TRK: STD-882234</div>
-          <button class="btn-sm" onclick="window.location.href='checkout-tracking.html'">🚚 Track</button>
-          <button class="btn-sm">📄 Invoice</button>
-        </div>
-      </div>
-
-      <!-- ORDER 4 - Delivered -->
-      <div class="order-card" data-status="delivered">
-        <div class="order-card-header">
-          <div>
-            <div class="order-id">#RM-2026-0198</div>
-            <div class="order-date">Placed on February 18, 2026 · bKash Payment</div>
-          </div>
-          <div class="order-status"><span class="status-pill sp-delivered">✓ Delivered</span></div>
-        </div>
-        <div class="order-card-body">
-          <div class="order-items-row">
-            <div class="order-item-thumb">📱</div>
-            <div class="order-item-info">
-              <div class="order-item-name">Redmi Note 13 Pro+</div>
-              <div class="order-item-meta">Midnight Black · 256GB · Qty: 1</div>
-            </div>
-            <div class="order-total"><div class="order-amount">৳34,999</div><div class="order-items-count">1 item</div></div>
-          </div>
-        </div>
-        <div class="order-card-footer">
-          <div class="order-delivery">Delivered on <strong>February 20, 2026</strong></div>
-          <button class="btn-sm primary">🔁 Re-order</button>
-          <button class="btn-sm">⭐ Write Review</button>
-          <button class="btn-sm">📄 Invoice</button>
-        </div>
-      </div>
-
-      <!-- ORDER 5 - Cancelled -->
-      <div class="order-card" data-status="cancelled">
-        <div class="order-card-header">
-          <div>
-            <div class="order-id">#RM-2026-0185</div>
-            <div class="order-date">Placed on February 1, 2026 · Card Payment</div>
-          </div>
-          <div class="order-status"><span class="status-pill sp-cancelled">✕ Cancelled</span></div>
-        </div>
-        <div class="order-card-body">
-          <div class="order-items-row">
-            <div class="order-item-thumb">📱</div>
-            <div class="order-item-info">
-              <div class="order-item-name">OPPO Reno 12 Pro 5G</div>
-              <div class="order-item-meta">Sunset Gold · 256GB · Qty: 1</div>
-            </div>
-            <div class="order-total"><div class="order-amount" style="color:var(--muted);text-decoration:line-through;">৳44,999</div><div class="order-items-count" style="color:var(--red);">Refunded</div></div>
-          </div>
-        </div>
-        <div class="order-card-footer">
-          <div class="order-delivery" style="color:var(--red);">Cancelled by customer · Refund processed in 3-5 days</div>
-          <button class="btn-sm primary" onclick="reorder()">🔁 Re-order</button>
-        </div>
-      </div>
-
+      <!-- Populated dynamically by my-orders.js -->
     </div>
   </div>
 </div>
 
-<script>
-function filterOrders(el, status){
-  document.querySelectorAll('.status-filter').forEach(f=>f.classList.remove('active'));
-  el.classList.add('active');
-  document.querySelectorAll('.order-card').forEach(card=>{
-    const show = status==='all' || card.dataset.status===status;
-    card.style.display = show?'block':'none';
-  });
-}
-function reorder(){
-  if(confirm('Add this item back to cart?')){alert('Added to cart! Redirecting to checkout...');}
-}
-function writeReview(){
-  const r=prompt('Rate this product 1-5 stars:','5');
-  if(r)alert('Thank you for your review! It will appear after moderation.');
-}
-</script>
+<script src="/js/api.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/my-orders.js"></script>
 </body>
 </html>

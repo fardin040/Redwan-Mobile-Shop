@@ -3,19 +3,15 @@
 // ==========================================================
 
 (async () => {
-    console.log('[AdminJS] Script Load Start');
-
     // 1. Update Date (Immediate visual canary)
     const dateEl = document.getElementById('currentDate');
     if (dateEl) {
         const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
         dateEl.textContent = '📅 ' + new Intl.DateTimeFormat('en-US', options).format(new Date());
-        console.log('[AdminJS] Date updated to today.');
     }
     
     // 2. Check Auth (Requires Admin)
     if (window.Auth && typeof window.Auth.init === 'function') {
-        console.log('[AdminJS] Initializing Auth...');
         await window.Auth.init();
     }
 
@@ -32,8 +28,6 @@
         return;
     }
 
-    console.log('[AdminJS] Auth Success. Loading page parts.');
-
     // 3. Initialize Page Scoped Logic
     if (document.getElementById('statRevenue')) {
         await initDashboard();
@@ -48,10 +42,8 @@
 // DASHBOARD VIEW
 // ==========================================================
 async function initDashboard() {
-    console.log('[AdminJS] Initializing Dashboard Stats...');
     try {
         const result = await window.API.get('/admin/stats');
-        console.log('[AdminJS] Stats result:', result);
         if (result.success && result.data) {
             const d = result.data;
             
