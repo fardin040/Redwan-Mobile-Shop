@@ -587,26 +587,8 @@ body{font-family:'Outfit',sans-serif;background:var(--black);color:var(--text);d
 
 <script>
 function switchTab(el,tab){
-  const target = document.getElementById('tab-'+tab);
-  if (!target) return;
-
-  document.querySelectorAll('.admin-tab').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.admin-page').forEach(p=>p.classList.remove('active'));
-  
-  let tabBtn = el;
-  if (typeof el === 'string') {
-    tabBtn = document.querySelector(`.admin-tab[onclick*="'${el}'"]`);
-  } else if (!el) {
-    tabBtn = document.querySelector(`.admin-tab[onclick*="'${tab}'"]`);
-  }
-  if (tabBtn) tabBtn.classList.add('active');
-  target.classList.add('active');
-  
-  const titleEl = document.getElementById('topTitle');
-  if (titleEl) {
-    if (tab === 'orders') titleEl.innerHTML = 'ORDERS <span>MANAGEMENT</span>';
-    else if (tab === 'returns') titleEl.innerHTML = 'RETURNS <span>MANAGEMENT</span>';
-    else if (tab === 'customers') titleEl.innerHTML = 'CUSTOMERS <span>MANAGEMENT</span>';
+  if (typeof window.switchAdminTab === 'function') {
+    window.switchAdminTab(el, tab);
   }
 }
 function filterOrders(el,status){
@@ -655,6 +637,6 @@ function closeCustDrawer(){
 <script src="js/appwrite-client.js"></script>
 <script src="js/api.js?v=admin_v10"></script>
 <script src="js/auth.js?v=admin_v10"></script>
-<script src="js/admin.js?v=admin_v10"></script>
+<script src="js/admin.js?v=admin_v11"></script>
 </body>
 </html>

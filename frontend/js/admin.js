@@ -852,12 +852,62 @@ window.restock = function(btn) {
     alert('✅ Stock restocked to 50 units!');
 };
 
-window.switchAdminTab = function(el, tab) {
-    document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+window.switchAdminTab = function(el, tabName) {
+    let tab = tabName;
+    let targetEl = el;
+
+    if (typeof el === 'string') {
+        tab = el;
+        targetEl = null;
+    }
+    if (!tab && typeof targetEl === 'string') {
+        tab = targetEl;
+    }
+    if (!tab) return;
+
+    const targetPage = document.getElementById('tab-' + tab);
+    if (!targetPage) return;
+
+    // Hide all admin pages & deactivate top tabs
     document.querySelectorAll('.admin-page').forEach(p => p.classList.remove('active'));
-    el.classList.add('active');
-    const target = document.getElementById('tab-' + tab);
-    if (target) target.classList.add('active');
+    document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+
+    // Activate target admin page
+    targetPage.classList.add('active');
+
+    // Find and activate top tab button
+    let tabBtn = (targetEl && targetEl.classList && targetEl.classList.contains('admin-tab')) ? targetEl : null;
+    if (!tabBtn && tab) {
+        tabBtn = document.querySelector(`.admin-tab[onclick*="'${tab}'"]`) || document.getElementById('tabBtn' + tab.charAt(0).toUpperCase() + tab.slice(1));
+    }
+    if (tabBtn && tabBtn.classList) {
+        tabBtn.classList.add('active');
+    }
+
+    // Update topbar title if present
+    const titleEl = document.getElementById('topTitle');
+    if (titleEl) {
+        if (tab === 'products') titleEl.innerHTML = 'PRODUCTS <span>MANAGEMENT</span>';
+        else if (tab === 'accessories') titleEl.innerHTML = 'ACCESSORIES <span>CATALOG</span>';
+        else if (tab === 'inventory') titleEl.innerHTML = 'INVENTORY <span>CONTROL</span>';
+        else if (tab === 'orders') titleEl.innerHTML = 'ORDERS <span>MANAGEMENT</span>';
+        else if (tab === 'returns') titleEl.innerHTML = 'RETURNS <span>MANAGEMENT</span>';
+        else if (tab === 'customers') titleEl.innerHTML = 'CUSTOMERS <span>MANAGEMENT</span>';
+    }
+};
+
+window.switchTab = function(el, tab) {
+    if (document.querySelector('.admin-page') || document.querySelector('.admin-tab')) {
+        return window.switchAdminTab(el, tab);
+    }
+    if (typeof el === 'string') {
+        const page = document.getElementById(el + '-page');
+        if (page) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.page-tab').forEach(t => t.classList.remove('active'));
+            page.classList.add('active');
+        }
+    }
 };
 
 window.switchSettingsTab = function(btn, targetId) {
