@@ -506,11 +506,44 @@
     <div class="rel-card"><div class="rel-img">📱</div><div class="rel-body"><div class="rel-brand">Samsung</div><div class="rel-name">Galaxy Z Fold 6</div><div class="rel-price">৳1,89,999</div></div></div>
     <div class="rel-card"><div class="rel-img">📱</div><div class="rel-body"><div class="rel-brand">Apple</div><div class="rel-name">iPhone 16 Pro Max</div><div class="rel-price">৳1,74,999</div></div></div>
     <div class="rel-card"><div class="rel-img">📱</div><div class="rel-body"><div class="rel-brand">OnePlus</div><div class="rel-name">OnePlus 13</div><div class="rel-price">৳74,999</div></div></div>
-    <div class="rel-card"><div class="rel-img">🎧</div><div class="rel-body"><div class="rel-brand">Samsung</div><div class="rel-name">Galaxy Buds3 Pro</div><div class="rel-price">৳14,999</div></div></div>
   </div>
 </div>
-
 <script>
+const PRESET_PRODUCTS = {
+  'prod_a55': { brand: 'Samsung', name: 'Galaxy A55 5G', price: '37,499', oldPrice: '৳49,999', save: 'Save ৳12,500', model: 'Model: SM-A556B | 5G | 50MP Camera' },
+  'prod_note13': { brand: 'Xiaomi', name: 'Redmi Note 13 Pro+', price: '34,999', oldPrice: '৳39,999', save: 'Save ৳5,000', model: 'Model: 23090RA98G | 200MP | 67W' },
+  'prod_rm12': { brand: 'Realme', name: 'Realme 12 Pro+', price: '28,999', oldPrice: '৳35,499', save: 'Save ৳6,500', model: 'Model: RMX3840 | 50MP Periscope | 67W' },
+  'prod_ip16': { brand: 'Apple', name: 'iPhone 16 Pro Max', price: '1,74,999', oldPrice: '৳1,89,999', save: 'Save ৳15,000', model: 'Model: A3296 | A18 Pro | Titanium' },
+  'prod_s25u': { brand: 'Samsung', name: 'Galaxy S25 Ultra', price: '1,19,999', oldPrice: '৳1,39,999', save: 'Save ৳20,000', model: 'Model: SM-S9380 | 5G | Android 15' },
+  'prod_oppo12': { brand: 'OPPO', name: 'Reno 12 Pro 5G', price: '44,999', oldPrice: '৳49,999', save: 'Save ৳5,000', model: 'Model: CPH2629 | 50MP AI | 80W' },
+  'prod_op13': { brand: 'OnePlus', name: 'OnePlus 13', price: '74,999', oldPrice: '৳79,999', save: 'Save ৳5,000', model: 'Model: CPH2653 | Snapdragon 8 Gen 3 | 100W' },
+  'prod_v40': { brand: 'Vivo', name: 'Vivo V40 Pro', price: '49,999', oldPrice: '৳54,999', save: 'Save ৳5,000', model: 'Model: V2343 | 50MP Zeiss | 80W' }
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const id = urlParams.get('id');
+  if (id && PRESET_PRODUCTS[id]) {
+    const p = PRESET_PRODUCTS[id];
+    document.title = `${p.name} - Redwan Mobile Shop`;
+    const brandEl = document.querySelector('.product-brand');
+    const nameEl = document.querySelector('.product-name');
+    const modelEl = document.querySelector('.product-model');
+    const breadcrumbCurrent = document.querySelector('.breadcrumb .current');
+    const priceMain = document.querySelector('.price-main');
+    const priceOld = document.querySelector('.price-old');
+    const priceSave = document.querySelector('.price-save');
+
+    if (brandEl) brandEl.textContent = p.brand;
+    if (nameEl) nameEl.textContent = p.name;
+    if (modelEl) modelEl.textContent = p.model;
+    if (breadcrumbCurrent) breadcrumbCurrent.textContent = p.name;
+    if (priceMain) priceMain.innerHTML = `৳<span>${p.price}</span>`;
+    if (priceOld) priceOld.textContent = p.oldPrice;
+    if (priceSave) priceSave.textContent = p.save;
+  }
+});
+
 function setThumb(el, emoji, label) {
   document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
