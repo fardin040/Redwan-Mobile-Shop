@@ -338,56 +338,103 @@ function ensureAdminModals() {
     root.innerHTML = `
         <!-- COUPON MODAL -->
         <div class="modal-overlay" id="couponModal">
-            <div class="modal" style="max-width:550px;">
-                <div class="modal-header">
-                    <div class="modal-title">🏷️ DISCOUNT & <span>COUPONS</span></div>
-                    <button class="modal-close" onclick="window.closeModal('couponModal')">✕</button>
-                </div>
-                <div class="modal-body" style="max-height:70vh;overflow-y:auto;">
-                    <div style="background:var(--card2);padding:14px;border-radius:8px;margin-bottom:16px;border:1px solid var(--border);">
-                        <div style="font-size:13px;font-weight:700;margin-bottom:10px;color:var(--text);">Create New Promo Code</div>
-                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
-                            <input class="form-input" id="cpCode" placeholder="Coupon Code (e.g. REDWAN20)" style="text-transform:uppercase;"/>
-                            <input class="form-input" id="cpDiscount" type="number" placeholder="Discount % (e.g. 20)"/>
-                        </div>
-                        <button style="background:var(--red);color:white;border:none;padding:8px 14px;border-radius:6px;font-family:'Outfit',sans-serif;font-weight:700;font-size:12px;cursor:pointer;" onclick="window.addCoupon()">+ Save Coupon</button>
+            <div class="modal" style="max-width:650px;border-radius:24px;overflow:hidden;background:#0d111a;border:1px solid rgba(255,255,255,0.12);box-shadow:0 25px 60px rgba(0,0,0,0.7);">
+                <!-- HEADER -->
+                <div style="padding:22px 28px;background:#131824;border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:space-between;">
+                    <div>
+                        <div style="font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:1px;color:#fff;">🏷️ PROMO CODES <span style="color:var(--red);">& COUPONS</span></div>
+                        <div style="font-size:12px;color:#8a94a6;margin-top:2px;">Create promotional vouchers & manage store discount campaigns</div>
                     </div>
-                    <div style="font-size:12px;font-weight:700;margin-bottom:8px;color:var(--muted);">Active Coupons</div>
-                    <table class="orders-table" style="width:100%;font-size:12px;">
-                        <thead><tr><th>Code</th><th>Discount</th><th>Status</th><th>Action</th></tr></thead>
+                    <button onclick="window.closeModal('couponModal')" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#8a94a6;font-size:16px;transition:all 0.2s;">✕</button>
+                </div>
+
+                <!-- BODY -->
+                <div class="modal-body" style="padding:24px 28px;max-height:60vh;overflow-y:auto;">
+                    <div style="background:#161c28;padding:18px;border-radius:14px;margin-bottom:20px;border:1px solid rgba(255,255,255,0.08);">
+                        <div style="font-size:13px;font-weight:700;margin-bottom:12px;color:#fff;">➕ Create New Promo Code</div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+                            <div>
+                                <label style="display:block;font-size:11px;font-weight:700;color:#8a94a6;text-transform:uppercase;margin-bottom:6px;">Coupon Code</label>
+                                <input class="form-input" id="cpCode" placeholder="e.g. REDWAN20" style="text-transform:uppercase;background:#0d111a;border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 12px;color:#fff;font-size:13px;width:100%;"/>
+                            </div>
+                            <div>
+                                <label style="display:block;font-size:11px;font-weight:700;color:#8a94a6;text-transform:uppercase;margin-bottom:6px;">Discount Percentage (%)</label>
+                                <input class="form-input" id="cpDiscount" type="number" placeholder="e.g. 20" style="background:#0d111a;border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 12px;color:#fff;font-size:13px;width:100%;"/>
+                            </div>
+                        </div>
+                        <button style="background:var(--red);color:white;border:none;padding:10px 18px;border-radius:8px;font-family:'Outfit',sans-serif;font-weight:700;font-size:12px;cursor:pointer;box-shadow:0 4px 15px rgba(232,19,42,0.4);transition:all 0.2s;" onclick="window.addCoupon()">+ Save Coupon</button>
+                    </div>
+
+                    <div style="font-size:12px;font-weight:700;margin-bottom:10px;color:#8a94a6;text-transform:uppercase;">Active Coupons & Discounts</div>
+                    <table class="orders-table" style="width:100%;font-size:12px;background:#161c28;border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,0.08);">
+                        <thead><tr style="background:#10141f;color:#8a94a6;"><th>Code</th><th>Discount</th><th>Status</th><th>Action</th></tr></thead>
                         <tbody id="couponListTable">
-                            <tr><td><strong style="color:var(--red);">REDWAN20</strong></td><td>20% OFF</td><td><span class="pub-pill pub-live">ACTIVE</span></td><td><button class="act-btn" onclick="this.closest('tr').remove()">Delete</button></td></tr>
-                            <tr><td><strong style="color:var(--blue);">EID2026</strong></td><td>৳500 OFF</td><td><span class="pub-pill pub-live">ACTIVE</span></td><td><button class="act-btn" onclick="this.closest('tr').remove()">Delete</button></td></tr>
+                            <tr><td><strong style="color:var(--red);">REDWAN20</strong></td><td>20% OFF</td><td><span class="pub-pill pub-live">ACTIVE</span></td><td><button class="act-btn danger" onclick="this.closest('tr').remove()">Delete</button></td></tr>
+                            <tr><td><strong style="color:var(--blue);">EID2026</strong></td><td>৳500 OFF</td><td><span class="pub-pill pub-live">ACTIVE</span></td><td><button class="act-btn danger" onclick="this.closest('tr').remove()">Delete</button></td></tr>
                         </tbody>
                     </table>
+                </div>
+
+                <!-- FOOTER -->
+                <div style="padding:18px 28px;background:#131824;border-top:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:space-between;">
+                    <div style="font-size:12px;color:#8a94a6;">Engine: <span style="color:#22c55e;font-weight:700;">● Active Coupon Rules</span></div>
+                    <button onclick="window.closeModal('couponModal')" style="background:rgba(255,255,255,0.08);color:#fff;border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:9px 20px;font-family:'Outfit',sans-serif;font-weight:600;font-size:13px;cursor:pointer;">
+                        Close
+                    </button>
                 </div>
             </div>
         </div>
 
         <!-- SHIPPING MODAL -->
         <div class="modal-overlay" id="shippingModal">
-            <div class="modal" style="max-width:500px;">
-                <div class="modal-header">
-                    <div class="modal-title">🚚 SHIPPING & <span>DELIVERY</span></div>
-                    <button class="modal-close" onclick="window.closeModal('shippingModal')">✕</button>
+            <div class="modal" style="max-width:620px;border-radius:24px;overflow:hidden;background:#0d111a;border:1px solid rgba(255,255,255,0.12);box-shadow:0 25px 60px rgba(0,0,0,0.7);">
+                <!-- HEADER -->
+                <div style="padding:22px 28px;background:#131824;border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:space-between;">
+                    <div>
+                        <div style="font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:1px;color:#fff;">🚚 SHIPPING <span style="color:var(--red);">& COURIER CONFIG</span></div>
+                        <div style="font-size:12px;color:#8a94a6;margin-top:2px;">Set delivery charges & automated courier API integrations</div>
+                    </div>
+                    <button onclick="window.closeModal('shippingModal')" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#8a94a6;font-size:16px;transition:all 0.2s;">✕</button>
                 </div>
-                <div class="modal-body">
-                    <div class="form-group" style="margin-bottom:12px;">
-                        <label class="form-label">Inside Dhaka Delivery Charge (৳)</label>
-                        <input class="form-input" id="shipDhaka" type="number" value="70"/>
+
+                <!-- BODY -->
+                <div class="modal-body" style="padding:24px 28px;max-height:60vh;overflow-y:auto;">
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
+                        <div>
+                            <label style="display:block;font-size:11px;font-weight:700;color:#8a94a6;text-transform:uppercase;margin-bottom:6px;">Inside Dhaka Delivery Charge (৳)</label>
+                            <input class="form-input" id="shipDhaka" type="number" value="70" style="background:#161c28;border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:11px 14px;color:#fff;font-size:13px;width:100%;"/>
+                        </div>
+                        <div>
+                            <label style="display:block;font-size:11px;font-weight:700;color:#8a94a6;text-transform:uppercase;margin-bottom:6px;">Outside Dhaka Delivery Charge (৳)</label>
+                            <input class="form-input" id="shipOutside" type="number" value="130" style="background:#161c28;border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:11px 14px;color:#fff;font-size:13px;width:100%;"/>
+                        </div>
                     </div>
-                    <div class="form-group" style="margin-bottom:12px;">
-                        <label class="form-label">Outside Dhaka Delivery Charge (৳)</label>
-                        <input class="form-input" id="shipOutside" type="number" value="130"/>
-                    </div>
-                    <div style="margin-top:16px;background:var(--card2);padding:12px;border-radius:8px;border:1px solid var(--border);">
-                        <div style="font-size:12px;font-weight:700;margin-bottom:8px;">Courier Integrations</div>
-                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;"><span style="font-size:13px;">Pathao Courier API</span><span class="pub-pill pub-live">ENABLED</span></div>
-                        <div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:13px;">Steadfast Courier</span><span class="pub-pill pub-live">ENABLED</span></div>
+
+                    <div style="background:#161c28;padding:18px;border-radius:14px;border:1px solid rgba(255,255,255,0.08);">
+                        <div style="font-size:12px;font-weight:700;margin-bottom:12px;color:#fff;text-transform:uppercase;">📦 Automated Courier API Integrations</div>
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;padding:10px 14px;background:#0d111a;border-radius:8px;border:1px solid rgba(255,255,255,0.05);">
+                            <div style="display:flex;align-items:center;gap:10px;">
+                                <span style="font-size:18px;">🚚</span>
+                                <div><div style="font-size:13px;font-weight:700;color:#fff;">Pathao Courier API</div><div style="font-size:11px;color:#8a94a6;">Automated parcel creation & tracking</div></div>
+                            </div>
+                            <span class="pub-pill pub-live">CONNECTED</span>
+                        </div>
+                        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#0d111a;border-radius:8px;border:1px solid rgba(255,255,255,0.05);">
+                            <div style="display:flex;align-items:center;gap:10px;">
+                                <span style="font-size:18px;">⚡</span>
+                                <div><div style="font-size:13px;font-weight:700;color:#fff;">Steadfast Courier API</div><div style="font-size:11px;color:#8a94a6;">Real-time consignment status</div></div>
+                            </div>
+                            <span class="pub-pill pub-live">CONNECTED</span>
+                        </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button class="btn-save" onclick="alert('✅ Shipping rates updated!');window.closeModal('shippingModal');">Save Shipping Config</button>
+
+                <!-- FOOTER -->
+                <div style="padding:18px 28px;background:#131824;border-top:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:space-between;">
+                    <div style="font-size:12px;color:#8a94a6;">Logistics: <span style="color:#22c55e;font-weight:700;">● BD Nationwide Network</span></div>
+                    <button class="btn-save" onclick="alert('✅ Shipping rates updated!');window.closeModal('shippingModal');" style="background:var(--red);color:#fff;border:none;border-radius:10px;padding:10px 24px;font-family:'Outfit',sans-serif;font-weight:700;font-size:13px;cursor:pointer;box-shadow:0 4px 15px rgba(232,19,42,0.4);transition:all 0.2s;">
+                        ✓ Save Shipping Config
+                    </button>
                 </div>
             </div>
         </div>
@@ -536,49 +583,79 @@ function ensureAdminModals() {
 
         <!-- CATEGORY MODAL -->
         <div class="modal-overlay" id="categoryModal">
-            <div class="modal" style="max-width:500px;">
-                <div class="modal-header">
-                    <div class="modal-title">🗂️ CATEGORY <span>MANAGER</span></div>
-                    <button class="modal-close" onclick="window.closeModal('categoryModal')">✕</button>
-                </div>
-                <div class="modal-body">
-                    <div style="display:flex;gap:10px;margin-bottom:14px;">
-                        <input class="form-input" id="newCatName" placeholder="New Category Name..."/>
-                        <button style="background:var(--red);color:white;border:none;padding:8px 14px;border-radius:6px;font-family:'Outfit',sans-serif;font-weight:700;font-size:12px;cursor:pointer;white-space:nowrap;" onclick="window.addCategory()">+ Add</button>
+            <div class="modal" style="max-width:600px;border-radius:24px;overflow:hidden;background:#0d111a;border:1px solid rgba(255,255,255,0.12);box-shadow:0 25px 60px rgba(0,0,0,0.7);">
+                <!-- HEADER -->
+                <div style="padding:22px 28px;background:#131824;border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:space-between;">
+                    <div>
+                        <div style="font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:1px;color:#fff;">🗂️ CATEGORY <span style="color:var(--red);">MANAGER</span></div>
+                        <div style="font-size:12px;color:#8a94a6;margin-top:2px;">Organize product catalog categories & item classifications</div>
                     </div>
-                    <div style="font-size:12px;font-weight:700;margin-bottom:8px;color:var(--muted);">Current Categories</div>
-                    <ul id="catListUl" style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:6px;">
-                        <li style="background:var(--card2);padding:8px 12px;border-radius:6px;display:flex;justify-space:between;align-items:center;font-size:13px;"><span>📱 Smartphones</span><span style="color:var(--muted);font-size:11px;">124 Items</span></li>
-                        <li style="background:var(--card2);padding:8px 12px;border-radius:6px;display:flex;justify-space:between;align-items:center;font-size:13px;"><span>🎧 Accessories</span><span style="color:var(--muted);font-size:11px;">86 Items</span></li>
-                        <li style="background:var(--card2);padding:8px 12px;border-radius:6px;display:flex;justify-space:between;align-items:center;font-size:13px;"><span>🎵 Earphones</span><span style="color:var(--muted);font-size:11px;">45 Items</span></li>
-                        <li style="background:var(--card2);padding:8px 12px;border-radius:6px;display:flex;justify-space:between;align-items:center;font-size:13px;"><span>⌚ Smart Watches</span><span style="color:var(--muted);font-size:11px;">32 Items</span></li>
+                    <button onclick="window.closeModal('categoryModal')" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#8a94a6;font-size:16px;transition:all 0.2s;">✕</button>
+                </div>
+
+                <!-- BODY -->
+                <div class="modal-body" style="padding:24px 28px;max-height:60vh;overflow-y:auto;">
+                    <div style="display:flex;gap:12px;margin-bottom:20px;">
+                        <input class="form-input" id="newCatName" placeholder="New Category Name (e.g. Smart Watches)..." style="background:#161c28;border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:11px 14px;color:#fff;font-size:13px;flex:1;"/>
+                        <button style="background:var(--red);color:white;border:none;padding:11px 20px;border-radius:10px;font-family:'Outfit',sans-serif;font-weight:700;font-size:13px;cursor:pointer;white-space:nowrap;box-shadow:0 4px 15px rgba(232,19,42,0.4);" onclick="window.addCategory()">+ Add Category</button>
+                    </div>
+
+                    <div style="font-size:12px;font-weight:700;margin-bottom:10px;color:#8a94a6;text-transform:uppercase;">Active Categories</div>
+                    <ul id="catListUl" style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;">
+                        <li style="background:#161c28;padding:12px 16px;border-radius:10px;display:flex;justify-content:space-between;align-items:center;font-size:13px;border:1px solid rgba(255,255,255,0.08);color:#fff;"><span>📱 Smartphones</span><span style="color:#8a94a6;font-size:11px;background:#0d111a;padding:4px 10px;border-radius:6px;">124 Items</span></li>
+                        <li style="background:#161c28;padding:12px 16px;border-radius:10px;display:flex;justify-content:space-between;align-items:center;font-size:13px;border:1px solid rgba(255,255,255,0.08);color:#fff;"><span>🎧 Accessories</span><span style="color:#8a94a6;font-size:11px;background:#0d111a;padding:4px 10px;border-radius:6px;">86 Items</span></li>
+                        <li style="background:#161c28;padding:12px 16px;border-radius:10px;display:flex;justify-content:space-between;align-items:center;font-size:13px;border:1px solid rgba(255,255,255,0.08);color:#fff;"><span>🎵 Earphones</span><span style="color:#8a94a6;font-size:11px;background:#0d111a;padding:4px 10px;border-radius:6px;">45 Items</span></li>
+                        <li style="background:#161c28;padding:12px 16px;border-radius:10px;display:flex;justify-content:space-between;align-items:center;font-size:13px;border:1px solid rgba(255,255,255,0.08);color:#fff;"><span>⌚ Smart Watches</span><span style="color:#8a94a6;font-size:11px;background:#0d111a;padding:4px 10px;border-radius:6px;">32 Items</span></li>
                     </ul>
+                </div>
+
+                <!-- FOOTER -->
+                <div style="padding:18px 28px;background:#131824;border-top:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:space-between;">
+                    <div style="font-size:12px;color:#8a94a6;">Taxonomy: <span style="color:#22c55e;font-weight:700;">● Live Tree Hierarchy</span></div>
+                    <button onclick="window.closeModal('categoryModal')" style="background:rgba(255,255,255,0.08);color:#fff;border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:9px 20px;font-family:'Outfit',sans-serif;font-weight:600;font-size:13px;cursor:pointer;">
+                        Close
+                    </button>
                 </div>
             </div>
         </div>
 
         <!-- BRAND MODAL -->
         <div class="modal-overlay" id="brandModal">
-            <div class="modal" style="max-width:500px;">
-                <div class="modal-header">
-                    <div class="modal-title">🏷️ BRAND <span>MANAGER</span></div>
-                    <button class="modal-close" onclick="window.closeModal('brandModal')">✕</button>
+            <div class="modal" style="max-width:600px;border-radius:24px;overflow:hidden;background:#0d111a;border:1px solid rgba(255,255,255,0.12);box-shadow:0 25px 60px rgba(0,0,0,0.7);">
+                <!-- HEADER -->
+                <div style="padding:22px 28px;background:#131824;border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:space-between;">
+                    <div>
+                        <div style="font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:1px;color:#fff;">🏷️ BRAND <span style="color:var(--red);">MANAGER</span></div>
+                        <div style="font-size:12px;color:#8a94a6;margin-top:2px;">Manage official phone & accessory manufacturers</div>
+                    </div>
+                    <button onclick="window.closeModal('brandModal')" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#8a94a6;font-size:16px;transition:all 0.2s;">✕</button>
                 </div>
-                <div class="modal-body">
-                    <div style="display:flex;gap:10px;margin-bottom:14px;">
-                        <input class="form-input" id="newBrandName" placeholder="New Brand Name..."/>
-                        <button style="background:var(--red);color:white;border:none;padding:8px 14px;border-radius:6px;font-family:'Outfit',sans-serif;font-weight:700;font-size:12px;cursor:pointer;white-space:nowrap;" onclick="window.addBrand()">+ Add</button>
+
+                <!-- BODY -->
+                <div class="modal-body" style="padding:24px 28px;max-height:60vh;overflow-y:auto;">
+                    <div style="display:flex;gap:12px;margin-bottom:20px;">
+                        <input class="form-input" id="newBrandName" placeholder="New Brand Name (e.g. OnePlus)..." style="background:#161c28;border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:11px 14px;color:#fff;font-size:13px;flex:1;"/>
+                        <button style="background:var(--red);color:white;border:none;padding:11px 20px;border-radius:10px;font-family:'Outfit',sans-serif;font-weight:700;font-size:13px;cursor:pointer;white-space:nowrap;box-shadow:0 4px 15px rgba(232,19,42,0.4);" onclick="window.addBrand()">+ Add Brand</button>
                     </div>
-                    <div style="font-size:12px;font-weight:700;margin-bottom:8px;color:var(--muted);">Current Brands</div>
-                    <div id="brandListDiv" style="display:flex;flex-wrap:wrap;gap:8px;">
-                        <span class="pub-pill pub-live" style="font-size:12px;">Apple</span>
-                        <span class="pub-pill pub-live" style="font-size:12px;">Samsung</span>
-                        <span class="pub-pill pub-live" style="font-size:12px;">Xiaomi</span>
-                        <span class="pub-pill pub-live" style="font-size:12px;">Realme</span>
-                        <span class="pub-pill pub-live" style="font-size:12px;">Vivo</span>
-                        <span class="pub-pill pub-live" style="font-size:12px;">OPPO</span>
-                        <span class="pub-pill pub-live" style="font-size:12px;">Anker</span>
+
+                    <div style="font-size:12px;font-weight:700;margin-bottom:10px;color:#8a94a6;text-transform:uppercase;">Active Brands</div>
+                    <div id="brandListDiv" style="display:flex;flex-wrap:wrap;gap:10px;">
+                        <span class="pub-pill pub-live" style="font-size:13px;padding:8px 14px;">Apple</span>
+                        <span class="pub-pill pub-live" style="font-size:13px;padding:8px 14px;">Samsung</span>
+                        <span class="pub-pill pub-live" style="font-size:13px;padding:8px 14px;">Xiaomi</span>
+                        <span class="pub-pill pub-live" style="font-size:13px;padding:8px 14px;">Realme</span>
+                        <span class="pub-pill pub-live" style="font-size:13px;padding:8px 14px;">Vivo</span>
+                        <span class="pub-pill pub-live" style="font-size:13px;padding:8px 14px;">OPPO</span>
+                        <span class="pub-pill pub-live" style="font-size:13px;padding:8px 14px;">Anker</span>
                     </div>
+                </div>
+
+                <!-- FOOTER -->
+                <div style="padding:18px 28px;background:#131824;border-top:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:space-between;">
+                    <div style="font-size:12px;color:#8a94a6;">Manufacturers: <span style="color:#22c55e;font-weight:700;">● Authorized Partners</span></div>
+                    <button onclick="window.closeModal('brandModal')" style="background:rgba(255,255,255,0.08);color:#fff;border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:9px 20px;font-family:'Outfit',sans-serif;font-weight:600;font-size:13px;cursor:pointer;">
+                        Close
+                    </button>
                 </div>
             </div>
         </div>
