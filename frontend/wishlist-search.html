@@ -140,8 +140,9 @@ nav{position:sticky;top:0;z-index:100;background:rgba(10,10,10,0.96);backdrop-fi
 </nav>
 
 <div class="page-switcher">
-  <div class="page-tab active" onclick="showPage('wishlist')">❤️ Wishlist (4)</div>
-  <div class="page-tab" onclick="showPage('search')">🔍 Search Results</div>
+  <div class="page-tab active" id="tab-btn-wishlist" onclick="showPage('wishlist')">❤️ Wishlist (4)</div>
+  <div class="page-tab" id="tab-btn-search" onclick="showPage('search')">🔍 Search Results</div>
+  <div class="page-tab" id="tab-btn-compare" onclick="showPage('compare')">⚖️ Compare Phones</div>
 </div>
 
 <!-- ===== WISHLIST PAGE ===== -->
@@ -350,15 +351,37 @@ nav{position:sticky;top:0;z-index:100;background:rgba(10,10,10,0.96);backdrop-fi
       </div>
     </div>
   </div>
+<!-- ===== COMPARE PAGE ===== -->
+<div class="page" id="compare-page">
+  <div class="page-header" style="margin-bottom:20px;">
+    <div class="page-title">COMPARE <span>PHONES</span></div>
+    <div style="font-size:13px;color:var(--muted);">Side-by-side technical specifications</div>
+  </div>
+  <div id="tab-compare" style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;overflow-x:auto;">
+  </div>
 </div>
 
 <script>
-function showPage(page){
+function showPage(page, el){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.page-tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById(page+'-page').classList.add('active');
-  event.target.classList.add('active');
+  const target = document.getElementById(page+'-page');
+  if (target) target.classList.add('active');
+  const btn = el || document.getElementById('tab-btn-' + page) || (event && event.target);
+  if (btn && btn.classList) btn.classList.add('active');
+  if (page === 'compare' && typeof window.renderCompareTable === 'function') {
+    window.renderCompareTable();
+  }
 }
+document.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  const tab = params.get('tab');
+  if (tab === 'search' || params.get('q')) {
+    showPage('search');
+  } else if (tab === 'compare') {
+    showPage('compare');
+  }
+});
 function removeWish(btn){
   const card=btn.closest('.wish-card');
   card.style.transition='opacity 0.3s,transform 0.3s';
@@ -376,9 +399,8 @@ function addAllToCart(){
 }
 function clearWishlist(){if(confirm('Remove all items from wishlist?')){document.getElementById('wishlistGrid').innerHTML='<div style="padding:60px;text-align:center;color:var(--muted);font-size:14px;">Your wishlist is empty. <a href="index.html" style="color:var(--red);">Start shopping →</a></div>';}}
 function removeFilter(el){el.style.opacity='0';setTimeout(()=>el.remove(),200);}
-function clearFilters(){document.querySelectorAll('.filter-check input').forEach(i=>i.checked=false);document.querySelectorAll('.active-filter-tag').forEach(t=>t.remove());}
-function applyFilters(){const btn=event.target;btn.textContent='✓ Applied!';setTimeout(()=>btn.textContent='Apply Filters',1500);}
-function doSearch(){const q=document.getElementById('searchInput').value;if(q)alert('Searching for: '+q);}
+function clearFilters(){document.querySelectorAll('.filter-check input').forEach(i=>i.checked=false);document.querySelectorAll('.active-filter-tag').forEach(t=>t.remove());if (typeof window.executeFilterSearch === 'function') window.executeFilterSearch('');}
+function applyFilters(){if (typeof window.executeFilterSearch === 'function') window.executeFilterSearch();const btn=event.target;if (btn) { btn.textContent='✓ Applied!';setTimeout(()=>btn.textContent='Apply Filters',1500);}}
 function setView(v,btn){document.querySelectorAll('.view-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');const grid=document.getElementById('resultsGrid');grid.style.gridTemplateColumns=v==='list'?'1fr':'repeat(auto-fill,minmax(220px,1fr))';}
 function sortResults(v){const btn=document.querySelector('.sort-select');btn.style.borderColor='var(--green)';setTimeout(()=>btn.style.borderColor='',1000);}
 function sortWishlist(v){}
@@ -386,5 +408,8 @@ function sortWishlist(v){}
 <script src="https://cdn.jsdelivr.net/npm/appwrite@14.0.1"></script>
 <script src="js/appwrite-client.js"></script>
 <script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/cart.js"></script>
+<script src="js/search-compare.js"></script>
 </body>
 </html>
