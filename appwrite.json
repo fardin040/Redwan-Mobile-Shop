@@ -1,0 +1,44 @@
+{
+  "projectId": "6a81c1bb0000744e669b",
+  "projectName": "Redwan Mobile Shop",
+  "settings": {
+    "services": {
+      "account": true,
+      "avatars": true,
+      "databases": true,
+      "locale": true,
+      "health": true,
+      "storage": true,
+      "teams": true,
+      "users": true,
+      "functions": true,
+      "graphql": true,
+      "messaging": true
+    }
+  },
+  "databases": [
+    {
+      "$id": "redwan_shop",
+      "name": "Redwan Mobile Shop Database"
+    }
+  ],
+  "sites": [
+    {
+      "$id": "redwan-mobile-shop",
+      "name": "Redwan Mobile Shop Frontend",
+      "runtime": "static",
+      "path": "frontend",
+      "entrypoint": "index.html"
+    }
+  ],
+  "functions": [
+    {
+      "$id": "payment-handler",
+      "name": "Payment Handler",
+      "runtime": "node-18.0",
+      "path": "appwrite/functions/payment-handler",
+      "entrypoint": "src/main.js",
+      "timeout": 15
+    }
+  ]
+}
