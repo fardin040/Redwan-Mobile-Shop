@@ -317,6 +317,19 @@ window.unlockAdminInstantly = function() {
 // ── Dynamic Shared Modals Auto-Injector ──
 function ensureAdminModals() {
     if (document.getElementById('adminSharedModalsRoot')) return;
+    
+    // Inject overlay CSS if missing
+    if (!document.getElementById('adminModalOverlayStyles')) {
+        const style = document.createElement('style');
+        style.id = 'adminModalOverlayStyles';
+        style.textContent = `
+            .modal-overlay { display: none !important; position: fixed !important; inset: 0 !important; background: rgba(0,0,0,0.8) !important; z-index: 9999 !important; align-items: center !important; justify-content: center !important; backdrop-filter: blur(4px) !important; padding: 20px !important; }
+            .modal-overlay.show { display: flex !important; }
+            .modal { background: #121620 !important; border: 1px solid rgba(255,255,255,0.1) !important; border-radius: 16px !important; width: 100% !important; max-width: 600px !important; overflow: hidden !important; color: #fff !important; box-shadow: 0 20px 50px rgba(0,0,0,0.5) !important; }
+        `;
+        document.head.appendChild(style);
+    }
+
     const root = document.createElement('div');
     root.id = 'adminSharedModalsRoot';
     root.innerHTML = `

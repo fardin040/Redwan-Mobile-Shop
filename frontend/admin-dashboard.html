@@ -381,19 +381,11 @@
 
 <script src="https://cdn.jsdelivr.net/npm/appwrite@14.0.1"></script>
 <script src="js/appwrite-client.js"></script>
-<script src="js/api.js?v=admin_v4"></script>
-<script src="js/auth.js?v=admin_v4"></script>
-<script src="js/admin.js?v=admin_v4"></script>
+<script src="js/api.js?v=admin_v5"></script>
+<script src="js/auth.js?v=admin_v5"></script>
+<script src="js/admin.js?v=admin_v5"></script>
 <script>
-// Nav active state
-document.querySelectorAll('.nav-item').forEach(item => {
-  item.addEventListener('click', function(e) {
-    if(this.href && !this.href.endsWith('#')) return;
-    e.preventDefault();
-    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-    this.classList.add('active');
-  });
-});
+// Dashboard initialized via admin.js
 </script>
 </body>
 </html>
