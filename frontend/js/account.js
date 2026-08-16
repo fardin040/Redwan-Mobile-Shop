@@ -52,7 +52,7 @@ window.checkStrength = function(v) {
 window.doLogin = async function() {
     const identifier = document.getElementById('loginIdentifier').value.trim();
     const password = document.getElementById('loginPass').value;
-    const btn = event.currentTarget;
+    const btn = event.currentTarget || event.target;
     const origHTML = btn.innerHTML;
 
     if (!identifier || !password) {
@@ -61,21 +61,24 @@ window.doLogin = async function() {
     }
 
     try {
-        btn.innerHTML = `<span style="opacity:0.7">Working...</span>`;
+        btn.disabled = true;
+        btn.innerHTML = `⚡ Signing in...`;
         const result = await window.API.post('/auth/login', { identifier, password });
         
         if (result.success) {
-            localStorage.setItem('accessToken', result.data.accessToken);
-            localStorage.setItem('refreshToken', result.data.refreshToken);
+            localStorage.setItem('accessToken', result.data.secret || result.data.$id || 'session');
+            localStorage.setItem('refreshToken', 'session');
             
-            // Re-sync global auth variable
-            if (Auth) await Auth.init();
-            
-            await showProfile();
+            // Single fast fetch for user profile
+            const userRes = await window.API.get('/auth/me');
+            const user = userRes.success ? userRes.data : null;
+            if (window.Auth && user) window.Auth.user = user;
+            await showProfile(user);
         }
     } catch (e) {
-        alert(e.message || "Failed to sign in.");
+        alert(e.message || "Failed to sign in. Please check your credentials.");
     } finally {
+        btn.disabled = false;
         btn.innerHTML = origHTML;
     }
 };
@@ -90,29 +93,27 @@ window.doRegister = async function() {
         alert("Please fill out Name, Phone, and Password (min 6 chars).");
         return;
     }
-    if (!/^\+?880[0-9]{10}$/.test(phone)) {
-        alert("Please enter a valid BD phone number (+880...)");
-        return;
-    }
 
-    const btn = event.currentTarget;
+    const btn = event.currentTarget || event.target;
     const origHTML = btn.innerHTML;
     try {
-        btn.innerHTML = `<span style="opacity:0.7">Verifying...</span>`;
-        // Register user immediately - note we require phone verification for complete security natively via OTP endpoint
+        btn.disabled = true;
+        btn.innerHTML = `⚡ Creating Account...`;
         const result = await window.API.post('/auth/register', { name: name.trim(), phone, email, password });
         
         if (result.success) {
-            localStorage.setItem('accessToken', result.data.accessToken);
-            localStorage.setItem('refreshToken', result.data.refreshToken);
+            localStorage.setItem('accessToken', result.data.$id || 'session');
+            localStorage.setItem('refreshToken', 'session');
             
-            if (window.Auth) await window.Auth.init();
-            
-            await showProfile();
+            const userRes = await window.API.get('/auth/me');
+            const user = userRes.success ? userRes.data : null;
+            if (window.Auth && user) window.Auth.user = user;
+            await showProfile(user);
         }
     } catch (e) {
         alert(e.message || "Failed to create account.");
     } finally {
+        btn.disabled = false;
         btn.innerHTML = origHTML;
     }
 };
@@ -218,29 +219,33 @@ window.verifyOTP = async function() {
 // Profile View
 // ==========================================================
 
-window.showProfile = async function() {
+window.showProfile = async function(userData = null) {
     try {
-        const result = await window.API.get('/auth/me');
-        if (result.success && result.data) {
-            const user = result.data;
+        let user = userData;
+        if (!user) {
+            const result = await window.API.get('/auth/me');
+            if (result.success && result.data) user = result.data;
+        }
+        if (user) {
             document.getElementById('authPanel').style.display = 'none';
             document.getElementById('profileView').classList.add('show');
             
-            document.querySelector('.profile-name').textContent = user.name;
-            document.querySelector('.profile-email').textContent = `${user.email || 'No email provided'} · ${user.phone}`;
-            document.querySelector('.profile-avatar').innerHTML = `${user.name.charAt(0).toUpperCase()}<div class="edit-overlay">✏️</div>`;
+            document.querySelector('.profile-name').textContent = user.name || 'Valued Customer';
+            document.querySelector('.profile-email').textContent = `${user.email || 'No email provided'} ${user.phone ? '· ' + user.phone : ''}`;
+            document.querySelector('.profile-avatar').innerHTML = `${(user.name || 'C').charAt(0).toUpperCase()}<div class="edit-overlay">✏️</div>`;
             
-            if (user.is_verified) {
+            if (user.emailVerification || user.phoneVerification || user.is_verified) {
                 document.querySelector('.profile-badge').textContent = '✓ Verified Customer';
             } else {
-                document.querySelector('.profile-badge').textContent = 'Unverified Phone';
+                document.querySelector('.profile-badge').textContent = 'Customer Account';
             }
             
             // Populate settings inputs
             const inputs = document.querySelectorAll('.profile-view .form-input');
             if(inputs.length >= 4) {
-               inputs[0].value = user.name.split(' ')[0] || '';
-               inputs[1].value = user.name.split(' ').slice(1).join(' ') || '';
+               const parts = (user.name || '').split(' ');
+               inputs[0].value = parts[0] || '';
+               inputs[1].value = parts.slice(1).join(' ') || '';
                inputs[2].value = user.phone || '';
                inputs[3].value = user.email || '';
             }
