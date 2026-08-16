@@ -673,10 +673,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (targetTab) {
         setTimeout(() => {
             const tabBtn = document.querySelector(`.admin-tab[onclick*="'${targetTab}'"]`);
-            if (tabBtn) {
-                if (typeof window.switchAdminTab === 'function') window.switchAdminTab(tabBtn, targetTab);
-                else if (typeof window.switchTab === 'function') window.switchTab(tabBtn, targetTab);
-            }
+            if (typeof window.switchAdminTab === 'function') window.switchAdminTab(tabBtn || targetTab, targetTab);
+            else if (typeof window.switchTab === 'function') window.switchTab(tabBtn || targetTab, targetTab);
         }, 100);
     }
 

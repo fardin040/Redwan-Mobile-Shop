@@ -156,7 +156,7 @@ textarea.form-input{resize:vertical;min-height:80px;}
 <!-- MAIN -->
 <div class="main">
   <div class="topbar">
-    <div class="page-title-bar">CATALOG <span>MANAGEMENT</span></div>
+    <div class="page-title-bar" id="topTitle">CATALOG <span>MANAGEMENT</span></div>
     <div class="topbar-right">
       <button class="tb-btn" onclick="document.getElementById('importModal').classList.add('show')">⬆️ Bulk Import</button>
       <button class="tb-btn primary" onclick="document.getElementById('addProductModal').classList.add('show')">+ Add Product</button>
@@ -294,7 +294,7 @@ textarea.form-input{resize:vertical;min-height:80px;}
         </table>
       </div>
     <!-- ACCESSORIES TAB -->
-    <div class="admin-page" id="tab-accessories" style="display:none;">
+    <div class="admin-page" id="tab-accessories">
       <div class="toolbar">
         <input class="search-inp" type="text" placeholder="Search accessories, chargers, earbuds..."/>
         <select class="sel"><option>All Accessory Types</option><option>Earbuds & Headphones</option><option>Fast Chargers</option><option>Power Banks</option><option>Phone Cases</option><option>Screen Protectors</option></select>
@@ -489,15 +489,31 @@ textarea.form-input{resize:vertical;min-height:80px;}
 
 <script src="https://cdn.jsdelivr.net/npm/appwrite@14.0.1"></script>
 <script src="js/appwrite-client.js"></script>
-<script src="js/api.js?v=admin_v8"></script>
-<script src="js/auth.js?v=admin_v8"></script>
-<script src="js/admin.js?v=admin_v8"></script>
+<script src="js/api.js?v=admin_v9"></script>
+<script src="js/auth.js?v=admin_v9"></script>
+<script src="js/admin.js?v=admin_v9"></script>
 <script>
 function switchAdminTab(el,tab){
   document.querySelectorAll('.admin-tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.admin-page').forEach(p=>p.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById('tab-'+tab).classList.add('active');
+  
+  let tabBtn = el;
+  if (typeof el === 'string') {
+    tabBtn = document.querySelector(`.admin-tab[onclick*="'${el}'"]`);
+  } else if (!el) {
+    tabBtn = document.querySelector(`.admin-tab[onclick*="'${tab}'"]`);
+  }
+  if (tabBtn) tabBtn.classList.add('active');
+  
+  const target = document.getElementById('tab-'+tab);
+  if (target) target.classList.add('active');
+  
+  const titleEl = document.getElementById('topTitle');
+  if (titleEl) {
+    if (tab === 'products') titleEl.innerHTML = 'PRODUCTS <span>MANAGEMENT</span>';
+    else if (tab === 'accessories') titleEl.innerHTML = 'ACCESSORIES <span>CATALOG</span>';
+    else if (tab === 'inventory') titleEl.innerHTML = 'INVENTORY <span>CONTROL</span>';
+  }
 }
 function toggleAll(cb){document.querySelectorAll('.checkbox-cell input').forEach(i=>i.checked=cb.checked);}
 </script>
