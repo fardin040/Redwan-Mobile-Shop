@@ -140,9 +140,11 @@ body{font-family:'Outfit',sans-serif;background:var(--black);color:var(--text);d
     <a class="nav-item" href="admin-products.html"><span class="ico">📱</span> Products</a>
     <a class="nav-item" href="javascript:void(0)" onclick="window.openCategoryModal()"><span class="ico">🗂️</span> Categories</a>
     <a class="nav-item" href="javascript:void(0)" onclick="window.openBrandModal()"><span class="ico">🏷️</span> Brands</a>
+    <a class="nav-item" href="admin-products.html?tab=accessories"><span class="ico">🎧</span> Accessories</a>
   </div>
   <div class="nav-sec"><div class="nav-sec-label">Sales</div>
     <a class="nav-item active" href="admin-orders-customers.html"><span class="ico">🛒</span> Orders <span class="nav-badge">12</span></a>
+    <a class="nav-item" href="javascript:void(0)" onclick="switchTab(this,'returns')"><span class="ico">↩️</span> Returns <span class="nav-badge" style="background:var(--gold);color:#111;">3</span></a>
     <a class="nav-item" href="javascript:void(0)" onclick="window.openModal('shippingModal')"><span class="ico">💳</span> Payments & Shipping</a>
   </div>
   <div class="nav-sec"><div class="nav-sec-label">Customers</div>
@@ -167,6 +169,7 @@ body{font-family:'Outfit',sans-serif;background:var(--black);color:var(--text);d
   <div class="content">
     <div class="admin-tabs">
       <div class="admin-tab active" onclick="switchTab(this,'orders')">🛒 Orders (247)</div>
+      <div class="admin-tab" onclick="switchTab(this,'returns')">↩️ Returns (3)</div>
       <div class="admin-tab" onclick="switchTab(this,'customers')">👥 Customers (12,481)</div>
     </div>
 
@@ -413,6 +416,67 @@ body{font-family:'Outfit',sans-serif;background:var(--black);color:var(--text);d
           <button class="act-btn">Next →</button>
         </div>
       </div>
+    <!-- ===== RETURNS TAB ===== -->
+    <div class="admin-page" id="tab-returns" style="display:none;">
+      <div class="stats-row">
+        <div class="mini-stat"><div class="mini-stat-label">Total Returns</div><div class="mini-stat-val" style="color:var(--text);">3</div></div>
+        <div class="mini-stat"><div class="mini-stat-label">Pending Approval</div><div class="mini-stat-val" style="color:var(--gold);">1</div></div>
+        <div class="mini-stat"><div class="mini-stat-label">Approved</div><div class="mini-stat-val" style="color:var(--blue);">1</div></div>
+        <div class="mini-stat"><div class="mini-stat-label">Refunded</div><div class="mini-stat-val" style="color:var(--green);">1</div></div>
+      </div>
+
+      <div class="toolbar">
+        <input class="search-inp" type="text" placeholder="Search return requests..."/>
+        <select class="sel"><option>All Return Reasons</option><option>Defective Product</option><option>Wrong Item Delivered</option><option>Changed Mind</option></select>
+      </div>
+
+      <table class="orders-table">
+        <thead>
+          <tr>
+            <th>Return ID</th>
+            <th>Customer</th>
+            <th>Item Name</th>
+            <th>Reason</th>
+            <th>Refund Amount</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong style="color:var(--red);">#RET-1092</strong></td>
+            <td><strong>Rafiqul Islam</strong><br/><span style="font-size:11px;color:var(--muted);">+880 1700-001234</span></td>
+            <td>Samsung Galaxy S25 Ultra (Black)</td>
+            <td>Defective camera lens glass</td>
+            <td><span style="font-family:'Bebas Neue',sans-serif;font-size:16px;">৳1,74,999</span></td>
+            <td><span class="sp sp-processing">● PENDING APPROVAL</span></td>
+            <td>
+              <div class="act-btns">
+                <button class="act-btn" style="color:var(--green);border-color:rgba(34,197,94,0.4);" onclick="alert('✅ Return approved!')">Approve</button>
+                <button class="act-btn danger" onclick="alert('✕ Return rejected.')">Reject</button>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--blue);">#RET-1088</strong></td>
+            <td><strong>Sumaiya Akter</strong><br/><span style="font-size:11px;color:var(--muted);">+880 1811-998877</span></td>
+            <td>Anker Soundcore P20i Earbuds</td>
+            <td>Bluetooth connection drop</td>
+            <td><span style="font-family:'Bebas Neue',sans-serif;font-size:16px;">৳2,490</span></td>
+            <td><span class="sp sp-delivered">● REFUND COMPLETED</span></td>
+            <td><button class="act-btn" onclick="alert('Return #RET-1088 is archived.')">View Details</button></td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--gold);">#RET-1074</strong></td>
+            <td><strong>Md. Tanvir</strong><br/><span style="font-size:11px;color:var(--muted);">+880 1922-334455</span></td>
+            <td>Xiaomi 67W Turbo Charger</td>
+            <td>Package damaged in transit</td>
+            <td><span style="font-family:'Bebas Neue',sans-serif;font-size:16px;">৳1,850</span></td>
+            <td><span class="sp sp-shipped">● REPLACEMENT SENT</span></td>
+            <td><button class="act-btn" onclick="alert('Replacement tracking: Pathao #PT-882199')">Track Shipment</button></td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </div>
@@ -563,8 +627,8 @@ function closeCustDrawer(){
 </script>
 <script src="https://cdn.jsdelivr.net/npm/appwrite@14.0.1"></script>
 <script src="js/appwrite-client.js"></script>
-<script src="js/api.js?v=admin_v6"></script>
-<script src="js/auth.js?v=admin_v6"></script>
-<script src="js/admin.js?v=admin_v6"></script>
+<script src="js/api.js?v=admin_v7"></script>
+<script src="js/auth.js?v=admin_v7"></script>
+<script src="js/admin.js?v=admin_v7"></script>
 </body>
 </html>

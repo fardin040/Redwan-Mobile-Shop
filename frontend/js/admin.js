@@ -590,6 +590,19 @@ function ensureAdminModals() {
 document.addEventListener('DOMContentLoaded', () => {
     ensureAdminModals();
     const params = new URLSearchParams(window.location.search);
+    
+    // Auto-switch tabs if ?tab= is specified
+    const targetTab = params.get('tab');
+    if (targetTab) {
+        setTimeout(() => {
+            const tabBtn = document.querySelector(`.admin-tab[onclick*="'${targetTab}'"]`);
+            if (tabBtn) {
+                if (typeof window.switchAdminTab === 'function') window.switchAdminTab(tabBtn, targetTab);
+                else if (typeof window.switchTab === 'function') window.switchTab(tabBtn, targetTab);
+            }
+        }, 100);
+    }
+
     if (params.get('action') === 'add-product') {
         window.openAddProductModal();
     } else if (params.get('action') === 'import') {

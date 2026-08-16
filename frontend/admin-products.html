@@ -136,9 +136,11 @@ textarea.form-input{resize:vertical;min-height:80px;}
     <a class="nav-item active" href="admin-products.html"><span class="ico">📱</span> Products</a>
     <a class="nav-item" href="javascript:void(0)" onclick="window.openCategoryModal()"><span class="ico">🗂️</span> Categories</a>
     <a class="nav-item" href="javascript:void(0)" onclick="window.openBrandModal()"><span class="ico">🏷️</span> Brands</a>
+    <a class="nav-item" href="javascript:void(0)" onclick="switchAdminTab(document.getElementById('tabBtnAccessories'),'accessories')"><span class="ico">🎧</span> Accessories</a>
   </div>
   <div class="nav-sec"><div class="nav-sec-label">Sales</div>
     <a class="nav-item" href="admin-orders-customers.html"><span class="ico">🛒</span> Orders <span class="nav-badge">12</span></a>
+    <a class="nav-item" href="admin-orders-customers.html?tab=returns"><span class="ico">↩️</span> Returns <span class="nav-badge" style="background:var(--gold);color:#111;">3</span></a>
     <a class="nav-item" href="javascript:void(0)" onclick="window.openModal('shippingModal')"><span class="ico">💳</span> Payments & Shipping</a>
   </div>
   <div class="nav-sec"><div class="nav-sec-label">Customers</div>
@@ -164,6 +166,7 @@ textarea.form-input{resize:vertical;min-height:80px;}
   <div class="content">
     <div class="admin-tabs">
       <div class="admin-tab active" onclick="switchAdminTab(this,'products')">📱 Products (528)</div>
+      <div class="admin-tab" id="tabBtnAccessories" onclick="switchAdminTab(this,'accessories')">🎧 Accessories (86)</div>
       <div class="admin-tab" onclick="switchAdminTab(this,'inventory')">📦 Inventory</div>
     </div>
 
@@ -290,6 +293,80 @@ textarea.form-input{resize:vertical;min-height:80px;}
           </tbody>
         </table>
       </div>
+    <!-- ACCESSORIES TAB -->
+    <div class="admin-page" id="tab-accessories" style="display:none;">
+      <div class="toolbar">
+        <input class="search-inp" type="text" placeholder="Search accessories, chargers, earbuds..."/>
+        <select class="sel"><option>All Accessory Types</option><option>Earbuds & Headphones</option><option>Fast Chargers</option><option>Power Banks</option><option>Phone Cases</option><option>Screen Protectors</option></select>
+        <select class="sel"><option>All Brands</option><option>Anker</option><option>Xiaomi</option><option>Baseus</option><option>Samsung</option><option>Apple</option></select>
+        <button class="tb-btn primary" style="font-size:12px;" onclick="window.openAddProductModal()">+ Add Accessory</button>
+      </div>
+
+      <div style="overflow-x:auto;">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th class="checkbox-cell"><input type="checkbox" onchange="toggleAll(this)" style="accent-color:var(--red);"/></th>
+              <th>Accessory Product</th>
+              <th>SKU</th>
+              <th>Price</th>
+              <th>Stock Status</th>
+              <th>Category</th>
+              <th>Status</th>
+              <th>Sales</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="checkbox-cell"><input type="checkbox" style="accent-color:var(--red);"/></td>
+              <td><div style="display:flex;gap:10px;align-items:center;"><div class="prod-thumb" style="background:var(--card2);font-size:16px;">🎧</div><div class="prod-info"><div class="name">Anker Soundcore P20i Wireless Earbuds</div><div class="model">Anker · Black · TWS Bluetooth 5.3</div></div></div></td>
+              <td style="font-size:11px;color:var(--muted);">ANK-P20I</td>
+              <td><div style="font-family:'Bebas Neue',sans-serif;font-size:16px;">৳2,490</div></td>
+              <td><span class="stock-pill stock-good">● 45 in stock</span></td>
+              <td style="font-size:12px;color:var(--muted);">Earphones</td>
+              <td><span class="pub-pill pub-live">● PUBLISHED</span></td>
+              <td style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--green);">142</td>
+              <td><div class="act-btns"><button class="act-btn">✏️ Edit</button><button class="act-btn danger">🗑️ Delete</button></div></td>
+            </tr>
+            <tr>
+              <td class="checkbox-cell"><input type="checkbox" style="accent-color:var(--red);"/></td>
+              <td><div style="display:flex;gap:10px;align-items:center;"><div class="prod-thumb" style="background:var(--card2);font-size:16px;">🔌</div><div class="prod-info"><div class="name">Xiaomi 67W Turbo Fast Charger Adapter</div><div class="model">Xiaomi · White · USB-A to Type-C</div></div></div></td>
+              <td style="font-size:11px;color:var(--muted);">XIA-67W</td>
+              <td><div style="font-family:'Bebas Neue',sans-serif;font-size:16px;">৳1,850</div></td>
+              <td><span class="stock-pill stock-good">● 30 in stock</span></td>
+              <td style="font-size:12px;color:var(--muted);">Chargers</td>
+              <td><span class="pub-pill pub-live">● PUBLISHED</span></td>
+              <td style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--green);">89</td>
+              <td><div class="act-btns"><button class="act-btn">✏️ Edit</button><button class="act-btn danger">🗑️ Delete</button></div></td>
+            </tr>
+            <tr>
+              <td class="checkbox-cell"><input type="checkbox" style="accent-color:var(--red);"/></td>
+              <td><div style="display:flex;gap:10px;align-items:center;"><div class="prod-thumb" style="background:var(--card2);font-size:16px;">🔋</div><div class="prod-info"><div class="name">Baseus 20,000mAh 22.5W Power Bank</div><div class="model">Baseus · Black · Dual Output</div></div></div></td>
+              <td style="font-size:11px;color:var(--muted);">BAS-20K</td>
+              <td><div style="font-family:'Bebas Neue',sans-serif;font-size:16px;">৳3,200</div></td>
+              <td><span class="stock-pill stock-good">● 18 in stock</span></td>
+              <td style="font-size:12px;color:var(--muted);">Power Banks</td>
+              <td><span class="pub-pill pub-live">● PUBLISHED</span></td>
+              <td style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--green);">54</td>
+              <td><div class="act-btns"><button class="act-btn">✏️ Edit</button><button class="act-btn danger">🗑️ Delete</button></div></td>
+            </tr>
+            <tr>
+              <td class="checkbox-cell"><input type="checkbox" style="accent-color:var(--red);"/></td>
+              <td><div style="display:flex;gap:10px;align-items:center;"><div class="prod-thumb" style="background:var(--card2);font-size:16px;">🛡️</div><div class="prod-info"><div class="name">iPhone 16 Pro Max Magnetic Armor Case</div><div class="model">Apple Compatible · Translucent Black</div></div></div></td>
+              <td style="font-size:11px;color:var(--muted);">CAS-IP16PM</td>
+              <td><div style="font-family:'Bebas Neue',sans-serif;font-size:16px;">৳950</div></td>
+              <td><span class="stock-pill stock-good">● 60 in stock</span></td>
+              <td style="font-size:12px;color:var(--muted);">Phone Cases</td>
+              <td><span class="pub-pill pub-live">● PUBLISHED</span></td>
+              <td style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--green);">210</td>
+              <td><div class="act-btns"><button class="act-btn">✏️ Edit</button><button class="act-btn danger">🗑️ Delete</button></div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
     </div>
   </div>
 </div>
@@ -396,9 +473,9 @@ textarea.form-input{resize:vertical;min-height:80px;}
 
 <script src="https://cdn.jsdelivr.net/npm/appwrite@14.0.1"></script>
 <script src="js/appwrite-client.js"></script>
-<script src="js/api.js?v=admin_v6"></script>
-<script src="js/auth.js?v=admin_v6"></script>
-<script src="js/admin.js?v=admin_v6"></script>
+<script src="js/api.js?v=admin_v7"></script>
+<script src="js/auth.js?v=admin_v7"></script>
+<script src="js/admin.js?v=admin_v7"></script>
 <script>
 function switchAdminTab(el,tab){
   document.querySelectorAll('.admin-tab').forEach(t=>t.classList.remove('active'));
