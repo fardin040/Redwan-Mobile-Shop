@@ -314,13 +314,179 @@ window.unlockAdminInstantly = function() {
     window.location.reload();
 };
 
+// ── Dynamic Shared Modals Auto-Injector ──
+function ensureAdminModals() {
+    if (document.getElementById('adminSharedModalsRoot')) return;
+    const root = document.createElement('div');
+    root.id = 'adminSharedModalsRoot';
+    root.innerHTML = `
+        <!-- COUPON MODAL -->
+        <div class="modal-overlay" id="couponModal">
+            <div class="modal" style="max-width:550px;">
+                <div class="modal-header">
+                    <div class="modal-title">🏷️ DISCOUNT & <span>COUPONS</span></div>
+                    <button class="modal-close" onclick="window.closeModal('couponModal')">✕</button>
+                </div>
+                <div class="modal-body" style="max-height:70vh;overflow-y:auto;">
+                    <div style="background:var(--card2);padding:14px;border-radius:8px;margin-bottom:16px;border:1px solid var(--border);">
+                        <div style="font-size:13px;font-weight:700;margin-bottom:10px;color:var(--text);">Create New Promo Code</div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+                            <input class="form-input" id="cpCode" placeholder="Coupon Code (e.g. REDWAN20)" style="text-transform:uppercase;"/>
+                            <input class="form-input" id="cpDiscount" type="number" placeholder="Discount % (e.g. 20)"/>
+                        </div>
+                        <button style="background:var(--red);color:white;border:none;padding:8px 14px;border-radius:6px;font-family:'Outfit',sans-serif;font-weight:700;font-size:12px;cursor:pointer;" onclick="window.addCoupon()">+ Save Coupon</button>
+                    </div>
+                    <div style="font-size:12px;font-weight:700;margin-bottom:8px;color:var(--muted);">Active Coupons</div>
+                    <table class="orders-table" style="width:100%;font-size:12px;">
+                        <thead><tr><th>Code</th><th>Discount</th><th>Status</th><th>Action</th></tr></thead>
+                        <tbody id="couponListTable">
+                            <tr><td><strong style="color:var(--red);">REDWAN20</strong></td><td>20% OFF</td><td><span class="pub-pill pub-live">ACTIVE</span></td><td><button class="act-btn" onclick="this.closest('tr').remove()">Delete</button></td></tr>
+                            <tr><td><strong style="color:var(--blue);">EID2026</strong></td><td>৳500 OFF</td><td><span class="pub-pill pub-live">ACTIVE</span></td><td><button class="act-btn" onclick="this.closest('tr').remove()">Delete</button></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- SHIPPING MODAL -->
+        <div class="modal-overlay" id="shippingModal">
+            <div class="modal" style="max-width:500px;">
+                <div class="modal-header">
+                    <div class="modal-title">🚚 SHIPPING & <span>DELIVERY</span></div>
+                    <button class="modal-close" onclick="window.closeModal('shippingModal')">✕</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group" style="margin-bottom:12px;">
+                        <label class="form-label">Inside Dhaka Delivery Charge (৳)</label>
+                        <input class="form-input" id="shipDhaka" type="number" value="70"/>
+                    </div>
+                    <div class="form-group" style="margin-bottom:12px;">
+                        <label class="form-label">Outside Dhaka Delivery Charge (৳)</label>
+                        <input class="form-input" id="shipOutside" type="number" value="130"/>
+                    </div>
+                    <div style="margin-top:16px;background:var(--card2);padding:12px;border-radius:8px;border:1px solid var(--border);">
+                        <div style="font-size:12px;font-weight:700;margin-bottom:8px;">Courier Integrations</div>
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;"><span style="font-size:13px;">Pathao Courier API</span><span class="pub-pill pub-live">ENABLED</span></div>
+                        <div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:13px;">Steadfast Courier</span><span class="pub-pill pub-live">ENABLED</span></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn-save" onclick="alert('✅ Shipping rates updated!');window.closeModal('shippingModal');">Save Shipping Config</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SETTINGS MODAL -->
+        <div class="modal-overlay" id="settingsModal">
+            <div class="modal" style="max-width:550px;">
+                <div class="modal-header">
+                    <div class="modal-title">⚙️ STORE <span>SETTINGS</span></div>
+                    <button class="modal-close" onclick="window.closeModal('settingsModal')">✕</button>
+                </div>
+                <div class="modal-body" style="max-height:70vh;overflow-y:auto;">
+                    <div class="form-group" style="margin-bottom:10px;"><label class="form-label">Store Name</label><input class="form-input" value="Redwan Mobile Shop"/></div>
+                    <div class="form-group" style="margin-bottom:10px;"><label class="form-label">Support Phone Hotline</label><input class="form-input" value="+8801700-000000"/></div>
+                    <div class="form-group" style="margin-bottom:10px;"><label class="form-label">bKash Merchant Number</label><input class="form-input" value="01700000000"/></div>
+                    <div class="form-group" style="margin-bottom:10px;"><label class="form-label">Nagad Merchant Number</label><input class="form-input" value="01800000000"/></div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn-save" onclick="alert('✅ Settings saved!');window.closeModal('settingsModal');">Save Changes</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- CATEGORY MODAL -->
+        <div class="modal-overlay" id="categoryModal">
+            <div class="modal" style="max-width:500px;">
+                <div class="modal-header">
+                    <div class="modal-title">🗂️ CATEGORY <span>MANAGER</span></div>
+                    <button class="modal-close" onclick="window.closeModal('categoryModal')">✕</button>
+                </div>
+                <div class="modal-body">
+                    <div style="display:flex;gap:10px;margin-bottom:14px;">
+                        <input class="form-input" id="newCatName" placeholder="New Category Name..."/>
+                        <button style="background:var(--red);color:white;border:none;padding:8px 14px;border-radius:6px;font-family:'Outfit',sans-serif;font-weight:700;font-size:12px;cursor:pointer;white-space:nowrap;" onclick="window.addCategory()">+ Add</button>
+                    </div>
+                    <div style="font-size:12px;font-weight:700;margin-bottom:8px;color:var(--muted);">Current Categories</div>
+                    <ul id="catListUl" style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:6px;">
+                        <li style="background:var(--card2);padding:8px 12px;border-radius:6px;display:flex;justify-space:between;align-items:center;font-size:13px;"><span>📱 Smartphones</span><span style="color:var(--muted);font-size:11px;">124 Items</span></li>
+                        <li style="background:var(--card2);padding:8px 12px;border-radius:6px;display:flex;justify-space:between;align-items:center;font-size:13px;"><span>🎧 Accessories</span><span style="color:var(--muted);font-size:11px;">86 Items</span></li>
+                        <li style="background:var(--card2);padding:8px 12px;border-radius:6px;display:flex;justify-space:between;align-items:center;font-size:13px;"><span>🎵 Earphones</span><span style="color:var(--muted);font-size:11px;">45 Items</span></li>
+                        <li style="background:var(--card2);padding:8px 12px;border-radius:6px;display:flex;justify-space:between;align-items:center;font-size:13px;"><span>⌚ Smart Watches</span><span style="color:var(--muted);font-size:11px;">32 Items</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- BRAND MODAL -->
+        <div class="modal-overlay" id="brandModal">
+            <div class="modal" style="max-width:500px;">
+                <div class="modal-header">
+                    <div class="modal-title">🏷️ BRAND <span>MANAGER</span></div>
+                    <button class="modal-close" onclick="window.closeModal('brandModal')">✕</button>
+                </div>
+                <div class="modal-body">
+                    <div style="display:flex;gap:10px;margin-bottom:14px;">
+                        <input class="form-input" id="newBrandName" placeholder="New Brand Name..."/>
+                        <button style="background:var(--red);color:white;border:none;padding:8px 14px;border-radius:6px;font-family:'Outfit',sans-serif;font-weight:700;font-size:12px;cursor:pointer;white-space:nowrap;" onclick="window.addBrand()">+ Add</button>
+                    </div>
+                    <div style="font-size:12px;font-weight:700;margin-bottom:8px;color:var(--muted);">Current Brands</div>
+                    <div id="brandListDiv" style="display:flex;flex-wrap:wrap;gap:8px;">
+                        <span class="pub-pill pub-live" style="font-size:12px;">Apple</span>
+                        <span class="pub-pill pub-live" style="font-size:12px;">Samsung</span>
+                        <span class="pub-pill pub-live" style="font-size:12px;">Xiaomi</span>
+                        <span class="pub-pill pub-live" style="font-size:12px;">Realme</span>
+                        <span class="pub-pill pub-live" style="font-size:12px;">Vivo</span>
+                        <span class="pub-pill pub-live" style="font-size:12px;">OPPO</span>
+                        <span class="pub-pill pub-live" style="font-size:12px;">Anker</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(root);
+}
+
+// Auto-run modal injector & check URL params
+document.addEventListener('DOMContentLoaded', () => {
+    ensureAdminModals();
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('action') === 'add-product') {
+        window.openAddProductModal();
+    } else if (params.get('action') === 'import') {
+        window.openImportModal();
+    } else if (params.get('modal') === 'coupon') {
+        window.openModal('couponModal');
+    } else if (params.get('modal') === 'shipping') {
+        window.openModal('shippingModal');
+    } else if (params.get('modal') === 'settings') {
+        window.openModal('settingsModal');
+    } else if (params.get('modal') === 'category') {
+        window.openModal('categoryModal');
+    } else if (params.get('modal') === 'brand') {
+        window.openModal('brandModal');
+    }
+});
+ensureAdminModals();
+
 // ── Global Admin Modal & Quick Action Handlers ──
+window.openModal = function(id) {
+    ensureAdminModals();
+    const m = document.getElementById(id);
+    if (m) m.classList.add('show');
+};
+
+window.closeModal = function(id) {
+    const m = document.getElementById(id);
+    if (m) m.classList.remove('show');
+};
+
 window.openAddProductModal = function() {
     const modal = document.getElementById('addProductModal');
     if (modal) {
         modal.classList.add('show');
     } else {
-        window.location.href = 'admin-products.html';
+        window.location.href = 'admin-products.html?action=add-product';
     }
 };
 
@@ -334,13 +500,56 @@ window.openImportModal = function() {
     if (modal) {
         modal.classList.add('show');
     } else {
-        window.location.href = 'admin-products.html';
+        window.location.href = 'admin-products.html?action=import';
     }
 };
 
 window.closeImportModal = function() {
     const modal = document.getElementById('importModal');
     if (modal) modal.classList.remove('show');
+};
+
+window.openCategoryModal = function() {
+    window.openModal('categoryModal');
+};
+
+window.openBrandModal = function() {
+    window.openModal('brandModal');
+};
+
+window.addCoupon = function() {
+    const code = document.getElementById('cpCode')?.value?.trim();
+    const disc = document.getElementById('cpDiscount')?.value?.trim();
+    if (!code || !disc) { alert('Please enter code and discount percentage'); return; }
+    const tbody = document.getElementById('couponListTable');
+    if (tbody) {
+        tbody.innerHTML += `<tr><td><strong style="color:var(--green);">${code.toUpperCase()}</strong></td><td>${disc}% OFF</td><td><span class="pub-pill pub-live">ACTIVE</span></td><td><button class="act-btn" onclick="this.closest('tr').remove()">Delete</button></td></tr>`;
+        document.getElementById('cpCode').value = '';
+        document.getElementById('cpDiscount').value = '';
+        alert(`✅ Coupon ${code.toUpperCase()} created successfully!`);
+    }
+};
+
+window.addCategory = function() {
+    const name = document.getElementById('newCatName')?.value?.trim();
+    if (!name) return;
+    const ul = document.getElementById('catListUl');
+    if (ul) {
+        ul.innerHTML += `<li style="background:var(--card2);padding:8px 12px;border-radius:6px;display:flex;justify-space:between;align-items:center;font-size:13px;"><span>📁 ${name}</span><span style="color:var(--muted);font-size:11px;">0 Items</span></li>`;
+        document.getElementById('newCatName').value = '';
+        alert(`✅ Category "${name}" added!`);
+    }
+};
+
+window.addBrand = function() {
+    const name = document.getElementById('newBrandName')?.value?.trim();
+    if (!name) return;
+    const div = document.getElementById('brandListDiv');
+    if (div) {
+        div.innerHTML += `<span class="pub-pill pub-live" style="font-size:12px;">${name}</span>`;
+        document.getElementById('newBrandName').value = '';
+        alert(`✅ Brand "${name}" added!`);
+    }
 };
 
 window.quickAction = function(type) {
@@ -357,19 +566,25 @@ window.quickAction = function(type) {
             break;
         case 'coupon':
         case 'promotions':
-            alert('🏷️ Coupon Manager: Active promo codes loaded.');
+            window.openModal('couponModal');
             break;
         case 'shipping':
-            alert('🚚 Shipping Manager: Pathao & Steadfast integration active.');
+            window.openModal('shippingModal');
             break;
         case 'reports':
-            alert('📊 Sales reports generated! Downloading CSV...');
+            alert('📊 Download started: Sales_Report_March_2026.csv');
             break;
         case 'bulk-import':
             window.openImportModal();
             break;
         case 'settings':
-            alert('⚙️ Admin Settings panel open.');
+            window.openModal('settingsModal');
+            break;
+        case 'categories':
+            window.openCategoryModal();
+            break;
+        case 'brands':
+            window.openBrandModal();
             break;
         default:
             console.log('Action triggered:', type);

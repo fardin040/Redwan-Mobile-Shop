@@ -138,14 +138,18 @@ body{font-family:'Outfit',sans-serif;background:var(--black);color:var(--text);d
   </div>
   <div class="nav-sec"><div class="nav-sec-label">Catalog</div>
     <a class="nav-item" href="admin-products.html"><span class="ico">📱</span> Products</a>
+    <a class="nav-item" href="javascript:void(0)" onclick="window.openCategoryModal()"><span class="ico">🗂️</span> Categories</a>
+    <a class="nav-item" href="javascript:void(0)" onclick="window.openBrandModal()"><span class="ico">🏷️</span> Brands</a>
   </div>
   <div class="nav-sec"><div class="nav-sec-label">Sales</div>
     <a class="nav-item active" href="admin-orders-customers.html"><span class="ico">🛒</span> Orders <span class="nav-badge">12</span></a>
+    <a class="nav-item" href="javascript:void(0)" onclick="window.openModal('shippingModal')"><span class="ico">💳</span> Payments & Shipping</a>
   </div>
   <div class="nav-sec"><div class="nav-sec-label">Customers</div>
     <a class="nav-item" href="admin-orders-customers.html"><span class="ico">👥</span> Customers</a>
   </div>
   <div class="nav-sec"><div class="nav-sec-label">System</div>
+    <a class="nav-item" href="javascript:void(0)" onclick="window.openModal('settingsModal')"><span class="ico">⚙️</span> Settings</a>
     <a class="nav-item" href="index.html"><span class="ico">🌐</span> View Store</a>
   </div>
   <div class="sidebar-footer"><div class="admin-row"><div class="admin-av">R</div><div><div class="admin-name">Redwan Ahmed</div><div class="admin-role">Super Admin</div></div></div></div>
@@ -559,8 +563,8 @@ function closeCustDrawer(){
 </script>
 <script src="https://cdn.jsdelivr.net/npm/appwrite@14.0.1"></script>
 <script src="js/appwrite-client.js"></script>
-<script src="js/api.js?v=admin_v3"></script>
-<script src="js/auth.js?v=admin_v3"></script>
-<script src="js/admin.js?v=admin_v3"></script>
+<script src="js/api.js?v=admin_v4"></script>
+<script src="js/auth.js?v=admin_v4"></script>
+<script src="js/admin.js?v=admin_v4"></script>
 </body>
 </html>
