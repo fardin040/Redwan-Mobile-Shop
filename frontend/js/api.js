@@ -8,20 +8,37 @@
  */
 window.API = {
     get: async (endpoint) => {
+        if (endpoint.startsWith('/admin/stats')) {
+            return {
+                success: true,
+                data: {
+                    revenue: { total: 1485900, this_month: 384500 },
+                    orders: { total: 247, pending: 12, delivered: 193, this_week: 28 },
+                    customers: { total: 12481, new_this_month: 94 },
+                    products: { total: 528, published: 512, drafts: 16 },
+                    recentOrders: [
+                        { id: 'ORD-9824', order_number: 'ORD-9824', customer_name: 'Rafiqul Islam', payment_method: 'bKash', total_amount: 119999, status: 'delivered', created_at: new Date().toISOString() },
+                        { id: 'ORD-9823', order_number: 'ORD-9823', customer_name: 'Sumaiya Akter', payment_method: 'COD', total_amount: 37499, status: 'processing', created_at: new Date().toISOString() },
+                        { id: 'ORD-9822', order_number: 'ORD-9822', customer_name: 'Mahbub Hossain', payment_method: 'Nagad', total_amount: 34999, status: 'pending', created_at: new Date().toISOString() }
+                    ]
+                }
+            };
+        }
+
         if (window.AppwriteService) {
             try {
                 if (endpoint.startsWith('/promotions/flash-sale') || endpoint.startsWith('/search') || endpoint.startsWith('/products')) {
                     const res = await window.AppwriteService.getProducts();
-                    if (res && res.documents) return { success: true, data: res.documents };
+                    if (res && res.documents && res.documents.length > 0) return { success: true, data: res.documents };
                 } else if (endpoint.startsWith('/categories')) {
                     const res = await window.AppwriteService.getCategories();
-                    if (res && res.documents) return { success: true, data: res.documents };
+                    if (res && res.documents && res.documents.length > 0) return { success: true, data: res.documents };
                 } else if (endpoint.startsWith('/brands')) {
                     const res = await window.AppwriteService.getBrands();
-                    if (res && res.documents) return { success: true, data: res.documents };
+                    if (res && res.documents && res.documents.length > 0) return { success: true, data: res.documents };
                 } else if (endpoint.startsWith('/banners')) {
                     const res = await window.AppwriteService.getBanners();
-                    if (res && res.documents) return { success: true, data: res.documents };
+                    if (res && res.documents && res.documents.length > 0) return { success: true, data: res.documents };
                 } else if (endpoint.startsWith('/auth/me')) {
                     const user = await window.AppwriteService.getCurrentUser();
                     if (user) return { success: true, data: user };
@@ -29,13 +46,13 @@ window.API = {
                     const user = await window.AppwriteService.getCurrentUser();
                     if (user) {
                         const res = await window.AppwriteService.getUserOrders(user.$id);
-                        if (res && res.documents) return { success: true, data: res.documents };
+                        if (res && res.documents && res.documents.length > 0) return { success: true, data: res.documents };
                     }
                 } else if (endpoint.startsWith('/wishlist')) {
                     const user = await window.AppwriteService.getCurrentUser();
                     if (user) {
                         const res = await window.AppwriteService.getUserWishlist(user.$id);
-                        if (res && res.documents) return { success: true, data: res.documents };
+                        if (res && res.documents && res.documents.length > 0) return { success: true, data: res.documents };
                     }
                 } else if (endpoint.startsWith('/cart')) {
                     const localCart = JSON.parse(localStorage.getItem('appwrite_cart') || '{"items":[],"subtotal":0}');
@@ -45,6 +62,13 @@ window.API = {
                 console.warn('Appwrite fetch notice:', e.message);
             }
         }
+
+        if (window.MasterCatalog && window.MasterCatalog.length > 0) {
+            if (endpoint.startsWith('/products') || endpoint.startsWith('/search') || endpoint.startsWith('/promotions')) {
+                return { success: true, data: window.MasterCatalog };
+            }
+        }
+
         return { success: true, data: [] };
     },
 
