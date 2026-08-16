@@ -6,8 +6,25 @@ document.addEventListener("DOMContentLoaded", () => {
     initFlashSaleTimer();
     initBrandPills();
     initScrollReveal();
+    initProductCardClicks();
     loadFlashSaleProducts();
 });
+
+// Enable product card click navigation for both static and dynamic cards
+function initProductCardClicks() {
+    document.addEventListener('click', (e) => {
+        const card = e.target.closest('.product-card');
+        if (!card) return;
+
+        // Skip if user clicked an interactive child button
+        if (e.target.closest('.card-wishlist, .btn-cart, .btn-compare, button, a')) {
+            return;
+        }
+
+        const productId = card.getAttribute('data-id') || 'prod_s25u';
+        window.location.href = `product-detail.html?id=${productId}`;
+    });
+}
 
 // Flash sale countdown timer logic
 function initFlashSaleTimer() {
@@ -126,7 +143,7 @@ function renderProducts(productArray, container) {
         }
 
         return `
-        <div class="product-card" onclick="window.location.href='/product-detail.html?id=${p.id}'">
+        <div class="product-card" data-id="${p.$id || p.id}" onclick="window.location.href='product-detail.html?id=${p.$id || p.id}'">
             ${discountBadge}
             <button class="card-wishlist" onclick="event.stopPropagation(); window.toggleWishlist('${p.id}', this)">♡</button>
             <div class="card-img">
