@@ -4,8 +4,8 @@
 // ==========================================================
 
 const APPWRITE_CONFIG = {
-    ENDPOINT: 'https://cloud.appwrite.io/v1',
-    PROJECT_ID: 'YOUR_PROJECT_ID', // Replace with your Appwrite Project ID
+    ENDPOINT: 'https://sgp.cloud.appwrite.io/v1',
+    PROJECT_ID: '6a81c1bb0000744e669b',
     DATABASE_ID: 'redwan_shop',
     COLLECTIONS: {
         PRODUCTS: 'products',
@@ -102,6 +102,28 @@ window.AppwriteService = {
         );
     },
 
+    async getCategories() {
+        return await databases.listDocuments(
+            APPWRITE_CONFIG.DATABASE_ID,
+            APPWRITE_CONFIG.COLLECTIONS.CATEGORIES
+        );
+    },
+
+    async getBrands() {
+        return await databases.listDocuments(
+            APPWRITE_CONFIG.DATABASE_ID,
+            APPWRITE_CONFIG.COLLECTIONS.BRANDS
+        );
+    },
+
+    async getReviews(productId) {
+        return await databases.listDocuments(
+            APPWRITE_CONFIG.DATABASE_ID,
+            APPWRITE_CONFIG.COLLECTIONS.REVIEWS,
+            [Appwrite.Query.equal('product_id', productId)]
+        );
+    },
+
     // ── Orders & Checkout ──────────────────────────────
     async createOrder(orderData, items) {
         const order = await databases.createDocument(
@@ -121,6 +143,40 @@ window.AppwriteService = {
         }
 
         return order;
+    },
+
+    async getUserOrders(userId) {
+        return await databases.listDocuments(
+            APPWRITE_CONFIG.DATABASE_ID,
+            APPWRITE_CONFIG.COLLECTIONS.ORDERS,
+            [Appwrite.Query.equal('user_id', userId)]
+        );
+    },
+
+    // ── Wishlist Methods ───────────────────────────────
+    async getUserWishlist(userId) {
+        return await databases.listDocuments(
+            APPWRITE_CONFIG.DATABASE_ID,
+            APPWRITE_CONFIG.COLLECTIONS.WISHLIST,
+            [Appwrite.Query.equal('user_id', userId)]
+        );
+    },
+
+    async addToWishlist(userId, productId) {
+        return await databases.createDocument(
+            APPWRITE_CONFIG.DATABASE_ID,
+            APPWRITE_CONFIG.COLLECTIONS.WISHLIST,
+            Appwrite.ID.unique(),
+            { user_id: userId, product_id: productId }
+        );
+    },
+
+    async removeFromWishlist(documentId) {
+        return await databases.deleteDocument(
+            APPWRITE_CONFIG.DATABASE_ID,
+            APPWRITE_CONFIG.COLLECTIONS.WISHLIST,
+            documentId
+        );
     },
 
     // ── File Storage Helper ────────────────────────────

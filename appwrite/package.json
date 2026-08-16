@@ -1,0 +1,9 @@
+{
+  "name": "appwrite-setup",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "node-appwrite": "^14.1.0"
+  }
+}

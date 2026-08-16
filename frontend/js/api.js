@@ -85,8 +85,52 @@ async function tryRefreshAndRetry(endpoint, options) {
 // ----------------------------------------------------
 
 window.API = {
-    get: (endpoint) => apiFetch(endpoint, { method: 'GET' }),
-    post: (endpoint, body) => apiFetch(endpoint, { method: 'POST', body: JSON.stringify(body) }),
+    get: async (endpoint) => {
+        if (window.AppwriteService) {
+            try {
+                if (endpoint.startsWith('/promotions/flash-sale') || endpoint.startsWith('/search') || endpoint.startsWith('/products')) {
+                    const res = await window.AppwriteService.getProducts();
+                    if (res && res.documents && res.documents.length > 0) {
+                        return { success: true, data: res.documents };
+                    }
+                } else if (endpoint.startsWith('/categories')) {
+                    const res = await window.AppwriteService.getCategories();
+                    if (res && res.documents) return { success: true, data: res.documents };
+                } else if (endpoint.startsWith('/brands')) {
+                    const res = await window.AppwriteService.getBrands();
+                    if (res && res.documents) return { success: true, data: res.documents };
+                } else if (endpoint.startsWith('/banners')) {
+                    const res = await window.AppwriteService.getBanners();
+                    if (res && res.documents) return { success: true, data: res.documents };
+                } else if (endpoint.startsWith('/auth/me')) {
+                    const user = await window.AppwriteService.getCurrentUser();
+                    if (user) return { success: true, data: user };
+                }
+            } catch (e) {
+                console.warn('Appwrite bridge fallback:', e.message);
+            }
+        }
+        return apiFetch(endpoint, { method: 'GET' });
+    },
+    post: async (endpoint, body) => {
+        if (window.AppwriteService) {
+            try {
+                if (endpoint === '/auth/login') {
+                    const session = await window.AppwriteService.login(body.email || body.phone || body.identifier, body.password);
+                    return { success: true, data: session };
+                } else if (endpoint === '/auth/register') {
+                    const user = await window.AppwriteService.register(body.email, body.password, body.name, body.phone);
+                    return { success: true, data: user };
+                } else if (endpoint === '/orders') {
+                    const order = await window.AppwriteService.createOrder(body.orderData || body, body.items || []);
+                    return { success: true, data: order };
+                }
+            } catch (e) {
+                console.warn('Appwrite bridge fallback:', e.message);
+            }
+        }
+        return apiFetch(endpoint, { method: 'POST', body: JSON.stringify(body) });
+    },
     put: (endpoint, body) => apiFetch(endpoint, { method: 'PUT', body: JSON.stringify(body) }),
     del: (endpoint) => apiFetch(endpoint, { method: 'DELETE' }),
     upload: async (endpoint, formData) => {

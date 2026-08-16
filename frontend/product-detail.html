@@ -554,5 +554,8 @@ function toggleWish(btn) {
 const obs = new IntersectionObserver(e => e.forEach(x => { if(x.isIntersecting){ x.target.style.opacity='1'; x.target.style.transform='translateY(0)'; }}), {threshold:0.1});
 document.querySelectorAll('.rel-card,.review-item').forEach(el => { el.style.opacity='0'; el.style.transform='translateY(16px)'; el.style.transition='opacity 0.5s ease, transform 0.5s ease, border-color 0.3s'; obs.observe(el); });
 </script>
+<script src="https://cdn.jsdelivr.net/npm/appwrite@14.0.1"></script>
+<script src="js/appwrite-client.js"></script>
+<script src="js/api.js"></script>
 </body>
 </html>
