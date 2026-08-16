@@ -1,0 +1,10 @@
+{
+  "name": "payment-handler",
+  "version": "1.0.0",
+  "description": "Appwrite Function for bKash, Nagad, and SSLCommerz Payments",
+  "main": "src/main.js",
+  "type": "module",
+  "dependencies": {
+    "node-fetch": "^3.3.2"
+  }
+}
