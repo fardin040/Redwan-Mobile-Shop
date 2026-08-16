@@ -69,6 +69,9 @@ window.API = {
                 } else if (endpoint === '/cart') {
                     localStorage.setItem('appwrite_cart', JSON.stringify(body));
                     return { success: true, data: body };
+                } else if (endpoint === '/products') {
+                    const product = await window.AppwriteService.createProduct(body);
+                    return { success: true, data: product };
                 } else if (endpoint.startsWith('/payment/initiate')) {
                     const res = await window.AppwriteService.initiatePayment(body.gateway, body.orderId, body.amount, body.customerInfo);
                     return { success: true, data: res };
@@ -89,13 +92,20 @@ window.API = {
     },
 
     del: async (endpoint) => {
-        if (window.AppwriteService && endpoint.startsWith('/wishlist/')) {
-            const docId = endpoint.split('/')[2];
-            if (docId) {
-                await window.AppwriteService.removeFromWishlist(docId);
+        if (window.AppwriteService) {
+            if (endpoint.startsWith('/wishlist/')) {
+                const docId = endpoint.split('/')[2];
+                if (docId) await window.AppwriteService.removeFromWishlist(docId);
+            } else if (endpoint.startsWith('/products/')) {
+                const docId = endpoint.split('/')[2];
+                if (docId) await window.AppwriteService.deleteProduct(docId);
             }
         }
         return { success: true };
+    },
+
+    delete: async (endpoint) => {
+        return await window.API.del(endpoint);
     },
 
     upload: async (bucketId, file) => {

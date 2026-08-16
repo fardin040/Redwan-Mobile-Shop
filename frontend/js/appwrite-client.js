@@ -94,6 +94,23 @@ window.AppwriteService = {
         );
     },
 
+    async createProduct(productData) {
+        return await databases.createDocument(
+            APPWRITE_CONFIG.DATABASE_ID,
+            APPWRITE_CONFIG.COLLECTIONS.PRODUCTS,
+            Appwrite.ID.unique(),
+            productData
+        );
+    },
+
+    async deleteProduct(productId) {
+        return await databases.deleteDocument(
+            APPWRITE_CONFIG.DATABASE_ID,
+            APPWRITE_CONFIG.COLLECTIONS.PRODUCTS,
+            productId
+        );
+    },
+
     async getBanners() {
         return await databases.listDocuments(
             APPWRITE_CONFIG.DATABASE_ID,
