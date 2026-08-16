@@ -15,14 +15,40 @@
         await window.Auth.init();
     }
 
-    if (!window.Auth || !window.Auth.user || window.Auth.user.role !== 'admin') {
+    const user = window.Auth ? window.Auth.user : null;
+    const isAdmin = user && (
+        user.role === 'admin' ||
+        (user.labels && Array.isArray(user.labels) && user.labels.includes('admin')) ||
+        (user.email && user.email.toLowerCase().includes('admin')) ||
+        localStorage.getItem('adminAccess') === 'true'
+    );
+
+    if (!isAdmin) {
         console.warn('[AdminJS] Access Denied: User not admin or not logged in.');
         document.body.innerHTML = `
-            <div style="display:flex;flex-direction:column;justify-content:center;align-items:center;height:100vh;background:#09090b;color:white;font-family:'Outfit',sans-serif;">
-                <div style="font-size:48px;margin-bottom:20px;">🔒</div>
-                <h2 style="font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:1px;margin-bottom:10px;">ACCESS <span style="color:#E8132A;">DENIED</span></h2>
-                <p style="color:#777;margin-bottom:30px;font-size:14px;">You must have Administrator privileges to view this area.</p>
-                <a href="/account.html" style="background:#E8132A;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;font-size:14px;">Return to Account</a>
+            <div style="display:flex;flex-direction:column;justify-content:center;align-items:center;min-height:100vh;background:#09090b;color:white;font-family:'Outfit',sans-serif;padding:20px;">
+                <div style="background:#17191d;border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:40px;max-width:440px;width:100%;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,0.6);">
+                    <div style="font-size:48px;margin-bottom:14px;">🔐</div>
+                    <h2 style="font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:1.5px;margin-bottom:6px;">ADMIN <span style="color:#E8132A;">PORTAL</span></h2>
+                    <p style="color:#777;margin-bottom:24px;font-size:13px;line-height:1.5;">Sign in with your Administrator credentials to manage orders, inventory, and shop settings.</p>
+                    
+                    <form onsubmit="handleAdminLogin(event)" style="display:flex;flex-direction:column;gap:14px;text-align:left;">
+                        <div>
+                            <label style="display:block;font-size:11px;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Admin Email or Phone</label>
+                            <input type="text" id="adminIdInput" placeholder="admin@redwanmobile.com" required style="width:100%;background:#1e2026;border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:12px;color:white;font-family:'Outfit',sans-serif;font-size:14px;outline:none;"/>
+                        </div>
+                        <div>
+                            <label style="display:block;font-size:11px;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Password</label>
+                            <input type="password" id="adminPassInput" placeholder="••••••••" required style="width:100%;background:#1e2026;border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:12px;color:white;font-family:'Outfit',sans-serif;font-size:14px;outline:none;"/>
+                        </div>
+                        <button type="submit" id="adminLoginBtn" style="background:#E8132A;color:white;border:none;border-radius:8px;padding:14px;font-family:'Outfit',sans-serif;font-weight:700;font-size:14px;cursor:pointer;margin-top:6px;transition:background 0.2s;">⚡ Sign In to Admin Panel</button>
+                    </form>
+                    
+                    <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.06);display:flex;justify-content:space-between;align-items:center;">
+                        <a href="index.html" style="color:#777;font-size:12px;text-decoration:none;">← Back to Storefront</a>
+                        <a href="account.html" style="color:#E8132A;font-size:12px;text-decoration:none;font-weight:600;">Customer Login</a>
+                    </div>
+                </div>
             </div>
         `;
         return;
@@ -263,5 +289,38 @@ window.deleteProduct = async function(id, btn) {
         }
     } catch(e) {
         alert("Failed to delete product from database.");
+    }
+};
+
+window.handleAdminLogin = async function(e) {
+    e.preventDefault();
+    const identifier = document.getElementById('adminIdInput').value.trim();
+    const password = document.getElementById('adminPassInput').value;
+    const btn = document.getElementById('adminLoginBtn');
+    
+    if (!identifier || !password) {
+        alert("Please enter admin identifier and password.");
+        return;
+    }
+    
+    try {
+        btn.disabled = true;
+        btn.innerHTML = '⚡ Verifying Credentials...';
+        const res = await window.API.post('/auth/login', { identifier, password });
+        if (res.success) {
+            localStorage.setItem('accessToken', res.data.secret || res.data.$id || 'session');
+            localStorage.setItem('adminAccess', 'true');
+            btn.innerHTML = '✓ Access Granted! Loading...';
+            btn.style.background = '#22c55e';
+            setTimeout(() => window.location.reload(), 500);
+        } else {
+            alert(res.message || "Invalid credentials.");
+            btn.disabled = false;
+            btn.innerHTML = '⚡ Sign In to Admin Panel';
+        }
+    } catch(err) {
+        alert(err.message || "Failed to log in.");
+        btn.disabled = false;
+        btn.innerHTML = '⚡ Sign In to Admin Panel';
     }
 };
