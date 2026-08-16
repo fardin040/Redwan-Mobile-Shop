@@ -536,10 +536,20 @@ function showTab(id) {
   event.target.classList.add('active');
 }
 function buyNow() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const productId = urlParams.get('id') || 'prod_s25u';
+  if (window.Cart) {
+    window.Cart.add(productId, null, 1);
+  }
   window.location.href = 'checkout.html';
 }
 function addCart() {
-  const btn = event.target;
+  const btn = event.currentTarget || event.target;
+  const urlParams = new URLSearchParams(window.location.search);
+  const productId = urlParams.get('id') || 'prod_s25u';
+  if (window.Cart) {
+    window.Cart.add(productId, null, 1);
+  }
   btn.innerHTML = '✓ Added to Cart!';
   btn.style.borderColor = 'var(--green)';
   btn.style.color = 'var(--green)';

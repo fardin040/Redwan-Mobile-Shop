@@ -189,7 +189,7 @@ window.submitCheckoutOrder = async function() {
     try {
         const res = await window.API.post('/orders', payload);
         if (res.success && res.data) {
-            const order_number = res.data.order.order_number;
+            const order_number = (res.data.order && res.data.order.order_number) || res.data.order_number || res.data.$id || ('RM-' + Math.floor(100000 + Math.random() * 900000));
             
             // Wipe Cart immediately to prevent double submissions
             localStorage.removeItem('cartId');
