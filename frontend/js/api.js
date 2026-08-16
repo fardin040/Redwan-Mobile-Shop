@@ -2,7 +2,7 @@
 // js/api.js - Core API Fetch Wrapper for Redwan Mobile Shop
 // ==========================================================
 
-const API_BASE = "https://redwan-mobile-shop-api.fardinahamed178.workers.dev/api";
+const API_BASE = "https://redwanmobileapi.fardinahamed178.workers.dev/api";
 
 /**
  * Core generalized fetch wrapper
