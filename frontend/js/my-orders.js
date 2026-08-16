@@ -92,7 +92,7 @@ function renderOrders(orders) {
             <div class="empty-icon">📦</div>
             <div class="empty-title">NO ORDERS YET</div>
             <div class="empty-sub">Looks like you haven't placed any orders.<br>Browse our latest phones and accessories.</div>
-            <a href="/redwan-mobile-shop.html" style="display:inline-block;background:var(--red);color:white;border-radius:10px;padding:12px 28px;font-weight:700;font-size:14px;text-decoration:none;">🛒 Shop Now</a>
+            <a href="/index.html" style="display:inline-block;background:var(--red);color:white;border-radius:10px;padding:12px 28px;font-weight:700;font-size:14px;text-decoration:none;">🛒 Shop Now</a>
         </div>`;
         return;
     }

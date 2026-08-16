@@ -37,7 +37,7 @@ function renderCart() {
     if (!container) return;
 
     if (!window.Cart.items || window.Cart.items.length === 0) {
-        container.innerHTML = `<div style="text-align:center;padding:40px;color:var(--muted);">Your cart is empty. <br><br><a href="/redwan-mobile-shop.html" style="color:var(--red);">Return to Shop</a></div>`;
+        container.innerHTML = `<div style="text-align:center;padding:40px;color:var(--muted);">Your cart is empty. <br><br><a href="/index.html" style="color:var(--red);">Return to Shop</a></div>`;
         document.getElementById('submitOrderBtn').style.opacity = '0.5';
         document.getElementById('submitOrderBtn').style.pointerEvents = 'none';
         updateTotals();

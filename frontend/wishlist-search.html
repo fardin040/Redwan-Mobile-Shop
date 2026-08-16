@@ -130,7 +130,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(10,10,10,0.96);backdrop-fi
 </head>
 <body>
 <nav>
-  <a href="redwan-mobile-shop.html" class="nav-logo">REDWAN<span>.</span>MOBILE</a>
+  <a href="index.html" class="nav-logo">REDWAN<span>.</span>MOBILE</a>
   <div class="nav-right">
     <button class="icon-btn" onclick="showPage('wishlist')">❤️</button>
     <button class="icon-btn" onclick="showPage('search')">🔍</button>
@@ -374,7 +374,7 @@ function addAllToCart(){
   const btn=event.target;btn.textContent='✓ All Added!';btn.style.background='#22c55e';
   setTimeout(()=>{btn.textContent='🛒 Add All to Cart';btn.style.background='';},2000);
 }
-function clearWishlist(){if(confirm('Remove all items from wishlist?')){document.getElementById('wishlistGrid').innerHTML='<div style="padding:60px;text-align:center;color:var(--muted);font-size:14px;">Your wishlist is empty. <a href="redwan-mobile-shop.html" style="color:var(--red);">Start shopping →</a></div>';}}
+function clearWishlist(){if(confirm('Remove all items from wishlist?')){document.getElementById('wishlistGrid').innerHTML='<div style="padding:60px;text-align:center;color:var(--muted);font-size:14px;">Your wishlist is empty. <a href="index.html" style="color:var(--red);">Start shopping →</a></div>';}}
 function removeFilter(el){el.style.opacity='0';setTimeout(()=>el.remove(),200);}
 function clearFilters(){document.querySelectorAll('.filter-check input').forEach(i=>i.checked=false);document.querySelectorAll('.active-filter-tag').forEach(t=>t.remove());}
 function applyFilters(){const btn=event.target;btn.textContent='✓ Applied!';setTimeout(()=>btn.textContent='Apply Filters',1500);}
