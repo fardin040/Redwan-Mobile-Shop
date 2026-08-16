@@ -188,12 +188,16 @@
     <div class="nav-section-label">System</div>
     <a class="nav-item" href="javascript:void(0)" onclick="window.openModal('settingsModal')"><span class="icon">⚙️</span> Settings</a>
     <a class="nav-item" href="index.html"><span class="icon">🌐</span> View Store</a>
+    <a class="nav-item" href="javascript:void(0)" onclick="window.adminLogout()" style="color:var(--red);"><span class="icon">🚪</span> Logout</a>
   </div>
 
   <div class="sidebar-footer">
-    <div class="admin-profile">
-      <div class="admin-avatar">R</div>
-      <div><div class="admin-name">Redwan Ahmed</div><div class="admin-role">Super Admin</div></div>
+    <div class="admin-profile" style="display:flex;align-items:center;justify-content:space-between;width:100%;">
+      <div style="display:flex;align-items:center;gap:9px;">
+        <div class="admin-avatar">R</div>
+        <div><div class="admin-name">Redwan Ahmed</div><div class="admin-role">Super Admin</div></div>
+      </div>
+      <button onclick="window.adminLogout()" style="background:rgba(232,19,42,0.15);border:1px solid rgba(232,19,42,0.3);color:var(--red);border-radius:8px;padding:6px 10px;font-size:12px;font-weight:700;cursor:pointer;" title="Logout Admin Panel">🚪 Logout</button>
     </div>
   </div>
 </aside>
@@ -209,7 +213,8 @@
         🔔
         <div class="topbar-dot"></div>
       </div>
-      <div class="topbar-btn">⚙️</div>
+      <div class="topbar-btn" onclick="window.openModal('settingsModal')" title="Settings">⚙️</div>
+      <button onclick="window.adminLogout()" style="background:rgba(232,19,42,0.15);border:1px solid rgba(232,19,42,0.3);color:var(--red);border-radius:8px;padding:8px 14px;font-family:'Outfit',sans-serif;font-weight:700;font-size:12px;cursor:pointer;" title="Logout Admin">🚪 Logout</button>
       <button onclick="window.openAddProductModal()" style="background:var(--red);color:white;border:none;border-radius:8px;padding:8px 16px;font-family:'Outfit',sans-serif;font-weight:700;font-size:12px;cursor:pointer;">+ Add Product</button>
     </div>
   </div>

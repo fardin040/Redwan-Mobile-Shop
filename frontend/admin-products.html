@@ -149,8 +149,17 @@ textarea.form-input{resize:vertical;min-height:80px;}
   <div class="nav-sec"><div class="nav-sec-label">System</div>
     <a class="nav-item" href="javascript:void(0)" onclick="window.openModal('settingsModal')"><span class="ico">⚙️</span> Settings</a>
     <a class="nav-item" href="index.html"><span class="ico">🌐</span> View Store</a>
+    <a class="nav-item" href="javascript:void(0)" onclick="window.adminLogout()" style="color:var(--red);"><span class="ico">🚪</span> Logout</a>
   </div>
-  <div class="sidebar-footer"><div class="admin-row"><div class="admin-av">R</div><div><div class="admin-name">Redwan Ahmed</div><div class="admin-role">Super Admin</div></div></div></div>
+  <div class="sidebar-footer">
+    <div class="admin-row" style="display:flex;align-items:center;justify-content:space-between;width:100%;">
+      <div style="display:flex;align-items:center;gap:9px;">
+        <div class="admin-av">R</div>
+        <div><div class="admin-name">Redwan Ahmed</div><div class="admin-role">Super Admin</div></div>
+      </div>
+      <button onclick="window.adminLogout()" style="background:rgba(232,19,42,0.15);border:1px solid rgba(232,19,42,0.3);color:var(--red);border-radius:8px;padding:6px 10px;font-size:12px;font-weight:700;cursor:pointer;" title="Logout Admin Panel">🚪 Logout</button>
+    </div>
+  </div>
 </aside>
 
 <!-- MAIN -->
@@ -158,6 +167,7 @@ textarea.form-input{resize:vertical;min-height:80px;}
   <div class="topbar">
     <div class="page-title-bar" id="topTitle">CATALOG <span>MANAGEMENT</span></div>
     <div class="topbar-right">
+      <button class="tb-btn" onclick="window.adminLogout()" style="color:var(--red);border-color:rgba(232,19,42,0.3);" title="Logout Admin">🚪 Logout</button>
       <button class="tb-btn" onclick="document.getElementById('importModal').classList.add('show')">⬆️ Bulk Import</button>
       <button class="tb-btn primary" onclick="document.getElementById('addProductModal').classList.add('show')">+ Add Product</button>
     </div>

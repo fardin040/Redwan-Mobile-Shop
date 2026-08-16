@@ -707,6 +707,19 @@ window.openModal = function(id) {
     if (m) m.classList.add('show');
 };
 
+window.adminLogout = function() {
+    if (confirm('Are you sure you want to logout from Admin Panel?')) {
+        localStorage.removeItem('adminAccess');
+        localStorage.removeItem('accessToken');
+        sessionStorage.clear();
+        if (window.Auth && typeof window.Auth.logout === 'function') {
+            window.Auth.logout();
+        } else {
+            window.location.href = 'account.html';
+        }
+    }
+};
+
 window.closeModal = function(id) {
     const m = document.getElementById(id);
     if (m) m.classList.remove('show');
