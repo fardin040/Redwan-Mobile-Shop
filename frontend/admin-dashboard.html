@@ -209,7 +209,7 @@
         <div class="topbar-dot"></div>
       </div>
       <div class="topbar-btn">⚙️</div>
-      <button style="background:var(--red);color:white;border:none;border-radius:8px;padding:8px 16px;font-family:'Outfit',sans-serif;font-weight:700;font-size:12px;cursor:pointer;">+ Add Product</button>
+      <button onclick="window.openAddProductModal()" style="background:var(--red);color:white;border:none;border-radius:8px;padding:8px 16px;font-family:'Outfit',sans-serif;font-weight:700;font-size:12px;cursor:pointer;">+ Add Product</button>
     </div>
   </div>
 
@@ -261,14 +261,14 @@
       <div class="panel">
         <div class="panel-header"><div class="panel-title">Quick Actions</div></div>
         <div class="quick-actions">
-          <div class="qa-btn" onclick="console.log('Add Product page')"><span class="qa-icon">➕</span> Add Product</div>
-          <div class="qa-btn" onclick="console.log('View Orders')"><span class="qa-icon">📋</span> View Orders</div>
-          <div class="qa-btn" onclick="console.log('Manage Inventory')"><span class="qa-icon">📦</span> Inventory</div>
-          <div class="qa-btn" onclick="console.log('Create Coupon')"><span class="qa-icon">🏷️</span> New Coupon</div>
-          <div class="qa-btn" onclick="console.log('Shipping Manager')"><span class="qa-icon">🚚</span> Shipping</div>
-          <div class="qa-btn" onclick="console.log('Reports')"><span class="qa-icon">📊</span> Reports</div>
-          <div class="qa-btn" onclick="console.log('Bulk Import')"><span class="qa-icon">⬆</span> Bulk Import</div>
-          <div class="qa-btn" onclick="console.log('Settings')"><span class="qa-icon">⚙</span> Settings</div>
+          <div class="qa-btn" onclick="window.quickAction('add-product')"><span class="qa-icon">➕</span> Add Product</div>
+          <div class="qa-btn" onclick="window.quickAction('orders')"><span class="qa-icon">📋</span> View Orders</div>
+          <div class="qa-btn" onclick="window.quickAction('inventory')"><span class="qa-icon">📦</span> Inventory</div>
+          <div class="qa-btn" onclick="window.quickAction('coupon')"><span class="qa-icon">🏷️</span> New Coupon</div>
+          <div class="qa-btn" onclick="window.quickAction('shipping')"><span class="qa-icon">🚚</span> Shipping</div>
+          <div class="qa-btn" onclick="window.quickAction('reports')"><span class="qa-icon">📊</span> Reports</div>
+          <div class="qa-btn" onclick="window.quickAction('bulk-import')"><span class="qa-icon">⬆</span> Bulk Import</div>
+          <div class="qa-btn" onclick="window.quickAction('settings')"><span class="qa-icon">⚙</span> Settings</div>
         </div>
       </div>
     </div>
@@ -380,9 +380,9 @@
 
 <script src="https://cdn.jsdelivr.net/npm/appwrite@14.0.1"></script>
 <script src="js/appwrite-client.js"></script>
-<script src="js/api.js?v=admin_v2"></script>
-<script src="js/auth.js?v=admin_v2"></script>
-<script src="js/admin.js?v=admin_v2"></script>
+<script src="js/api.js?v=admin_v3"></script>
+<script src="js/auth.js?v=admin_v3"></script>
+<script src="js/admin.js?v=admin_v3"></script>
 <script>
 // Nav active state
 document.querySelectorAll('.nav-item').forEach(item => {

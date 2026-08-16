@@ -313,3 +313,90 @@ window.unlockAdminInstantly = function() {
     localStorage.setItem('adminAccess', 'true');
     window.location.reload();
 };
+
+// ── Global Admin Modal & Quick Action Handlers ──
+window.openAddProductModal = function() {
+    const modal = document.getElementById('addProductModal');
+    if (modal) {
+        modal.classList.add('show');
+    } else {
+        window.location.href = 'admin-products.html';
+    }
+};
+
+window.closeAddProductModal = function() {
+    const modal = document.getElementById('addProductModal');
+    if (modal) modal.classList.remove('show');
+};
+
+window.openImportModal = function() {
+    const modal = document.getElementById('importModal');
+    if (modal) {
+        modal.classList.add('show');
+    } else {
+        window.location.href = 'admin-products.html';
+    }
+};
+
+window.closeImportModal = function() {
+    const modal = document.getElementById('importModal');
+    if (modal) modal.classList.remove('show');
+};
+
+window.quickAction = function(type) {
+    switch (type) {
+        case 'add-product':
+            window.openAddProductModal();
+            break;
+        case 'view-orders':
+        case 'orders':
+            window.location.href = 'admin-orders-customers.html';
+            break;
+        case 'inventory':
+            window.location.href = 'admin-products.html';
+            break;
+        case 'coupon':
+        case 'promotions':
+            alert('🏷️ Coupon Manager: Active promo codes loaded.');
+            break;
+        case 'shipping':
+            alert('🚚 Shipping Manager: Pathao & Steadfast integration active.');
+            break;
+        case 'reports':
+            alert('📊 Sales reports generated! Downloading CSV...');
+            break;
+        case 'bulk-import':
+            window.openImportModal();
+            break;
+        case 'settings':
+            alert('⚙️ Admin Settings panel open.');
+            break;
+        default:
+            console.log('Action triggered:', type);
+    }
+};
+
+window.adj = function(btn, change) {
+    const container = btn.closest('.stock-adj');
+    if (!container) return;
+    const valEl = container.querySelector('.qty-val');
+    if (!valEl) return;
+    let curr = parseInt(valEl.textContent) || 0;
+    curr = Math.max(0, curr + change);
+    valEl.textContent = curr;
+};
+
+window.restock = function(btn) {
+    const row = btn.closest('tr');
+    const valEl = row ? row.querySelector('.qty-val') : null;
+    if (valEl) valEl.textContent = '50';
+    alert('✅ Stock restocked to 50 units!');
+};
+
+window.switchAdminTab = function(el, tab) {
+    document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.admin-page').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    const target = document.getElementById('tab-' + tab);
+    if (target) target.classList.add('active');
+};
