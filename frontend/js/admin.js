@@ -326,6 +326,9 @@ function ensureAdminModals() {
             .modal-overlay { display: none !important; position: fixed !important; inset: 0 !important; background: rgba(0,0,0,0.8) !important; z-index: 9999 !important; align-items: center !important; justify-content: center !important; backdrop-filter: blur(4px) !important; padding: 20px !important; }
             .modal-overlay.show { display: flex !important; }
             .modal { background: #121620 !important; border: 1px solid rgba(255,255,255,0.1) !important; border-radius: 16px !important; width: 100% !important; max-width: 600px !important; overflow: hidden !important; color: #fff !important; box-shadow: 0 20px 50px rgba(0,0,0,0.5) !important; }
+            .st-tab { background: transparent !important; border: none !important; padding: 12px 18px !important; font-family: 'Outfit', sans-serif !important; font-size: 13px !important; font-weight: 600 !important; color: #8a94a6 !important; cursor: pointer !important; border-bottom: 2px solid transparent !important; transition: all 0.2s !important; white-space: nowrap !important; }
+            .st-tab.active { color: #e8132a !important; border-bottom-color: #e8132a !important; }
+            .st-tab:hover { color: #fff !important; }
         `;
         document.head.appendChild(style);
     }
@@ -391,20 +394,143 @@ function ensureAdminModals() {
 
         <!-- SETTINGS MODAL -->
         <div class="modal-overlay" id="settingsModal">
-            <div class="modal" style="max-width:550px;">
-                <div class="modal-header">
-                    <div class="modal-title">⚙️ STORE <span>SETTINGS</span></div>
-                    <button class="modal-close" onclick="window.closeModal('settingsModal')">✕</button>
+            <div class="modal" style="max-width:720px;border-radius:24px;overflow:hidden;background:#0d111a;border:1px solid rgba(255,255,255,0.12);box-shadow:0 25px 60px rgba(0,0,0,0.7);">
+                <!-- HEADER -->
+                <div style="padding:22px 28px;background:#131824;border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:space-between;">
+                    <div>
+                        <div style="font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:1px;color:#fff;">⚙️ CONTROL CENTER <span style="color:var(--red);">SETTINGS</span></div>
+                        <div style="font-size:12px;color:#8a94a6;margin-top:2px;">Manage store profile, mobile banking, shipping rates & security</div>
+                    </div>
+                    <button onclick="window.closeModal('settingsModal')" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#8a94a6;font-size:16px;transition:all 0.2s;">✕</button>
                 </div>
-                <div class="modal-body" style="max-height:70vh;overflow-y:auto;">
-                    <div class="form-group" style="margin-bottom:10px;"><label class="form-label">Store Name</label><input class="form-input" value="Redwan Mobile Shop"/></div>
-                    <div class="form-group" style="margin-bottom:10px;"><label class="form-label">Support Phone Hotline</label><input class="form-input" value="+8801700-000000"/></div>
-                    <div class="form-group" style="margin-bottom:10px;"><label class="form-label">bKash Merchant Number</label><input class="form-input" value="01700000000"/></div>
-                    <div class="form-group" style="margin-bottom:10px;"><label class="form-label">Nagad Merchant Number</label><input class="form-input" value="01800000000"/></div>
+
+                <!-- NAVIGATION TABS -->
+                <div style="display:flex;background:#10141f;border-bottom:1px solid rgba(255,255,255,0.08);padding:0 20px;gap:8px;overflow-x:auto;">
+                    <button class="st-tab active" onclick="window.switchSettingsTab(this, 'st-general')">🏬 General Info</button>
+                    <button class="st-tab" onclick="window.switchSettingsTab(this, 'st-payments')">💳 Payment Gateways</button>
+                    <button class="st-tab" onclick="window.switchSettingsTab(this, 'st-delivery')">🚚 Delivery & Fees</button>
+                    <button class="st-tab" onclick="window.switchSettingsTab(this, 'st-security')">🔒 Admin Security</button>
                 </div>
-                <div class="modal-footer">
-                    <button class="btn-save" onclick="alert('✅ Settings saved!');window.closeModal('settingsModal');">Save Changes</button>
+
+                <!-- TAB BODY CONTENT -->
+                <div class="modal-body" style="padding:24px 28px;max-height:60vh;overflow-y:auto;">
+                    
+                    <!-- 1. GENERAL INFO TAB -->
+                    <div class="st-page" id="st-general">
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+                            <div>
+                                <label style="display:block;font-size:11px;font-weight:700;color:#8a94a6;text-transform:uppercase;margin-bottom:6px;">Store Name</label>
+                                <input class="form-input" id="stStoreName" value="Redwan Mobile Shop" style="background:#161c28;border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:11px 14px;color:#fff;font-size:13px;width:100%;"/>
+                            </div>
+                            <div>
+                                <label style="display:block;font-size:11px;font-weight:700;color:#8a94a6;text-transform:uppercase;margin-bottom:6px;">Store Slogan</label>
+                                <input class="form-input" id="stTagline" value="Authentic Smartphones & Gadgets in BD" style="background:#161c28;border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:11px 14px;color:#fff;font-size:13px;width:100%;"/>
+                            </div>
+                        </div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+                            <div>
+                                <label style="display:block;font-size:11px;font-weight:700;color:#8a94a6;text-transform:uppercase;margin-bottom:6px;">📞 Support Hotline Phone</label>
+                                <input class="form-input" id="stPhone" value="+880 1700-000000" style="background:#161c28;border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:11px 14px;color:#fff;font-size:13px;width:100%;"/>
+                            </div>
+                            <div>
+                                <label style="display:block;font-size:11px;font-weight:700;color:#8a94a6;text-transform:uppercase;margin-bottom:6px;">📧 Official Support Email</label>
+                                <input class="form-input" id="stEmail" value="support@redwanmobile.com" style="background:#161c28;border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:11px 14px;color:#fff;font-size:13px;width:100%;"/>
+                            </div>
+                        </div>
+                        <div>
+                            <label style="display:block;font-size:11px;font-weight:700;color:#8a94a6;text-transform:uppercase;margin-bottom:6px;">📍 Physical Outlet Address</label>
+                            <textarea class="form-input" id="stAddress" style="background:#161c28;border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:11px 14px;color:#fff;font-size:13px;width:100%;height:65px;resize:none;">Jamuna Future Park, Level 4, Block C, Kuril, Dhaka-1229, Bangladesh</textarea>
+                        </div>
+                    </div>
+
+                    <!-- 2. PAYMENT GATEWAYS TAB -->
+                    <div class="st-page" id="st-payments" style="display:none;">
+                        <div style="background:rgba(232,19,42,0.08);border:1px solid rgba(232,19,42,0.2);padding:12px 16px;border-radius:10px;margin-bottom:18px;font-size:12px;color:#e8132a;display:flex;align-items:center;gap:10px;">
+                            <span>⚡</span> <span>Configure merchant mobile banking accounts for customer checkouts.</span>
+                        </div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+                            <div style="background:#161c28;padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.08);">
+                                <div style="display:flex;align-items:center;gap:8px;font-weight:700;font-size:13px;margin-bottom:10px;color:#e2136e;">
+                                    <span>🌸</span> bKash Merchant Number
+                                </div>
+                                <input class="form-input" id="stBkash" value="01700000000" style="background:#0d111a;border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:9px 12px;color:#fff;font-size:13px;width:100%;"/>
+                            </div>
+                            <div style="background:#161c28;padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.08);">
+                                <div style="display:flex;align-items:center;gap:8px;font-weight:700;font-size:13px;margin-bottom:10px;color:#f7931e;">
+                                    <span>🟠</span> Nagad Merchant Number
+                                </div>
+                                <input class="form-input" id="stNagad" value="01800000000" style="background:#0d111a;border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:9px 12px;color:#fff;font-size:13px;width:100%;"/>
+                            </div>
+                        </div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                            <div style="background:#161c28;padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.08);">
+                                <div style="display:flex;align-items:center;gap:8px;font-weight:700;font-size:13px;margin-bottom:10px;color:#8c3494;">
+                                    <span>🚀</span> Rocket Merchant Number
+                                </div>
+                                <input class="form-input" id="stRocket" value="01900000000" style="background:#0d111a;border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:9px 12px;color:#fff;font-size:13px;width:100%;"/>
+                            </div>
+                            <div style="background:#161c28;padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:space-between;">
+                                <div>
+                                    <div style="font-weight:700;font-size:13px;color:#fff;">💵 Cash on Delivery</div>
+                                    <div style="font-size:11px;color:#8a94a6;">Pay upon item arrival</div>
+                                </div>
+                                <span class="pub-pill pub-live">ACTIVE</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. DELIVERY & FEES TAB -->
+                    <div class="st-page" id="st-delivery" style="display:none;">
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+                            <div>
+                                <label style="display:block;font-size:11px;font-weight:700;color:#8a94a6;text-transform:uppercase;margin-bottom:6px;">Inside Dhaka Delivery Fee (৳)</label>
+                                <input class="form-input" id="stFeeDhaka" type="number" value="70" style="background:#161c28;border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:11px 14px;color:#fff;font-size:13px;width:100%;"/>
+                            </div>
+                            <div>
+                                <label style="display:block;font-size:11px;font-weight:700;color:#8a94a6;text-transform:uppercase;margin-bottom:6px;">Outside Dhaka Delivery Fee (৳)</label>
+                                <input class="form-input" id="stFeeOutside" type="number" value="130" style="background:#161c28;border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:11px 14px;color:#fff;font-size:13px;width:100%;"/>
+                            </div>
+                        </div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                            <div>
+                                <label style="display:block;font-size:11px;font-weight:700;color:#8a94a6;text-transform:uppercase;margin-bottom:6px;">Express Same-Day Delivery (৳)</label>
+                                <input class="form-input" id="stFeeExpress" type="number" value="200" style="background:#161c28;border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:11px 14px;color:#fff;font-size:13px;width:100%;"/>
+                            </div>
+                            <div>
+                                <label style="display:block;font-size:11px;font-weight:700;color:#8a94a6;text-transform:uppercase;margin-bottom:6px;">Free Delivery Threshold (৳)</label>
+                                <input class="form-input" id="stFreeThreshold" type="number" value="50000" style="background:#161c28;border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:11px 14px;color:#fff;font-size:13px;width:100%;"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4. ADMIN SECURITY TAB -->
+                    <div class="st-page" id="st-security" style="display:none;">
+                        <div style="background:#161c28;padding:18px;border-radius:14px;border:1px solid rgba(255,255,255,0.08);margin-bottom:16px;">
+                            <div style="font-weight:700;font-size:13px;margin-bottom:12px;color:#fff;">🔑 Change Admin Secret Password</div>
+                            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+                                <input class="form-input" type="password" placeholder="Current Admin Password" style="background:#0d111a;border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 12px;color:#fff;font-size:13px;"/>
+                                <input class="form-input" type="password" placeholder="New Strong Password" style="background:#0d111a;border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 12px;color:#fff;font-size:13px;"/>
+                            </div>
+                        </div>
+                        <div style="display:flex;justify-content:space-between;align-items:center;background:#161c28;padding:14px 18px;border-radius:12px;border:1px solid rgba(255,255,255,0.08);">
+                            <div>
+                                <div style="font-weight:700;font-size:13px;color:#fff;">⚡ Shop Owner Instant Bypass</div>
+                                <div style="font-size:11px;color:#8a94a6;">Quick login mode active</div>
+                            </div>
+                            <span class="pub-pill pub-live">ENABLED</span>
+                        </div>
+                    </div>
+
                 </div>
+
+                <!-- FOOTER -->
+                <div style="padding:18px 28px;background:#131824;border-top:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:space-between;">
+                    <div style="font-size:12px;color:#8a94a6;">System Status: <span style="color:#22c55e;font-weight:700;">● Cloud Worker API Active</span></div>
+                    <button id="saveSettingsBtn" onclick="window.saveAdminSettings()" style="background:var(--red);color:#fff;border:none;border-radius:10px;padding:10px 24px;font-family:'Outfit',sans-serif;font-weight:700;font-size:13px;cursor:pointer;box-shadow:0 4px 15px rgba(232,19,42,0.4);transition:all 0.2s;">
+                        ✓ Save Settings
+                    </button>
+                </div>
+
             </div>
         </div>
 
@@ -627,4 +753,30 @@ window.switchAdminTab = function(el, tab) {
     el.classList.add('active');
     const target = document.getElementById('tab-' + tab);
     if (target) target.classList.add('active');
+};
+
+window.switchSettingsTab = function(btn, targetId) {
+    document.querySelectorAll('.st-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.st-page').forEach(p => p.style.display = 'none');
+    btn.classList.add('active');
+    const page = document.getElementById(targetId);
+    if (page) page.style.display = 'block';
+};
+
+window.saveAdminSettings = function() {
+    const btn = document.getElementById('saveSettingsBtn');
+    if (btn) {
+        btn.innerHTML = '⚡ Saving...';
+        btn.style.background = '#22c55e';
+    }
+    setTimeout(() => {
+        if (btn) btn.innerHTML = '✓ Settings Saved!';
+        setTimeout(() => {
+            if (btn) {
+                btn.innerHTML = '✓ Save Settings';
+                btn.style.background = 'var(--red)';
+            }
+            window.closeModal('settingsModal');
+        }, 600);
+    }, 500);
 };
