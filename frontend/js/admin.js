@@ -317,6 +317,7 @@ window.unlockAdminInstantly = function() {
 // ── Dynamic Shared Modals Auto-Injector ──
 function ensureAdminModals() {
     if (document.getElementById('adminSharedModalsRoot')) return;
+    if (!document.body) return;
     
     // Inject overlay CSS if missing
     if (!document.getElementById('adminModalOverlayStyles')) {
@@ -672,9 +673,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const targetTab = params.get('tab');
     if (targetTab) {
         setTimeout(() => {
-            const tabBtn = document.querySelector(`.admin-tab[onclick*="'${targetTab}'"]`);
-            if (typeof window.switchAdminTab === 'function') window.switchAdminTab(tabBtn || targetTab, targetTab);
-            else if (typeof window.switchTab === 'function') window.switchTab(tabBtn || targetTab, targetTab);
+            const targetPage = document.getElementById('tab-' + targetTab);
+            if (targetPage) {
+                const tabBtn = document.querySelector(`.admin-tab[onclick*="'${targetTab}'"]`);
+                if (typeof window.switchAdminTab === 'function') window.switchAdminTab(tabBtn || targetTab, targetTab);
+                else if (typeof window.switchTab === 'function') window.switchTab(tabBtn || targetTab, targetTab);
+            }
         }, 100);
     }
 

@@ -577,6 +577,9 @@ body{font-family:'Outfit',sans-serif;background:var(--black);color:var(--text);d
 
 <script>
 function switchTab(el,tab){
+  const target = document.getElementById('tab-'+tab);
+  if (!target) return;
+
   document.querySelectorAll('.admin-tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.admin-page').forEach(p=>p.classList.remove('active'));
   
@@ -587,9 +590,7 @@ function switchTab(el,tab){
     tabBtn = document.querySelector(`.admin-tab[onclick*="'${tab}'"]`);
   }
   if (tabBtn) tabBtn.classList.add('active');
-  
-  const target = document.getElementById('tab-'+tab);
-  if (target) target.classList.add('active');
+  target.classList.add('active');
   
   const titleEl = document.getElementById('topTitle');
   if (titleEl) {
@@ -642,8 +643,8 @@ function closeCustDrawer(){
 </script>
 <script src="https://cdn.jsdelivr.net/npm/appwrite@14.0.1"></script>
 <script src="js/appwrite-client.js"></script>
-<script src="js/api.js?v=admin_v9"></script>
-<script src="js/auth.js?v=admin_v9"></script>
-<script src="js/admin.js?v=admin_v9"></script>
+<script src="js/api.js?v=admin_v10"></script>
+<script src="js/auth.js?v=admin_v10"></script>
+<script src="js/admin.js?v=admin_v10"></script>
 </body>
 </html>
